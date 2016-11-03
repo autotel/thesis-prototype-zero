@@ -24,7 +24,7 @@ void LedMatrix::setup() {
   byteMapBlue = 0xA5A5;
   byteMapRed = 0x5A5A;
   // offset for the pin register
-  registerOffset = 4;
+  registerOffset = 5;
 }
 void LedMatrix::sum(int blue, int red){
   byteMapBlue|=blue;
@@ -73,6 +73,6 @@ void LedMatrix::refresh()
       GPIOB_PDOR = ~0x010000 << (t / 4) % 4; //((t/4)%16)+4;
     t++;
     //for some reason it doesn't work without delay
-    delayMicroseconds(200);
+    delayMicroseconds(10);
   }
 }

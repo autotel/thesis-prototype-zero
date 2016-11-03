@@ -13,13 +13,21 @@ void setup() {
 
 long lastChange = 0;
 int beatPosition = 0;
+
+int refreshesEachPrint=0;
 void loop() {
   if (millis() - lastChange > 200) {
     int modularpos=beatPosition % 16;
     lastChange = millis();
     lm.sett((int)(1 << modularpos), (int)(3 << modularpos));
     beatPosition++;
+    lcd.setCursor(0, 0);
+    lcd.print("REA: "+String(refreshesEachPrint));
+    lcd.setCursor(0, 1);
+    lcd.print("beat: "+String(beatPosition));
+    refreshesEachPrint=0;
   }
+  refreshesEachPrint++;
   lm.refresh();
 
   //this is really slow!
