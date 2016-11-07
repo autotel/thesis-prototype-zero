@@ -15,11 +15,14 @@ class LedMatrix
     void sett(int,int);
   private:
     int _pin;
-    byte t;
     long lastchange;
     int byteMapRed;
     int byteMapBlue;
     int registerOffset;
+    int clockpin;
+    int latchpin;
+    int serialpin;
+
 };
 
 #endif

@@ -7,14 +7,17 @@ LedMatrix::LedMatrix()
 
 }
 void LedMatrix::setup() {
-  t = 0;
   lastchange = 0;
   _pin = 0;
-  //GPIOD_<<4
-  pinMode(6, OUTPUT);
-  pinMode(20, OUTPUT);
-  pinMode(21, OUTPUT);
-  pinMode(5, OUTPUT);
+
+  //to change pin output numbers you also have to go to the refresh function
+  serialpin = 2;
+  clockpin = 14;
+  latchpin = 8;
+
+  pinMode(serialpin, OUTPUT);
+  pinMode(clockpin, OUTPUT);
+  pinMode(latchpin, OUTPUT);
   //GPIOB_<<4
   pinMode(0, OUTPUT);
   pinMode(1, OUTPUT);
@@ -26,53 +29,67 @@ void LedMatrix::setup() {
   // offset for the pin register
   registerOffset = 5;
 }
-void LedMatrix::sum(int blue, int red){
-  byteMapBlue|=blue;
-  byteMapRed|=red;  
+void LedMatrix::sum(int blue, int red) {
+  byteMapBlue |= blue;
+  byteMapRed |= red;
 }
-void LedMatrix::diff(int blue, int red){
-  byteMapBlue^=blue;
-  byteMapRed^=red;  
+void LedMatrix::diff(int blue, int red) {
+  byteMapBlue ^= blue;
+  byteMapRed ^= red;
 }
-void LedMatrix::sett(int blue, int red){
-  byteMapBlue=blue;
-  byteMapRed=red;
+void LedMatrix::sett(int red, int blue) {
+  byteMapBlue = blue;
+  byteMapRed = red;
 }
 void LedMatrix::refresh()
 {
-
-
-  //if (millis() - lastchange > 300) {
-  //bitmapred
   /*
-     int sized
-     1111 -> F
-     0000 -> 0
-     0000 -> 0
-     0000 -> 0
+    //turn serial data pin on
+    GPIOD_PDOR|=0x1//;<<0;
+    //turn clock pin on
+    GPIOD_PDOR|=0x1<<1;
+    //turn latch pin on
+    GPIOD_PDOR|=0x1<<3;
   */
-  t = 0;
-  while (t < 16) {
-    int currentBitMask =  (0x0001 << t);
-    int currentRedBit = byteMapRed & currentBitMask;
-    int currentBlueBit = byteMapBlue & currentBitMask;
-    //GPIOD contains the address to shift registers.
-    //first 4 address four rows one color, and the last four, the other color.
-    //check if current bitmap red pixel must be on
-    if (currentRedBit) {
-      //write red
-      GPIOD_PDOR = (0x00 | ((t) % (4) << registerOffset));
+
+
+  unsigned long int pixels [] = {
+    0x00FF0000, 0x00FF0000, 0x00FF0000, 0x00FF0000,
+    0x00FF0000, 0x00FF0000, 0x00FF0000, 0x00FF0000,
+    0x00FFFF00, 0x00FF0000, 0x00FF0000, 0x00FFFF00,
+    0x00FF0000, 0x00FF0000, 0x00FF0000, 0x00FF0000
+  };
+
+  //latch pin lo
+
+  int cathode = 0;
+  while (cathode < 4) {
+    digitalWrite(latchpin, LOW);
+    for (int anode = 0; anode < 4; anode++) {
+      int pixelnum = anode * 4 + cathode;
+      //the color number 4 is gnd and should always be low
+      for (int colorn = 0; colorn < 4; colorn++) {
+        //clear sreial pin
+        GPIOD_PDOR &= 0xFE;
+        //data to something
+        //digitalWrite(serialpin,(0xFC<<byten)&0x80);
+        GPIOD_PDOR |= (pixels[pixelnum] >> colorn) & 0x1;
+        //GPIOD_PDOR |=(0x0D0F<<anode)&0x1;
+
+        //clock HI
+        digitalWrite(clockpin, HIGH);
+        //GPIOD_PDOR |= 0x1 << 1;
+        //delay(3);
+
+        //clock LO
+        //GPIOD_PDOR &=  ~0x01 << 1;
+        digitalWrite(clockpin, LOW);
+        //delay(10);
+      }
     }
-    //same for blue
-    if (currentBlueBit) {
-      //write blue
-      GPIOD_PDOR = (0x00 | (((t % 4) + 4) << registerOffset));
-    }
-    //GPIOB is addressing columns directly.
-    if (currentRedBit || currentBlueBit)
-      GPIOB_PDOR = ~0x010000 << (t / 4) % 4; //((t/4)%16)+4;
-    t++;
-    //for some reason it doesn't work without delay
-    delayMicroseconds(10);
+    digitalWrite(latchpin, HIGH);
+    
+    cathode++;
   }
+  //delay(10);
 }

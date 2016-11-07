@@ -3,8 +3,8 @@
 #include <LiquidCrystal.h>
 #include "ledMatrix.h"
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(23, 22, 16, 15, 14, 13);
-//LiquidCrystal lcd(33, 24, 3,  4,  16, 17);
+//----------- lcd(23, 22, 16, 15, 14, 13);
+LiquidCrystal lcd(33, 24, 3,  4,  16, 17);
 LedMatrix lm;
 void setup() {
   // set up the LCD's number of columns and rows:
