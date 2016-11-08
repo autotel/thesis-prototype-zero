@@ -53,43 +53,41 @@ void LedMatrix::refresh()
   */
 
 
-  unsigned long int pixels [] = {
-    0x00FF0000, 0x00FF0000, 0x00FF0000, 0x00FF0000,
-    0x00FF0000, 0x00FF0000, 0x00FF0000, 0x00FF0000,
-    0x00FFFF00, 0x00FF0000, 0x00FF0000, 0x00FFFF00,
-    0x00FF0000, 0x00FF0000, 0x00FF0000, 0x00FF0000
+  unsigned int pixels [] = {
+    0x00f0, 0x0ff0, 0x0ff0, 0x0000,
+    0x0ff0, 0x0ff0, 0x0ff0, 0x0ff0,
+    0x0ff0, 0x0ff0, 0x0ff0, 0x0ff0,
+    0x0ff0, 0x0ff0, 0x0ff0, 0x0f00,
   };
 
   //latch pin lo
 
-  int cathode = 0;
-  while (cathode < 4) {
-    digitalWrite(latchpin, LOW);
-    for (int anode = 0; anode < 4; anode++) {
-      int pixelnum = anode * 4 + cathode;
+  digitalWrite(latchpin, LOW);
+  //leds are searialized in color order
+
+ 
+  for (int pixelnum = 0; pixelnum < 16; pixelnum++) {
+    for (int colorn = 0; colorn < 4; colorn++) {
+       int colorshift = colorn * 4;
       //the color number 4 is gnd and should always be low
-      for (int colorn = 0; colorn < 4; colorn++) {
-        //clear sreial pin
-        GPIOD_PDOR &= 0xFE;
-        //data to something
-        //digitalWrite(serialpin,(0xFC<<byten)&0x80);
-        GPIOD_PDOR |= (pixels[pixelnum] >> colorn) & 0x1;
-        //GPIOD_PDOR |=(0x0D0F<<anode)&0x1;
+      //(make a mask to only change one pixel)|(get current pixel[color] value)
+      GPIOD_PDOR = (GPIOD_PDOR & 0xFE) | (pixels[pixelnum] >> colorn);
+      //data to something
+      //digitalWrite(serialpin,(0xFC<<byten)&0x80);
 
-        //clock HI
-        digitalWrite(clockpin, HIGH);
-        //GPIOD_PDOR |= 0x1 << 1;
-        //delay(3);
+      //GPIOD_PDOR |=(0x0D0F<<anode)&0x1;
 
-        //clock LO
-        //GPIOD_PDOR &=  ~0x01 << 1;
-        digitalWrite(clockpin, LOW);
-        //delay(10);
-      }
+      //clock HI
+      digitalWrite(clockpin, HIGH);
+      //GPIOD_PDOR |= 0x1 << 1;
+      delay(3);
+
+      //clock LO
+      //GPIOD_PDOR &=  ~0x01 << 1;
+      digitalWrite(clockpin, LOW);
+      delay(10);
     }
-    digitalWrite(latchpin, HIGH);
-    
-    cathode++;
   }
-  //delay(10);
+  digitalWrite(latchpin, HIGH);
+  delay(10);
 }
