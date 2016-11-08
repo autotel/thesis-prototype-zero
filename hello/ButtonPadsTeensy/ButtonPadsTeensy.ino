@@ -3,8 +3,9 @@
 #include <LiquidCrystal.h>
 #include "ledMatrix.h"
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(23, 22, 16, 15, 14, 13);
-//LiquidCrystal lcd(33, 24, 3,  4,  16, 17);
+//----------- lcd(23, 22, 16, 15, 14, 13);
+LiquidCrystal lcd(33, 24, 3,  4,  16, 17);
+
 LedMatrix lm;
 void setup() {
   // set up the LCD's number of columns and rows:
@@ -17,10 +18,11 @@ int beatPosition = 0;
 
 int refreshesEachPrint=0;
 void loop() {
-  if (millis() - lastChange > 200) {
+  if (millis() - lastChange > 800) {
     int modularpos=beatPosition % 16;
     lastChange = millis();
-    lm.sett((int)(1 << modularpos), (int)(3 << modularpos));
+    //lm.sett((int)(1 << modularpos),(int)0x0000);
+    lm.sum((int)0x0000,(int) 0xacac);
     beatPosition++;
     lcd.setCursor(0, 0);
     lcd.print("REA: "+String(refreshesEachPrint));

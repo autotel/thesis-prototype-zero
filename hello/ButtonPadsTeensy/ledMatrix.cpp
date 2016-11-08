@@ -21,22 +21,22 @@ void LedMatrix::setup() {
   pinMode(32, OUTPUT);
   pinMode(25, OUTPUT);
   //test
-  byteMapBlue = 0xA5A5;
-  byteMapRed = 0x5A5A;
+  byteMapBlue = 0x0000;
+  byteMapRed = 0x0000;
   // offset for the pin register
   registerOffset = 5;
 }
-void LedMatrix::sum(int blue, int red){
-  byteMapBlue|=blue;
-  byteMapRed|=red;  
+void LedMatrix::sum(int blue, int red) {
+  byteMapBlue |= blue;
+  byteMapRed |= red;
 }
-void LedMatrix::diff(int blue, int red){
-  byteMapBlue^=blue;
-  byteMapRed^=red;  
+void LedMatrix::diff(int blue, int red) {
+  byteMapBlue ^= blue;
+  byteMapRed ^= red;
 }
-void LedMatrix::sett(int blue, int red){
-  byteMapBlue=blue;
-  byteMapRed=red;
+void LedMatrix::sett(int blue, int red) {
+  byteMapBlue = blue;
+  byteMapRed = red;
 }
 void LedMatrix::refresh()
 {
@@ -51,28 +51,36 @@ void LedMatrix::refresh()
      0000 -> 0
      0000 -> 0
   */
-  t = 0;
-  while (t < 16) {
-    int currentBitMask =  (0x0001 << t);
+  int currentPixel = 0;
+  while (currentPixel < 16) {
+    int currentBitMask =  (0x0001 << currentPixel);
     int currentRedBit = byteMapRed & currentBitMask;
     int currentBlueBit = byteMapBlue & currentBitMask;
+
+    //GPIOB is addressing columns directly.
+    if (currentRedBit || currentBlueBit){
+      GPIOB_PDOR = ~0x010000 << (currentPixel / 4) % 4; //((t/4)%16)+4;
+    }else{
+      GPIOB_PDOR |= 0x010000 << (currentPixel / 4) % 4; //((t/4)%16)+4;
+    }
+    
     //GPIOD contains the address to shift registers.
     //first 4 address four rows one color, and the last four, the other color.
     //check if current bitmap red pixel must be on
     if (currentRedBit) {
       //write red
-      GPIOD_PDOR = (0x00 | ((t) % (4) << registerOffset));
+      GPIOD_PDOR = (0x00 | ((currentPixel) % (4) << registerOffset));
     }
     //same for blue
     if (currentBlueBit) {
       //write blue
-      GPIOD_PDOR = (0x00 | (((t % 4) + 4) << registerOffset));
+      GPIOD_PDOR = (0x00 | (((currentPixel % 4) + 4) << registerOffset));
     }
-    //GPIOB is addressing columns directly.
-    if (currentRedBit || currentBlueBit)
-      GPIOB_PDOR = ~0x010000 << (t / 4) % 4; //((t/4)%16)+4;
-    t++;
+    
+      
+    currentPixel++;
     //for some reason it doesn't work without delay
     delayMicroseconds(10);
+    //delay(30);
   }
 }
