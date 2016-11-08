@@ -1,4 +1,4 @@
-#include <TimerOne.h>
+
 /*library for writing to a led screen through two 4051 multiplexors */
 #include <Arduino.h>
 #include "ledMatrix.h"

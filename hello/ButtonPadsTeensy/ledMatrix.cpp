@@ -38,10 +38,32 @@ void LedMatrix::sett(int blue, int red) {
   byteMapBlue = blue;
   byteMapRed = red;
 }
+void LedMatrix::refresh(byte currentPixel)
+{
+  
+  byte nibbleA = 0x0F;
+  byte nibbleB = 0xF0;
+  if ((byteMapRed >> currentPixel) & 0x0001) {
+    nibbleA &= currentPixel % 4 + 4;
+    nibbleB &= ~0x10 << ((currentPixel / 4) % 4);
+    //with a bit more of work, we can set alpha for each
+    //analogWrite(A0,255);
+  }
+  if ((byteMapBlue >> currentPixel) & 0x0001) {
+    nibbleA &= currentPixel % 4;
+    nibbleB &= ~0x10 << ((currentPixel / 4) % 4);
+    //analogWrite(A0,255);
+  }
+  //apply pixels to led
+  GPIOD_PDOR = nibbleA<<5;
+  //clear gnd columns, they are inverse logic
+  GPIOB_PDOR &= ~(0xF0<<12);
+  //fill colums without affecting other pisn
+  GPIOB_PDOR |= (0xF0&nibbleB)<<12;
+  //delay(10);
+}
 void LedMatrix::refresh()
 {
-
-
   //if (millis() - lastchange > 300) {
   //bitmapred
   /*
@@ -51,36 +73,8 @@ void LedMatrix::refresh()
      0000 -> 0
      0000 -> 0
   */
-  int currentPixel = 0;
-  while (currentPixel < 16) {
-    int currentBitMask =  (0x0001 << currentPixel);
-    int currentRedBit = byteMapRed & currentBitMask;
-    int currentBlueBit = byteMapBlue & currentBitMask;
-
-    //GPIOB is addressing columns directly.
-    if (currentRedBit || currentBlueBit){
-      GPIOB_PDOR = ~0x010000 << (currentPixel / 4) % 4; //((t/4)%16)+4;
-    }else{
-      GPIOB_PDOR |= 0x010000 << (currentPixel / 4) % 4; //((t/4)%16)+4;
-    }
-    
-    //GPIOD contains the address to shift registers.
-    //first 4 address four rows one color, and the last four, the other color.
-    //check if current bitmap red pixel must be on
-    if (currentRedBit) {
-      //write red
-      GPIOD_PDOR = (0x00 | ((currentPixel) % (4) << registerOffset));
-    }
-    //same for blue
-    if (currentBlueBit) {
-      //write blue
-      GPIOD_PDOR = (0x00 | (((currentPixel % 4) + 4) << registerOffset));
-    }
-    
-      
-    currentPixel++;
-    //for some reason it doesn't work without delay
-    delayMicroseconds(10);
-    //delay(30);
+  for (byte currentPixel = 0; currentPixel < 16; currentPixel++) {
+    refresh(currentPixel);
   }
+  delayMicroseconds(10);
 }

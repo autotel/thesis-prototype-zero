@@ -10,6 +10,7 @@ class LedMatrix
     void setup();
     void change();
     void refresh();
+    void refresh(byte);
     void sum(int,int);
     void diff(int,int);
     void sett(int,int);

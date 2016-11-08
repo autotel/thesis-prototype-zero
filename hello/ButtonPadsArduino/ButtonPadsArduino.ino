@@ -11,7 +11,7 @@ void setup() {
   lcd.begin(16, 2);
   lm.setup();
   //set an interrupt for refreshing the leds. otherwise it flickers
-  Timer1.initialize(50);
+  Timer1.initialize(40);
   Timer1.attachInterrupt(refreshLeds); 
 }
 
@@ -20,7 +20,7 @@ int beatPosition = 0;
 
 int refreshesEachPrint=0;
 void loop() {
-  if (millis() - lastChange > 62) {
+  if (millis() - lastChange > 250) {
     int modularpos=beatPosition % 16;
     lastChange = millis();
     lm.sett((int)(1 << modularpos),(int)0x0000);
