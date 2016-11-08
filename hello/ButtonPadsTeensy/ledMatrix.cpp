@@ -15,9 +15,9 @@ void LedMatrix::setup() {
   clockpin = 14;
   latchpin = 8;
 
-  pinMode(serialpin, OUTPUT);
-  pinMode(clockpin, OUTPUT);
-  pinMode(latchpin, OUTPUT);
+  pinMode(serialpin, OUTPUT);//goes to 4015 pin 14
+  pinMode(clockpin, OUTPUT);//goes to 4051 pin 11
+  pinMode(latchpin, OUTPUT);//goes to 4051 pin 13
   //GPIOB_<<4
   pinMode(0, OUTPUT);
   pinMode(1, OUTPUT);
@@ -54,10 +54,10 @@ void LedMatrix::refresh()
 
 
   unsigned int pixels [] = {
-    0x00f0, 0x0ff0, 0x0ff0, 0x0000,
-    0x0ff0, 0x0ff0, 0x0ff0, 0x0ff0,
-    0x0ff0, 0x0ff0, 0x0ff0, 0x0ff0,
-    0x0ff0, 0x0ff0, 0x0ff0, 0x0f00,
+    0xFF,0xFF,0xFF,0xFF,
+    0x00,0x00,0x00,0x00,
+    0xFF,0xFF,0xFF,0xFF,
+    0x00,0x00,0x00,0x00,
   };
 
   //latch pin lo
@@ -72,11 +72,13 @@ void LedMatrix::refresh()
       //the color number 4 is gnd and should always be low
       //(make a mask to only change one pixel)|(get current pixel[color] value)
       GPIOD_PDOR = (GPIOD_PDOR & 0xFE) | (pixels[pixelnum] >> colorn);
+
+      GPIOD_PDOR = ~(0x0001<<(pixelnum%4))<<4;
       //data to something
       //digitalWrite(serialpin,(0xFC<<byten)&0x80);
 
       //GPIOD_PDOR |=(0x0D0F<<anode)&0x1;
-
+      
       //clock HI
       digitalWrite(clockpin, HIGH);
       //GPIOD_PDOR |= 0x1 << 1;
