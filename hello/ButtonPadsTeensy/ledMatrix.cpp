@@ -7,7 +7,6 @@ LedMatrix::LedMatrix()
 
 }
 void LedMatrix::setup() {
-  t = 0;
   lastchange = 0;
   _pin = 0;
   //GPIOD_<<4
