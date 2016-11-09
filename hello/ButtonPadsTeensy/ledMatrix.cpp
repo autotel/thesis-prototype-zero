@@ -37,9 +37,12 @@ void LedMatrix::sett(int blue, int red) {
   byteMapBlue = blue;
   byteMapRed = red;
 }
-void LedMatrix::refresh(byte currentPixel)
-{
-  
+/*void LedMatrix::buttonPressed(byte currentPixel){
+  //the multiplexor is shared between the led matrix and the buttons readout.
+  //buttonsAtMux contains the mux address where the first button row is.
+  //as I don't have a 16 output mux at hand, I am sharing the very same paths as the red channel
+  int buttonsAtMux=0;
+
   byte nibbleA = 0x0F;
   byte nibbleB = 0xF0;
   if ((byteMapRed >> currentPixel) & 0x0001) {
@@ -59,6 +62,36 @@ void LedMatrix::refresh(byte currentPixel)
   GPIOB_PDOR &= ~(0xF0<<12);
   //fill colums without affecting other pisn
   GPIOB_PDOR |= (0xF0&nibbleB)<<12;
+  //delay(10);
+}*/
+
+void LedMatrix::refresh(byte currentPixel)
+{
+  byte nibbleA = 0x0F;
+  byte nibbleB = 0xF0;
+  if ((byteMapRed >> currentPixel) & 0x0001) {
+    nibbleA &= currentPixel % 4 + 4;
+    nibbleB &= ~0x10 << ((currentPixel / 4) % 4);
+    //with a bit more of work, we can set alpha for each
+    //analogWrite(A0,255);
+  }
+  if ((byteMapBlue >> currentPixel) & 0x0001) {
+    nibbleA &= currentPixel % 4;
+    nibbleB &= ~0x10 << ((currentPixel / 4) % 4);
+    //analogWrite(A0,255);
+  }
+  //apply pixels to led
+
+  //clear space for nibble B without affecting other pins
+  GPIOB_PDOR &= ~(0xF0<<12);
+  //fill colums without affecting other pisn
+  GPIOB_PDOR |= (0xF0&nibbleB)<<12;
+  
+  //clear space for nibble A without affecting other pinstates
+  GPIOD_PDOR &= ~(0xF<<5);
+  //write to the mux
+  GPIOD_PDOR |= nibbleA<<5;
+  
   //delay(10);
 }
 void LedMatrix::refresh()

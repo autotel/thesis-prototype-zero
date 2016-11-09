@@ -5,15 +5,15 @@
 #include <LiquidCrystal.h>
 #include "ledMatrix.h"
 // initialize the library with the numbers of the interface pins
-//----------- lcd(23, 22, 16, 15, 14, 13);
-LiquidCrystal lcd(33, 24, 3,  4,  16, 17);
+
+LiquidCrystal lcd(33, 24, 3,  4,  8, 2);
 
 LedMatrix lm;
 void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lm.setup();
-  Timer1.initialize(40);
+  Timer1.initialize(400);
   Timer1.attachInterrupt(refreshLeds); 
 }
 
@@ -29,7 +29,8 @@ void loop() {
     lm.sum((int)0x0000,(int) 0x8CA9);
     beatPosition++;
     lcd.setCursor(0, 0);
-    lcd.print("REA: "+String(refreshesEachPrint));
+    //lcd.print("REA: "+String(refreshesEachPrint)+"<"+String(~(0xF<<5),BIN)+">" );
+    lcd.print("<"+String((byte)(0xF<<5),BIN)+">" );
     lcd.setCursor(0, 1);
     lcd.print("beat: "+String(beatPosition));
     refreshesEachPrint=0;
