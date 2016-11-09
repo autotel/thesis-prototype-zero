@@ -1,7 +1,4 @@
-//https://forum.pjrc.com/threads/17532-Tutorial-on-digital-I-O-ATMega-PIN-PORT-DDR-D-B-registers-vs-ARM-GPIO_PDIR-_PDOR
-// include the library code:
 #include <TimerOne.h>
-//#include "C:\Program Files (x86)\Arduino\hardware\teensy\avr\libraries\TimerOne\TimerOne.h"
 #include <LiquidCrystal.h>
 #include "ledMatrix.h"
 // initialize the library with the numbers of the interface pins
@@ -13,6 +10,7 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lm.setup();
+  //set an interrupt for refreshing the leds. otherwise it flickers
   Timer1.initialize(40);
   Timer1.attachInterrupt(refreshLeds); 
 }
@@ -22,7 +20,7 @@ int beatPosition = 0;
 
 int refreshesEachPrint=0;
 void loop() {
-  if (millis() - lastChange > 800) {
+  if (millis() - lastChange > 250) {
     int modularpos=beatPosition % 16;
     lastChange = millis();
     lm.sett((int)(1 << modularpos),(int)0x0000);
@@ -35,7 +33,6 @@ void loop() {
     refreshesEachPrint=0;
   }
   
-  //lm.refresh();
 
   //this is really slow!
   // set the cursor to column 0, line 1
@@ -48,7 +45,7 @@ void loop() {
 byte pixelRefresh=0;
 void refreshLeds(void){
 
-  refreshesEachPrint++;
+  
   lm.refresh(pixelRefresh);
   pixelRefresh++;
   pixelRefresh=pixelRefresh%16;
