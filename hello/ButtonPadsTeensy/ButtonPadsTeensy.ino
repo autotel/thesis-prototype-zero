@@ -13,29 +13,41 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lm.setup();
-  Timer1.initialize(400);
-  Timer1.attachInterrupt(refreshLeds); 
+  Timer1.initialize(1000);
+  Timer1.attachInterrupt(refreshLeds);
 }
+
+byte pixelRefresh = 0;
+int largestButton = 0;
 
 long lastChange = 0;
 int beatPosition = 0;
 
-int refreshesEachPrint=0;
+int refreshesEachPrint = 0;
+
+int testPattern = 0x0000;
 void loop() {
-  if (millis() - lastChange > 800) {
-    int modularpos=beatPosition % 16;
+
+  int modularpos = beatPosition % 16;
+  if (millis() - lastChange > 250) {
+
     lastChange = millis();
-    lm.sett((int)(1 << modularpos),(int)0x0000);
-    lm.sum((int)0x0000,(int) 0x8CA9);
+    lm.sett((int)(1 << modularpos), (int)testPattern);
+
+
+
     beatPosition++;
     lcd.setCursor(0, 0);
     //lcd.print("REA: "+String(refreshesEachPrint)+"<"+String(~(0xF<<5),BIN)+">" );
-    lcd.print("<"+String((byte)(0xF<<5),BIN)+">" );
+    //lcd.print(String(modularpos)+" is "+String(lm.buttonPressed(modularpos))+"<"+String(GPIOC_PDOR,HEX)+">" );
+    lcd.print(String(largestButton, HEX) + "   ");
     lcd.setCursor(0, 1);
-    lcd.print("beat: "+String(beatPosition));
-    refreshesEachPrint=0;
+    lcd.print("beat: " + String(beatPosition));
+    refreshesEachPrint = 0;
   }
-  
+
+
+
   //lm.refresh();
 
   //this is really slow!
@@ -46,12 +58,23 @@ void loop() {
   //lcd.print(/*String( GPIOD_PDIR, BIN)+"-"+*/String( 0xa00|GPIOD_PDOR, BIN)+"-");
 
 }
-byte pixelRefresh=0;
-void refreshLeds(void){
+
+void refreshLeds(void) {
 
   refreshesEachPrint++;
-  lm.refresh(pixelRefresh);
-  pixelRefresh++;
-  pixelRefresh=pixelRefresh%16;
+
+  if (refreshesEachPrint % 5 == 0) {
+    int thispress = lm.buttonPressed(pixelRefresh);
+    if (thispress > 0x20) {
+      largestButton = thispress;
+      testPattern |= 0x0001 << pixelRefresh;
+      //lm.sum((int)0x0000,(int) );
+    }
+
+  } else {
+    lm.refresh(pixelRefresh);
+    pixelRefresh++;
+    pixelRefresh = pixelRefresh % 16;
+  }
 }
 
