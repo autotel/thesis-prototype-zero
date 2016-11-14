@@ -13,7 +13,7 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   lm.setup();
-  Timer1.initialize(1000);
+  Timer1.initialize(200);
   Timer1.attachInterrupt(refreshLeds);
 
 }
@@ -29,20 +29,23 @@ int refreshesEachPrint = 0;
 int testPattern = 0x0000;
 void loop() {
   int modularpos = beatPosition % 16;
-  if (millis() - lastChange > 250) {
+  if (millis() - lastChange > 2) {
 
     lastChange = millis();
-    lm.sett((int)(1 << modularpos), 0x00);
-    lm.sum((int)testPattern, 0x00);
-
+    
+    int thispress = lm.buttonPressed(beatPosition);
+    if (thispress > 0x20) {
+      largestButton = thispress;
+      testPattern = (modularpos);
+    }
 
     beatPosition++;
     lcd.setCursor(0, 0);
     //lcd.print("REA: "+String(refreshesEachPrint)+"<"+String(~(0xF<<5),BIN)+">" );
     //lcd.print(String(modularpos)+" is "+String(lm.buttonPressed(modularpos))+"<"+String(GPIOC_PDOR,HEX)+">" );
-    lcd.print(String(largestButton, HEX) + "   ");
+    lcd.print("last press"+String(testPattern, DEC) + "   ");
     lcd.setCursor(0, 1);
-    lcd.print("beat: " + String(beatPosition));
+    lcd.print("beat: " + String(modularpos));
     refreshesEachPrint = 0;
   }
 
@@ -63,31 +66,7 @@ void refreshLeds(void) {
   //testPattern=0xFFFF;
   //while (true) {
 
-    lm.sett(testPattern, 0x00);
-    refreshesEachPrint++;
     
-    int thispress = lm.buttonPressed(pixelRefresh);
-
-    if(pixelRefresh==0){
-      largestButton = 0;
-    }
-    if(thispress>largestButton){
-      largestButton = thispress;
-    }
-    
-    if (thispress > 0x10) {
-      
-      testPattern |= (0x0001 << pixelRefresh);
-      //lm.sum((int)0x0000,(int) );
-    }else{
-      testPattern &= ~(0x0001<<pixelRefresh);
-    }
-    
-    //delay(100);
-    
-    lm.refresh(pixelRefresh);
-    pixelRefresh++;
-    pixelRefresh = pixelRefresh % 16;
     
     //delay(100);
 

@@ -9,10 +9,8 @@ LedMatrix::LedMatrix()
 void LedMatrix::setup() {
   lastchange = 0;
   _pin = 0;
-  //the perfect pulldown is 2.5K ohms
-  
   //analog reader
-  pinMode(A2,INPUT);
+  pinMode(16,INPUT);
   //GPIOC_<<8
   pinMode(28, OUTPUT);
   pinMode(27, OUTPUT);
@@ -66,31 +64,29 @@ int LedMatrix::buttonPressed(byte currentPixel){
   
   
   //rDisplace variable is in order to access the correct set of pins and to be able to change these fairly easy
-  byte ADisplace=5;
+  byte rDisplace=5;
   //clear space for nibble A without affecting other pinstates
-  GPIOD_PDOR &= ~(0xF<<ADisplace);
-  
-  byte BDisplace=8;
-  //clear space for nibbleB without affecting other pinstates
-  GPIOC_PDOR &= ~(0xF<<BDisplace);
-  
+  GPIOD_PDOR &= ~(0xF<<rDisplace);
   //write nibble A to the buttons input mux
-  GPIOD_PDOR |= nibbleA<<ADisplace;
+  GPIOD_PDOR |= nibbleA<<rDisplace;
 
-  //write nibbleB to the buttons output mux
-  GPIOC_PDOR |= nibbleB<<BDisplace;
 
   
+  rDisplace=8;
+  //clear space for nibbleB without affecting other pinstates
+  GPIOC_PDOR &= ~(0xF<<rDisplace);
+  //write nibbleB to the buttons output mux
+  GPIOC_PDOR |= nibbleB<<rDisplace;
   //delay(500);
   delayMicroseconds(100);
   //once we created the correct led matrix route through the muxes, 
   //we can read the output and will hopefully represent the current led pressure
-  /*if(digitalRead(A2)){
+  if(digitalRead(16)){
     return 0xFF;
   }else{
     return 0x00;
-  }*/
-  return analogRead(A2);
+  }
+  //return analogRead(A2);
 }
 
 void LedMatrix::refresh(byte currentPixel)
