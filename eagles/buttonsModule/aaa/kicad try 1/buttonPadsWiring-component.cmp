@@ -1,0 +1,35 @@
+Cmp-Mod V01 Created by PcbNew   date = 15-11-2016 16:09:06
+
+BeginCmp
+TimeStamp = 4AEF5AC2
+Path = 
+Reference = button_pad_silicon_2x2_RGB_LEDs;
+ValeurCmp = VAL**;
+IdModule  = button_pad_silicon_2x2_RGB_LEDs;
+EndCmp
+
+BeginCmp
+TimeStamp = 4C59B1FF
+Path = 
+Reference = button_pad_silicon_2x2_RGB_LEDs;
+ValeurCmp = VAL**;
+IdModule  = button_pad_silicon_2x2_RGB_LEDs;
+EndCmp
+
+BeginCmp
+TimeStamp = 4C59B272
+Path = 
+Reference = button_pad_silicon_2x2_RGB_LEDs;
+ValeurCmp = VAL**;
+IdModule  = button_pad_silicon_2x2_RGB_LEDs;
+EndCmp
+
+BeginCmp
+TimeStamp = 4C59B274
+Path = 
+Reference = button_pad_silicon_2x2_RGB_LEDs;
+ValeurCmp = VAL**;
+IdModule  = button_pad_silicon_2x2_RGB_LEDs;
+EndCmp
+
+EndListe

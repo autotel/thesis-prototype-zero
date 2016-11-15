@@ -30,10 +30,9 @@ int testPattern = 0x0000;
 void loop() {
   int modularpos = beatPosition % 16;
   if (millis() - lastChange > 250) {
-
+    onBeat(modularpos);
     lastChange = millis();
-    lm.sett((int)(1 << modularpos), 0x00);
-    lm.sum((int)testPattern, 0x00);
+    
 
 
     beatPosition++;
@@ -46,24 +45,18 @@ void loop() {
     refreshesEachPrint = 0;
   }
 
-
-
-  //lm.refresh();
-
-  //this is really slow!
-  // set the cursor to column 0, line 1
-  // (note: line 1 is the second row, since counting begins with 0):
-  //lcd.setCursor(0, 1);
-  // print the number of seconds since reset:
-  //lcd.print(/*String( GPIOD_PDIR, BIN)+"-"+*/String( 0xa00|GPIOD_PDOR, BIN)+"-");
-
+  lm.sett((int)(1 << modularpos), 0x00);
+  lm.sum((int)testPattern, 0x00);
+}
+void onBeat(int beatn){
+  
 }
 
 void refreshLeds(void) {
   //testPattern=0xFFFF;
   //while (true) {
 
-    lm.sett(testPattern, 0x00);
+    
     refreshesEachPrint++;
     
     int thispress = lm.buttonPressed(pixelRefresh);

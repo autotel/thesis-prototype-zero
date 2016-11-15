@@ -1,0 +1,56 @@
+(pcb "C:\Users\joaquin\repositories\music devices\prototype-zero\eagles\buttonsModule\aaa\kicad try 1\buttonPadsWiring.dsn"
+  (parser
+    (string_quote ")
+    (space_in_quoted_tokens on)
+    (host_cad "KiCad's Pcbnew")
+    (host_version "4.0.4-stable")
+  )
+  (resolution um 10)
+  (unit um)
+  (structure
+    (layer Component
+      (type signal)
+      (property
+        (index 0)
+      )
+    )
+    (layer Copper
+      (type signal)
+      (property
+        (index 1)
+      )
+    )
+    (boundary
+      (rect pcb 128600 -70243.7 220650 -160800)
+    )
+    (via "Via[0-1]_1143:635_um")
+    (rule
+      (width 1000.76)
+      (clearance 152.5)
+      (clearance 152.5 (type default_smd))
+      (clearance 38.1 (type smd_smd))
+    )
+  )
+  (placement
+  )
+  (library
+    (padstack "Via[0-1]_1143:635_um"
+      (shape (circle Component 1143))
+      (shape (circle Copper 1143))
+      (attach off)
+    )
+  )
+  (network
+    (class kicad_default ""
+      (circuit
+        (use_via Via[0-1]_1143:635_um)
+      )
+      (rule
+        (width 1000.76)
+        (clearance 152.5)
+      )
+    )
+  )
+  (wiring
+  )
+)
