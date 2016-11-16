@@ -31,6 +31,8 @@ LIBS:contrib
 LIBS:valves
 LIBS:button_pad_silicon_2x2
 LIBS:4067 for 24-Pin SSOP
+LIBS:ArduProMiniTKB
+LIBS:Sparkfun-silicon-buttons-pad
 LIBS:kicad try 1-cache
 EELAYER 25 0
 EELAYER END
@@ -46,363 +48,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L button_pad_silicon_2X2_GBRA BP1
-U 1 1 582B1676
-P 1900 3650
-F 0 "BP1" H 1225 4325 60  0000 C CNN
-F 1 "button_pad_silicon_2X2_GBRA" H 1900 3675 60  0000 C CNN
-F 2 "button_pad_silicon_2x2:button_pad_silicon_2x2" H 1900 3650 60  0001 C CNN
-F 3 "" H 1900 3650 60  0001 C CNN
-	1    1900 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L button_pad_silicon_2X2_GBRA BP3
-U 1 1 582B1794
-P 4300 3650
-F 0 "BP3" H 3625 4325 60  0000 C CNN
-F 1 "button_pad_silicon_2X2_GBRA" H 4300 3675 60  0000 C CNN
-F 2 "button_pad_silicon_2x2:button_pad_silicon_2x2" H 4300 3650 60  0001 C CNN
-F 3 "" H 4300 3650 60  0001 C CNN
-	1    4300 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L button_pad_silicon_2X2_GBRA BP2
-U 1 1 582B17F1
-P 1900 5500
-F 0 "BP2" H 1225 6175 60  0000 C CNN
-F 1 "button_pad_silicon_2X2_GBRA" H 1900 5525 60  0000 C CNN
-F 2 "button_pad_silicon_2x2:button_pad_silicon_2x2" H 1900 5500 60  0001 C CNN
-F 3 "" H 1900 5500 60  0001 C CNN
-	1    1900 5500
-	1    0    0    -1  
-$EndComp
-$Comp
-L button_pad_silicon_2X2_GBRA BP4
-U 1 1 582B1929
-P 4300 5500
-F 0 "BP4" H 3625 6175 60  0000 C CNN
-F 1 "button_pad_silicon_2X2_GBRA" H 4300 5525 60  0000 C CNN
-F 2 "button_pad_silicon_2x2:button_pad_silicon_2x2" H 4300 5500 60  0001 C CNN
-F 3 "" H 4300 5500 60  0001 C CNN
-	1    4300 5500
-	1    0    0    -1  
-$EndComp
-$Comp
-L ATMEGA328P-P IC1
-U 1 1 582B1F34
-P -1600 4250
-F 0 "IC1" H -2350 5500 50  0000 L BNN
-F 1 "ATMEGA328P-P" H -1200 2850 50  0000 L BNN
-F 2 "" H -1600 4250 50  0000 C CIN
-F 3 "" H -1600 4250 50  0000 C CNN
-	1    -1600 4250
-	1    0    0    -1  
-$EndComp
-$Comp
-L 7805 U1
-U 1 1 582B279A
-P -900 9100
-F 0 "U1" H -750 8904 50  0000 C CNN
-F 1 "7805" H -900 9300 50  0000 C CNN
-F 2 "" H -900 9100 50  0001 C CNN
-F 3 "" H -900 9100 50  0000 C CNN
-	1    -900 9100
-	1    0    0    -1  
-$EndComp
-$Comp
-L LED D1
-U 1 1 582B3073
-P 450 9000
-F 0 "D1" H 450 9100 50  0000 C CNN
-F 1 "LED" H 450 8900 50  0000 C CNN
-F 2 "LEDs:LED-3MM" H 450 9000 50  0001 C CNN
-F 3 "" H 450 9000 50  0000 C CNN
-	1    450  9000
-	-1   0    0    1   
-$EndComp
-$Comp
-L LED D2
-U 1 1 582B3338
-P 450 9450
-F 0 "D2" H 450 9550 50  0000 C CNN
-F 1 "LED" H 450 9350 50  0000 C CNN
-F 2 "LEDs:LED-3MM" H 450 9450 50  0001 C CNN
-F 3 "" H 450 9450 50  0000 C CNN
-	1    450  9450
-	-1   0    0    1   
-$EndComp
-$Comp
-L R R1
-U 1 1 582B34B1
-P 450 9800
-F 0 "R1" V 530 9800 50  0000 C CNN
-F 1 "2220" V 450 9800 50  0000 C CNN
-F 2 "" V 380 9800 50  0001 C CNN
-F 3 "" H 450 9800 50  0000 C CNN
-	1    450  9800
-	0    1    1    0   
-$EndComp
-$Comp
-L R R2
-U 1 1 582B352B
-P 450 10050
-F 0 "R2" V 530 10050 50  0000 C CNN
-F 1 "2220" V 450 10050 50  0000 C CNN
-F 2 "" V 380 10050 50  0001 C CNN
-F 3 "" H 450 10050 50  0000 C CNN
-	1    450  10050
-	0    1    1    0   
-$EndComp
-$Comp
-L R R3
-U 1 1 582B392E
-P 950 9800
-F 0 "R3" V 1030 9800 50  0000 C CNN
-F 1 "110K" V 950 9800 50  0000 C CNN
-F 2 "" V 880 9800 50  0001 C CNN
-F 3 "" H 950 9800 50  0000 C CNN
-	1    950  9800
-	0    1    1    0   
-$EndComp
-$Comp
-L CP_Small C2
-U 1 1 582B3A5A
-P 1150 9450
-F 0 "C2" H 1160 9520 50  0000 L CNN
-F 1 "210uF" H 1160 9370 50  0000 L CNN
-F 2 "" H 1150 9450 50  0001 C CNN
-F 3 "" H 1150 9450 50  0000 C CNN
-	1    1150 9450
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CP_Small C1
-U 1 1 582B3BF4
-P 1150 9000
-F 0 "C1" H 1160 9070 50  0000 L CNN
-F 1 "210uF" H 1160 8920 50  0000 L CNN
-F 2 "" H 1150 9000 50  0001 C CNN
-F 3 "" H 1150 9000 50  0000 C CNN
-	1    1150 9000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Crystal Y1
-U 1 1 582B3E38
-P 1700 9950
-F 0 "Y1" H 1700 10100 50  0000 C CNN
-F 1 "Crystal" H 1700 9800 50  0000 C CNN
-F 2 "Crystals:Crystal_HC49-U_Vertical" H 1700 9950 50  0001 C CNN
-F 3 "" H 1700 9950 50  0000 C CNN
-	1    1700 9950
-	1    0    0    -1  
-$EndComp
-$Comp
-L CAP C3
-U 1 1 582B412F
-P 1850 8950
-F 0 "C3" V 1950 9100 50  0000 C CNN
-F 1 "222 pF" V 1950 8800 50  0000 C CNN
-F 2 "" H 1850 8950 50  0001 C CNN
-F 3 "" H 1850 8950 50  0000 C CNN
-	1    1850 8950
-	0    1    1    0   
-$EndComp
-$Comp
-L CAP C4
-U 1 1 582B42F0
-P 1850 9450
-F 0 "C4" V 1950 9600 50  0000 C CNN
-F 1 "222 pF" V 1950 9300 50  0000 C CNN
-F 2 "" H 1850 9450 50  0001 C CNN
-F 3 "" H 1850 9450 50  0000 C CNN
-	1    1850 9450
-	0    1    1    0   
-$EndComp
-$Comp
-L SW_PUSH SW2
-U 1 1 582B4951
-P 2500 9950
-F 0 "SW2" H 2650 10060 50  0000 C CNN
-F 1 "SW_PUSH" H 2500 9870 50  0000 C CNN
-F 2 "Buttons_Switches_ThroughHole:SW_PUSH_6mm" H 2500 9950 50  0001 C CNN
-F 3 "" H 2500 9950 50  0000 C CNN
-	1    2500 9950
-	1    0    0    -1  
-$EndComp
-Text Label 10350 1500 1    60   ~ 0
-RAW
-Text Label 9550 1000 1    60   ~ 0
-DTR
-Text Label 9750 1000 1    60   ~ 0
-0(Rx)
-Text Label 9000 1600 0    60   ~ 0
-1(Tx)
-Text Label 9000 1700 0    60   ~ 0
-0(Rx)
-Text Label 9000 1800 0    60   ~ 0
-Reset
-Text Label 10500 1800 0    60   ~ 0
-Reset
-Text Label 9000 2000 0    60   ~ 0
-2
-Text Label 9000 2100 0    60   ~ 0
-3(**)
-Text Label 9000 2200 0    60   ~ 0
-4
-Text Label 9000 2300 0    60   ~ 0
-5(**)
-Text Label 9000 2400 0    60   ~ 0
-6(**)
-Text Label 9000 2500 0    60   ~ 0
-7
-Text Label 9000 2600 0    60   ~ 0
-8
-Text Label 9000 2700 0    60   ~ 0
-9(**)
-Text Label 10500 2700 0    60   ~ 0
-10(**/SS)
-Text Label 10500 2600 0    60   ~ 0
-11(**/MOSI)
-Text Label 10500 2500 0    60   ~ 0
-12(MISO)
-Text Label 10500 2400 0    60   ~ 0
-13(SCK)
-Text Label 10500 2300 0    60   ~ 0
-A0
-Text Label 10500 2200 0    60   ~ 0
-A1
-Text Label 10500 2100 0    60   ~ 0
-A2
-Text Label 10500 2000 0    60   ~ 0
-A3
-Text Label 9650 3200 3    60   ~ 0
-A4
-Text Label 9550 3200 3    60   ~ 0
-A5
-Text Notes 8550 575  0    60   ~ 0
-Shield Arduino Pro Mini \n
-Text Label 9950 3200 3    60   ~ 0
-A7
-Text Label 10050 3200 3    60   ~ 0
-A6
-$Comp
-L CONN_01X02 P2
-U 1 1 582B55FF
-P 9600 3000
-F 0 "P2" H 9600 3150 50  0000 C CNN
-F 1 "ADC" V 9700 3000 50  0000 C CNN
-F 2 "Socket_Arduino_Pro_Mini:Socket_Strip_Arduino_1x02" H 9600 3000 50  0001 C CNN
-F 3 "" H 9600 3000 50  0000 C CNN
-	1    9600 3000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_01X02 P4
-U 1 1 582B5600
-P 10000 3000
-F 0 "P4" H 10000 3150 50  0000 C CNN
-F 1 "ADC" V 10100 3000 50  0000 C CNN
-F 2 "Socket_Arduino_Pro_Mini:Socket_Strip_Arduino_1x02" H 10000 3000 50  0001 C CNN
-F 3 "" H 10000 3000 50  0000 C CNN
-	1    10000 3000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_01X06 P3
-U 1 1 582B5601
-P 9800 1200
-F 0 "P3" H 9800 1550 50  0000 C CNN
-F 1 "COM" V 9900 1200 50  0000 C CNN
-F 2 "Socket_Arduino_Pro_Mini:Socket_Strip_Arduino_1x06" H 9800 1200 50  0001 C CNN
-F 3 "" H 9800 1200 50  0000 C CNN
-	1    9800 1200
-	0    -1   1    0   
-$EndComp
-Text Label 9650 1000 1    60   ~ 0
-1(Tx)
-$Comp
-L GND #PWR01
-U 1 1 582B5602
-P 10200 1000
-F 0 "#PWR01" H 10200 750 50  0001 C CNN
-F 1 "GND" H 10200 850 50  0000 C CNN
-F 2 "" H 10200 1000 50  0000 C CNN
-F 3 "" H 10200 1000 50  0000 C CNN
-	1    10200 1000
-	1    0    0    -1  
-$EndComp
-$Comp
-L VCC #PWR02
-U 1 1 582B5603
-P 9850 1000
-F 0 "#PWR02" H 9850 850 50  0001 C CNN
-F 1 "VCC" H 9850 1150 50  0000 C CNN
-F 2 "" H 9850 1000 50  0000 C CNN
-F 3 "" H 9850 1000 50  0000 C CNN
-	1    9850 1000
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_01X12 P1
-U 1 1 582B5604
-P 9550 2150
-F 0 "P1" H 9550 2800 50  0000 C CNN
-F 1 "Digital" V 9650 2150 50  0000 C CNN
-F 2 "SparkFun-DigitalIC:TSSOP-24" H 9550 2150 50  0001 C CNN
-F 3 "" H 9550 2150 50  0000 C CNN
-	1    9550 2150
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_01X12 P5
-U 1 1 582B5605
-P 10050 2150
-F 0 "P5" H 10050 2800 50  0000 C CNN
-F 1 "Analog" V 10150 2150 50  0000 C CNN
-F 2 "Socket_Arduino_Pro_Mini:Socket_Strip_Arduino_1x12" H 10050 2150 50  0001 C CNN
-F 3 "" H 10050 2150 50  0000 C CNN
-	1    10050 2150
-	-1   0    0    -1  
-$EndComp
-$Comp
-L GND #PWR03
-U 1 1 582B5606
-P 9250 2800
-F 0 "#PWR03" H 9250 2550 50  0001 C CNN
-F 1 "GND" H 9250 2650 50  0000 C CNN
-F 2 "" H 9250 2800 50  0000 C CNN
-F 3 "" H 9250 2800 50  0000 C CNN
-	1    9250 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR04
-U 1 1 582B5607
-P 10350 2800
-F 0 "#PWR04" H 10350 2550 50  0001 C CNN
-F 1 "GND" H 10350 2650 50  0000 C CNN
-F 2 "" H 10350 2800 50  0000 C CNN
-F 3 "" H 10350 2800 50  0000 C CNN
-	1    10350 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L VCC #PWR05
-U 1 1 582B5608
-P 10450 1500
-F 0 "#PWR05" H 10450 1350 50  0001 C CNN
-F 1 "VCC" H 10450 1650 50  0000 C CNN
-F 2 "" H 10450 1500 50  0000 C CNN
-F 3 "" H 10450 1500 50  0000 C CNN
-	1    10450 1500
-	1    0    0    -1  
-$EndComp
-Text Notes 9650 1600 0    60   ~ 0
-1
 $Comp
 L SW_PUSH SW1
 U 1 1 582B987C
@@ -469,84 +114,13 @@ F 3 "" H 7450 4500 60  0001 C CNN
 	1    7450 4500
 	-1   0    0    1   
 $EndComp
-Wire Notes Line
-	8525 650  9700 650 
-Wire Notes Line
-	9700 650  9700 475 
-Wire Wire Line
-	9950 1000 10200 1000
-Connection ~ 10050 1000
-Wire Wire Line
-	9350 1900 9250 1900
-Wire Wire Line
-	9250 1900 9250 2800
-Wire Wire Line
-	9350 1600 9000 1600
-Wire Wire Line
-	9000 1700 9350 1700
-Wire Wire Line
-	9350 1800 9000 1800
-Wire Wire Line
-	9000 2000 9350 2000
-Wire Wire Line
-	9350 2100 9000 2100
-Wire Wire Line
-	9350 2200 9000 2200
-Wire Wire Line
-	9000 2300 9350 2300
-Wire Wire Line
-	9350 2400 9000 2400
-Wire Wire Line
-	9000 2500 9350 2500
-Wire Wire Line
-	9350 2600 9000 2600
-Wire Wire Line
-	9350 2700 9000 2700
-Wire Wire Line
-	10350 1500 10350 1600
-Wire Wire Line
-	10350 1600 10250 1600
-Wire Wire Line
-	10250 1700 10350 1700
-Wire Wire Line
-	10350 1700 10350 2800
-Wire Wire Line
-	10250 1900 10450 1900
-Wire Wire Line
-	10450 1900 10450 1500
-Wire Wire Line
-	10250 1800 10500 1800
-Wire Wire Line
-	10500 2000 10250 2000
-Wire Wire Line
-	10250 2100 10500 2100
-Wire Wire Line
-	10500 2200 10250 2200
-Wire Wire Line
-	10250 2300 10500 2300
-Wire Wire Line
-	10500 2400 10250 2400
-Wire Wire Line
-	10250 2500 10500 2500
-Wire Wire Line
-	10500 2600 10250 2600
-Wire Wire Line
-	10250 2700 10500 2700
-Wire Notes Line
-	11200 3400 8500 3400
-Wire Notes Line
-	8500 3400 8500 500 
-Wire Wire Line
-	7450 5300 7450 5800
-Wire Wire Line
-	7450 5800 8100 5800
 Text Label 8100 5800 0    60   ~ 0
 VCC
 $Comp
-L GNDREF #PWR?
+L GNDREF #PWR01
 U 1 1 582C244B
 P 8050 4850
-F 0 "#PWR?" H 8050 4600 50  0001 C CNN
+F 0 "#PWR01" H 8050 4600 50  0001 C CNN
 F 1 "GNDREF" H 8050 4700 50  0000 C CNN
 F 2 "" H 8050 4850 50  0000 C CNN
 F 3 "" H 8050 4850 50  0000 C CNN
@@ -556,26 +130,18 @@ $EndComp
 Text Label 8050 3950 0    60   ~ 0
 A0
 Text Label 8050 4350 0    60   ~ 0
-0(Tx)
+PD7
 Text Label 8050 4450 0    60   ~ 0
-1(Rx)
+PD6
 Text Label 8050 4550 0    60   ~ 0
-2
+PD5
 Text Label 8050 4650 0    60   ~ 0
-3(**)
-Text Label 3150 1100 1    60   ~ 0
-4
-Text Label 3050 1100 1    60   ~ 0
-5(**)
-Text Label 2950 1100 1    60   ~ 0
-6(**)
-Text Label 2850 1100 1    60   ~ 0
-7
+PD4
 $Comp
-L GNDREF #PWR?
+L GNDREF #PWR02
 U 1 1 582CCF28
 P 3350 1100
-F 0 "#PWR?" H 3350 850 50  0001 C CNN
+F 0 "#PWR02" H 3350 850 50  0001 C CNN
 F 1 "GNDREF" H 3350 950 50  0000 C CNN
 F 2 "" H 3350 1100 50  0000 C CNN
 F 3 "" H 3350 1100 50  0000 C CNN
@@ -584,6 +150,115 @@ F 3 "" H 3350 1100 50  0000 C CNN
 $EndComp
 Text Label 4100 1700 0    60   ~ 0
 VCC
+Text Label 3150 1100 1    60   ~ 0
+PD0
+Text Label 3050 1100 1    60   ~ 0
+PD1
+Text Label 2950 1100 1    60   ~ 0
+PD2
+Text Label 2850 1100 1    60   ~ 0
+PD3
+Text Label 6850 2100 2    60   ~ 0
+PD0
+Text Label 6850 2000 2    60   ~ 0
+PD1
+Text Label 6850 2200 2    60   ~ 0
+PD2
+Text Label 6850 2300 2    60   ~ 0
+PD3
+$Comp
+L ARDUPROMINI-6 uP1
+U 1 1 582D5713
+P 8050 900
+F 0 "uP1" H 7850 800 60  0000 C CNN
+F 1 "ARDUPROMINI-6" H 8050 900 60  0000 C CNN
+F 2 "ArduProMiniTKB:ArduProMini-6" H 8050 900 60  0001 C CNN
+F 3 "" H 8050 900 60  0000 C CNN
+	1    8050 900 
+	1    0    0    -1  
+$EndComp
+$Comp
+L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-1
+U 1 1 582DAE3C
+P 1950 4000
+F 0 "PAD-matrix-1" H 1450 4600 50  0000 C CNN
+F 1 "parkFun-BUTTONPAD16" H 1850 3650 50  0000 C CNN
+F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 1950 4000 50  0001 C CNN
+F 3 "" H 1950 4000 50  0000 C CNN
+	1    1950 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-?
+U 1 1 582C73FD
+P 3000 4000
+F 0 "PAD-matrix-?" H 2500 4600 50  0000 C CNN
+F 1 "parkFun-BUTTONPAD16" H 3000 3650 50  0000 C CNN
+F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 3000 4000 50  0001 C CNN
+F 3 "" H 3000 4000 50  0000 C CNN
+	1    3000 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-?
+U 1 1 582C74E6
+P 4050 4000
+F 0 "PAD-matrix-?" H 3550 4600 50  0000 C CNN
+F 1 "parkFun-BUTTONPAD16" H 4050 3650 50  0000 C CNN
+F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 4050 4000 50  0001 C CNN
+F 3 "" H 4050 4000 50  0000 C CNN
+	1    4050 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-?
+U 1 1 582C80C8
+P 5100 4000
+F 0 "PAD-matrix-?" H 4600 4600 50  0000 C CNN
+F 1 "parkFun-BUTTONPAD16" H 5100 3650 50  0000 C CNN
+F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 5100 4000 50  0001 C CNN
+F 3 "" H 5100 4000 50  0000 C CNN
+	1    5100 4000
+	1    0    0    -1  
+$EndComp
+Text Label 2450 1100 1    60   ~ 0
+A1
+Wire Wire Line
+	7450 5300 7450 5800
+Wire Wire Line
+	7450 5800 8100 5800
 Wire Wire Line
 	3800 1700 4100 1700
+Text Label 3750 2300 3    60   ~ 0
+MUXAS0
+Text Label 3650 2300 3    60   ~ 0
+MUXAS1
+Text Label 3550 2300 3    60   ~ 0
+MUXAS2
+Text Label 3450 2300 3    60   ~ 0
+MUXAS3
+Text Label 3350 2300 3    60   ~ 0
+MUXAB4
+Text Label 3250 2300 3    60   ~ 0
+MUXAB5
+Text Label 3150 2300 3    60   ~ 0
+MUXAB6
+Text Label 3050 2300 3    60   ~ 0
+MUXAB7
+Text Label 2950 2300 3    60   ~ 0
+MUXAG8
+Text Label 2850 2300 3    60   ~ 0
+MUXAG9
+Text Label 2750 2300 3    60   ~ 0
+MUXAG10
+Text Label 2650 2300 3    60   ~ 0
+MUXAG11
+Text Label 2550 2300 3    60   ~ 0
+MUXAR12
+Text Label 2450 2300 3    60   ~ 0
+MUXAR12
+Text Label 2350 2300 3    60   ~ 0
+MUXAR12
+Text Label 2250 2300 3    60   ~ 0
+MUXAR12
 $EndSCHEMATC
