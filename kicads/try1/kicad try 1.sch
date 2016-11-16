@@ -188,39 +188,6 @@ F 3 "" H 2450 11100 50  0000 C CNN
 	1    2450 11100
 	1    0    0    -1  
 $EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-14
-U 1 1 582C73FD
-P 3500 11100
-F 0 "PAD-matrix-14" H 3000 11700 50  0000 C CNN
-F 1 "BP2" H 3500 10750 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 3500 11100 50  0001 C CNN
-F 3 "" H 3500 11100 50  0000 C CNN
-	1    3500 11100
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-15
-U 1 1 582C74E6
-P 4550 11100
-F 0 "PAD-matrix-15" H 4050 11700 50  0000 C CNN
-F 1 "BP1" H 4550 10750 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 4550 11100 50  0001 C CNN
-F 3 "" H 4550 11100 50  0000 C CNN
-	1    4550 11100
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-16
-U 1 1 582C80C8
-P 5600 11100
-F 0 "PAD-matrix-16" H 5100 11700 50  0000 C CNN
-F 1 "BP0" H 5600 10750 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 5600 11100 50  0001 C CNN
-F 3 "" H 5600 11100 50  0000 C CNN
-	1    5600 11100
-	1    0    0    -1  
-$EndComp
 Text Label 2450 850  1    60   ~ 0
 A1
 Wire Wire Line
@@ -312,14 +279,12 @@ Wire Wire Line
 Wire Wire Line
 	3900 11150 3900 12050
 Wire Wire Line
-	4000 11550 4000 11900
-Wire Wire Line
 	5050 11150 4950 11150
 Wire Wire Line
 	4950 11150 4950 12050
 Wire Wire Line
 	5050 11900 5050 11550
-Text Label 5050 11900 0    60   ~ 0
+Text Label 1950 11900 0    60   ~ 0
 MUXBS3
 Text Label 8550 10350 0    60   ~ 0
 MUXBS4
@@ -329,7 +294,7 @@ Text Label 8550 10950 0    60   ~ 0
 MUXBS6
 Text Label 8550 11250 0    60   ~ 0
 MUXBS7
-Text Label 4950 12050 0    60   ~ 0
+Text Label 1850 12050 0    60   ~ 0
 MUXBG11
 Text Label 7050 8250 2    60   ~ 0
 MUXBS0
@@ -544,107 +509,63 @@ F 3 "" H 2050 1000 50  0000 C CNN
 	1    2050 1000
 	0    1    1    0   
 $EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-10
-U 1 1 582EB09E
-P 2450 8900
-F 0 "PAD-matrix-10" H 1950 9500 50  0000 C CNN
-F 1 "BP7" H 2350 8550 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 2450 8900 50  0001 C CNN
-F 3 "" H 2450 8900 50  0000 C CNN
-	1    2450 8900
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-11
-U 1 1 582EB0A5
-P 3500 8900
-F 0 "PAD-matrix-11" H 3000 9500 50  0000 C CNN
-F 1 "BP6" H 3500 8550 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 3500 8900 50  0001 C CNN
-F 3 "" H 3500 8900 50  0000 C CNN
-	1    3500 8900
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-12
-U 1 1 582EB0AC
-P 4550 8900
-F 0 "PAD-matrix-12" H 4050 9500 50  0000 C CNN
-F 1 "BP5" H 4550 8550 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 4550 8900 50  0001 C CNN
-F 3 "" H 4550 8900 50  0000 C CNN
-	1    4550 8900
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-13
-U 1 1 582EB0B3
-P 5600 8900
-F 0 "PAD-matrix-13" H 5100 9500 50  0000 C CNN
-F 1 "BP4" H 5600 8550 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 5600 8900 50  0001 C CNN
-F 3 "" H 5600 8900 50  0000 C CNN
-	1    5600 8900
-	1    0    0    -1  
-$EndComp
-Text Label 5750 8200 1    60   ~ 0
+Text Label 5750 8250 1    60   ~ 0
 MUXAS0
-Text Label 4700 8200 1    60   ~ 0
+Text Label 4700 8250 1    60   ~ 0
 MUXAS1
-Text Label 3650 8200 1    60   ~ 0
+Text Label 3650 8250 1    60   ~ 0
 MUXAS2
-Text Label 2600 8200 1    60   ~ 0
+Text Label 2600 8250 1    60   ~ 0
 MUXAS3
-Text Label 5650 8200 1    60   ~ 0
+Text Label 5650 8250 1    60   ~ 0
 MUXAB4
-Text Label 4600 8200 1    60   ~ 0
+Text Label 4600 8250 1    60   ~ 0
 MUXAB5
-Text Label 3550 8200 1    60   ~ 0
+Text Label 3550 8250 1    60   ~ 0
 MUXAB6
-Text Label 2500 8200 1    60   ~ 0
+Text Label 2500 8250 1    60   ~ 0
 MUXAB7
-Text Label 5550 8200 1    60   ~ 0
+Text Label 5550 8250 1    60   ~ 0
 MUXAG8
-Text Label 4500 8200 1    60   ~ 0
+Text Label 4500 8250 1    60   ~ 0
 MUXAG9
-Text Label 3450 8200 1    60   ~ 0
+Text Label 3450 8250 1    60   ~ 0
 MUXAG10
-Text Label 2400 8200 1    60   ~ 0
+Text Label 2400 8250 1    60   ~ 0
 MUXAG11
-Text Label 2300 8200 1    60   ~ 0
+Text Label 2300 8250 1    60   ~ 0
 MUXAR15
-Text Label 3350 8200 1    60   ~ 0
+Text Label 3350 8250 1    60   ~ 0
 MUXAR14
-Text Label 4400 8200 1    60   ~ 0
+Text Label 4400 8250 1    60   ~ 0
 MUXAR13
-Text Label 5450 8200 1    60   ~ 0
+Text Label 5450 8250 1    60   ~ 0
 MUXAR12
 Wire Wire Line
-	1900 9050 1800 9050
+	1900 9100 1800 9100
 Wire Wire Line
-	1900 8950 1700 8950
+	1900 9000 1700 9000
 Wire Wire Line
-	2950 8950 2850 8950
+	2950 9000 2850 9000
 Wire Wire Line
-	2850 8950 2850 9850
+	2850 9000 2850 9900
 Wire Wire Line
-	2950 9350 2950 9700
+	2950 9400 2950 9750
 Wire Wire Line
-	4000 8950 3900 8950
+	4000 9000 3900 9000
 Wire Wire Line
-	3900 8950 3900 9850
+	3900 9000 3900 9900
 Wire Wire Line
-	4000 9700 4000 9350
+	4000 9750 4000 9400
 Wire Wire Line
-	5050 8950 4950 8950
+	5050 9000 4950 9000
 Wire Wire Line
-	4950 8950 4950 9850
+	4950 9000 4950 9900
 Wire Wire Line
-	5050 9700 5050 9350
-Text Label 5050 9700 0    60   ~ 0
+	5050 9750 5050 9400
+Text Label 1950 9750 0    60   ~ 0
 MUXBS2
-Text Label 4950 9850 0    60   ~ 0
+Text Label 1850 9900 0    60   ~ 0
 MUXBG10
 $Comp
 L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-6
@@ -655,39 +576,6 @@ F 1 "BP11" H 2350 6500 50  0000 C CNN
 F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 2450 6850 50  0001 C CNN
 F 3 "" H 2450 6850 50  0000 C CNN
 	1    2450 6850
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-7
-U 1 1 582EB423
-P 3500 6850
-F 0 "PAD-matrix-7" H 3000 7450 50  0000 C CNN
-F 1 "BP10" H 3500 6500 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 3500 6850 50  0001 C CNN
-F 3 "" H 3500 6850 50  0000 C CNN
-	1    3500 6850
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-8
-U 1 1 582EB42A
-P 4550 6850
-F 0 "PAD-matrix-8" H 4050 7450 50  0000 C CNN
-F 1 "BP9" H 4550 6500 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 4550 6850 50  0001 C CNN
-F 3 "" H 4550 6850 50  0000 C CNN
-	1    4550 6850
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-9
-U 1 1 582EB431
-P 5600 6850
-F 0 "PAD-matrix-9" H 5100 7450 50  0000 C CNN
-F 1 "BP8" H 5600 6500 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 5600 6850 50  0001 C CNN
-F 3 "" H 5600 6850 50  0000 C CNN
-	1    5600 6850
 	1    0    0    -1  
 $EndComp
 Text Label 5750 6150 1    60   ~ 0
@@ -744,9 +632,9 @@ Wire Wire Line
 	4950 6900 4950 7800
 Wire Wire Line
 	5050 7650 5050 7300
-Text Label 5050 7650 0    60   ~ 0
+Text Label 2200 7650 0    60   ~ 0
 MUXBS1
-Text Label 4950 7800 0    60   ~ 0
+Text Label 2100 7800 0    60   ~ 0
 MUXBG9
 $Comp
 L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-2
@@ -757,39 +645,6 @@ F 1 "BP15" H 2350 4400 50  0000 C CNN
 F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 2450 4750 50  0001 C CNN
 F 3 "" H 2450 4750 50  0000 C CNN
 	1    2450 4750
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-3
-U 1 1 582EC1D7
-P 3500 4750
-F 0 "PAD-matrix-3" H 3000 5350 50  0000 C CNN
-F 1 "BP14" H 3500 4400 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 3500 4750 50  0001 C CNN
-F 3 "" H 3500 4750 50  0000 C CNN
-	1    3500 4750
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-4
-U 1 1 582EC1DE
-P 4550 4750
-F 0 "PAD-matrix-4" H 4050 5350 50  0000 C CNN
-F 1 "BP13" H 4550 4400 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 4550 4750 50  0001 C CNN
-F 3 "" H 4550 4750 50  0000 C CNN
-	1    4550 4750
-	1    0    0    -1  
-$EndComp
-$Comp
-L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-5
-U 1 1 582EC1E5
-P 5600 4750
-F 0 "PAD-matrix-5" H 5100 5350 50  0000 C CNN
-F 1 "BP12" H 5600 4400 50  0000 C CNN
-F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 5600 4750 50  0001 C CNN
-F 3 "" H 5600 4750 50  0000 C CNN
-	1    5600 4750
 	1    0    0    -1  
 $EndComp
 Text Label 5750 4050 1    60   ~ 0
@@ -835,21 +690,15 @@ Wire Wire Line
 Wire Wire Line
 	4000 4800 3900 4800
 Wire Wire Line
-	3900 4800 3900 5700
-Wire Wire Line
 	5050 4800 4950 4800
-Wire Wire Line
-	4950 4800 4950 5700
-Wire Wire Line
-	5050 5200 5050 5550
-Text Label 5050 5550 0    60   ~ 0
+Text Label 1950 5550 0    60   ~ 0
 MUXBS0
-Text Label 4950 5700 0    60   ~ 0
+Text Label 1850 5700 0    60   ~ 0
 MUXBG8
 Wire Wire Line
-	1700 8950 1700 9850
+	1700 9000 1700 9900
 Wire Wire Line
-	1800 9350 1800 9700
+	1800 9400 1800 9750
 Wire Wire Line
 	1800 7300 1800 7650
 Wire Wire Line
@@ -859,23 +708,12 @@ Wire Wire Line
 Wire Wire Line
 	1700 4800 1700 5700
 $Comp
-L D D16
-U 1 1 582F59AA
-P 5050 11400
-F 0 "D16" H 5050 11500 50  0000 C CNN
-F 1 "D" H 5050 11300 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 5050 11400 50  0001 C CNN
-F 3 "" H 5050 11400 50  0000 C CNN
-	1    5050 11400
-	0    -1   -1   0   
-$EndComp
-$Comp
 L D D15
 U 1 1 582F60B3
 P 4000 11400
 F 0 "D15" H 4000 11500 50  0000 C CNN
 F 1 "D" H 4000 11300 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 4000 11400 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 4000 11400 50  0001 C CNN
 F 3 "" H 4000 11400 50  0000 C CNN
 	1    4000 11400
 	0    -1   -1   0   
@@ -886,7 +724,7 @@ U 1 1 582F6140
 P 2950 11400
 F 0 "D14" H 2950 11500 50  0000 C CNN
 F 1 "D" H 2950 11300 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 2950 11400 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 2950 11400 50  0001 C CNN
 F 3 "" H 2950 11400 50  0000 C CNN
 	1    2950 11400
 	0    -1   -1   0   
@@ -897,7 +735,7 @@ U 1 1 582F65FE
 P 1800 11400
 F 0 "D13" H 1800 11500 50  0000 C CNN
 F 1 "D" H 1800 11300 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 1800 11400 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 1800 11400 50  0001 C CNN
 F 3 "" H 1800 11400 50  0000 C CNN
 	1    1800 11400
 	0    -1   -1   0   
@@ -905,45 +743,45 @@ $EndComp
 $Comp
 L D D10
 U 1 1 582F8563
-P 2950 9200
-F 0 "D10" H 2950 9300 50  0000 C CNN
-F 1 "D" H 2950 9100 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 2950 9200 50  0001 C CNN
-F 3 "" H 2950 9200 50  0000 C CNN
-	1    2950 9200
+P 2950 9250
+F 0 "D10" H 2950 9350 50  0000 C CNN
+F 1 "D" H 2950 9150 50  0000 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 2950 9250 50  0001 C CNN
+F 3 "" H 2950 9250 50  0000 C CNN
+	1    2950 9250
 	0    -1   -1   0   
 $EndComp
 $Comp
 L D D9
 U 1 1 582F85EE
-P 1800 9200
-F 0 "D9" H 1800 9300 50  0000 C CNN
-F 1 "D" H 1800 9100 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 1800 9200 50  0001 C CNN
-F 3 "" H 1800 9200 50  0000 C CNN
-	1    1800 9200
+P 1800 9250
+F 0 "D9" H 1800 9350 50  0000 C CNN
+F 1 "D" H 1800 9150 50  0000 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 1800 9250 50  0001 C CNN
+F 3 "" H 1800 9250 50  0000 C CNN
+	1    1800 9250
 	0    -1   -1   0   
 $EndComp
 $Comp
 L D D11
 U 1 1 582F8683
-P 4000 9200
-F 0 "D11" H 4000 9300 50  0000 C CNN
-F 1 "D" H 4000 9100 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 4000 9200 50  0001 C CNN
-F 3 "" H 4000 9200 50  0000 C CNN
-	1    4000 9200
+P 4000 9250
+F 0 "D11" H 4000 9350 50  0000 C CNN
+F 1 "D" H 4000 9150 50  0000 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 4000 9250 50  0001 C CNN
+F 3 "" H 4000 9250 50  0000 C CNN
+	1    4000 9250
 	0    -1   -1   0   
 $EndComp
 $Comp
 L D D12
 U 1 1 582F8985
-P 5050 9200
-F 0 "D12" H 5050 9300 50  0000 C CNN
-F 1 "D" H 5050 9100 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 5050 9200 50  0001 C CNN
-F 3 "" H 5050 9200 50  0000 C CNN
-	1    5050 9200
+P 5050 9250
+F 0 "D12" H 5050 9350 50  0000 C CNN
+F 1 "D" H 5050 9150 50  0000 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 5050 9250 50  0001 C CNN
+F 3 "" H 5050 9250 50  0000 C CNN
+	1    5050 9250
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -952,7 +790,7 @@ U 1 1 582FB076
 P 1800 7150
 F 0 "D5" H 1800 7250 50  0000 C CNN
 F 1 "D" H 1800 7050 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 1800 7150 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 1800 7150 50  0001 C CNN
 F 3 "" H 1800 7150 50  0000 C CNN
 	1    1800 7150
 	0    -1   -1   0   
@@ -963,7 +801,7 @@ U 1 1 582FB10D
 P 2950 7150
 F 0 "D6" H 2950 7250 50  0000 C CNN
 F 1 "D" H 2950 7050 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 2950 7150 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 2950 7150 50  0001 C CNN
 F 3 "" H 2950 7150 50  0000 C CNN
 	1    2950 7150
 	0    -1   -1   0   
@@ -974,7 +812,7 @@ U 1 1 582FB1BC
 P 4000 7150
 F 0 "D7" H 4000 7250 50  0000 C CNN
 F 1 "D" H 4000 7050 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 4000 7150 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 4000 7150 50  0001 C CNN
 F 3 "" H 4000 7150 50  0000 C CNN
 	1    4000 7150
 	0    -1   -1   0   
@@ -985,7 +823,7 @@ U 1 1 582FB708
 P 5050 7150
 F 0 "D8" H 5050 7250 50  0000 C CNN
 F 1 "D" H 5050 7050 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 5050 7150 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 5050 7150 50  0001 C CNN
 F 3 "" H 5050 7150 50  0000 C CNN
 	1    5050 7150
 	0    -1   -1   0   
@@ -996,7 +834,7 @@ U 1 1 582FD83C
 P 1800 5050
 F 0 "D1" H 1800 5150 50  0000 C CNN
 F 1 "D" H 1800 4950 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 1800 5050 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 1800 5050 50  0001 C CNN
 F 3 "" H 1800 5050 50  0000 C CNN
 	1    1800 5050
 	0    -1   -1   0   
@@ -1007,7 +845,7 @@ U 1 1 582FD8F1
 P 2950 5050
 F 0 "D2" H 2950 5150 50  0000 C CNN
 F 1 "D" H 2950 4950 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 2950 5050 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 2950 5050 50  0001 C CNN
 F 3 "" H 2950 5050 50  0000 C CNN
 	1    2950 5050
 	0    -1   -1   0   
@@ -1018,7 +856,7 @@ U 1 1 582FE12B
 P 4000 5050
 F 0 "D3" H 4000 5150 50  0000 C CNN
 F 1 "D" H 4000 4950 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 4000 5050 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 4000 5050 50  0001 C CNN
 F 3 "" H 4000 5050 50  0000 C CNN
 	1    4000 5050
 	0    -1   -1   0   
@@ -1029,21 +867,15 @@ U 1 1 58305FB4
 P 5050 5050
 F 0 "D4" H 5050 5150 50  0000 C CNN
 F 1 "D" H 5050 4950 50  0000 C CNN
-F 2 "SparkFun-DiscreteSemi:DIODE-1N4148" H 5050 5050 50  0001 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 5050 5050 50  0001 C CNN
 F 3 "" H 5050 5050 50  0000 C CNN
 	1    5050 5050
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	1800 5550 5050 5550
-Wire Wire Line
 	2950 5200 2950 5550
 Connection ~ 2950 5550
-Wire Wire Line
-	4000 5200 4000 5550
 Connection ~ 4000 5550
-Wire Wire Line
-	1700 5700 4950 5700
 Connection ~ 2850 5700
 Connection ~ 3900 5700
 Wire Wire Line
@@ -1055,13 +887,13 @@ Wire Wire Line
 Connection ~ 2850 7800
 Connection ~ 3900 7800
 Wire Wire Line
-	1800 9700 5050 9700
-Connection ~ 2950 9700
-Connection ~ 4000 9700
+	1800 9750 5050 9750
+Connection ~ 2950 9750
+Connection ~ 4000 9750
 Wire Wire Line
-	1700 9850 4950 9850
-Connection ~ 3900 9850
-Connection ~ 2850 9850
+	1700 9900 4950 9900
+Connection ~ 3900 9900
+Connection ~ 2850 9900
 Wire Wire Line
 	1800 11900 5050 11900
 Connection ~ 2950 11900
@@ -1138,4 +970,41 @@ F 3 "" H 6900 2650 50  0000 C CNN
 	1    6900 2650
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	4950 4800 4950 5700
+Wire Wire Line
+	5050 5200 5050 5550
+Wire Wire Line
+	5050 5550 1800 5550
+Wire Wire Line
+	4950 5700 1700 5700
+Wire Wire Line
+	4000 5200 4000 5550
+Wire Wire Line
+	3900 4800 3900 5700
+$Comp
+L D D16
+U 1 1 582F59AA
+P 5050 11400
+F 0 "D16" H 5050 11500 50  0000 C CNN
+F 1 "D" H 5050 11300 50  0000 C CNN
+F 2 "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10" H 5050 11400 50  0001 C CNN
+F 3 "" H 5050 11400 50  0000 C CNN
+	1    5050 11400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L parkFun-BUTTONPAD16-RESCUE-kicad_try_1 PAD-matrix-10
+U 1 1 582EB09E
+P 2450 8950
+F 0 "PAD-matrix-10" H 1950 9550 50  0000 C CNN
+F 1 "BP7" H 2350 8600 50  0000 C CNN
+F 2 "button-pad-autotel:2x2-buttonpad-sparkfun-autotel" H 2450 8950 50  0001 C CNN
+F 3 "" H 2450 8950 50  0000 C CNN
+	1    2450 8950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4000 11550 4000 11900
+Connection ~ 4000 11900
 $EndSCHEMATC
