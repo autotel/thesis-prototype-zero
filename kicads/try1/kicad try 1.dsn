@@ -171,35 +171,31 @@
       (place D16 160000 -64000 back 0 (PN D))
     )
     (component "SparkFun-Connectors:1X08"
-      (place VCC 203550 -107950 front 180 (PN CONN_01X08))
-      (place GND 203550 -92710 front 180 (PN CONN_01X08))
-      (place "PB5-PB0" 203550 -113030 front 180 (PN CONN_01X08))
-      (place "A2-A6" 185770 -97790 front 0 (PN CONN_01X08))
-      (place P5 212440 -74940.5 front 270 (PN CONN_01X08))
-      (place P6 208630 -92720.5 front 90 (PN CONN_01X08))
-      (place CONN_01X08 185760 -102870 front 0 (PN VCC2))
-      (place P7 212440 -95250 front 270 (PN CONN_01X08))
-      (place P8 208630 -113030 front 90 (PN CONN_01X08))
-      (place P9 185770 -83820 front 0 (PN CONN_01X08))
-      (place P10 203550 -87630 front 180 (PN CONN_01X08))
-      (place P11 220060 -113030 front 90 (PN CONN_01X08))
-      (place P12 223870 -95250 front 270 (PN CONN_01X08))
-      (place P13 203550 -59690 front 180 (PN CONN_01X08))
-      (place P14 185770 -55880 front 0 (PN CONN_01X08))
-      (place P15 223870 -74930 front 270 (PN CONN_01X08))
-      (place P16 220060 -92710 front 90 (PN CONN_01X08))
-      (place P17 203550 -74930 front 180 (PN CONN_01X08))
-      (place P18 185770 -78740 front 0 (PN CONN_01X08))
+      (place P5 210820 -55880 front 270 (PN CONN_01X08))
+      (place P6 208280 -73660 front 90 (PN CONN_01X08))
+      (place CONN_01X08 185420 -96520 front 0 (PN VCC2))
+      (place P7 210820 -76200 front 270 (PN CONN_01X08))
+      (place P8 208280 -93980 front 90 (PN CONN_01X08))
+      (place P9 185420 -76200 front 0 (PN CONN_01X08))
+      (place P10 203200 -81280 front 180 (PN CONN_01X08))
+      (place P11 218440 -93980 front 90 (PN CONN_01X08))
+      (place P12 220980 -76200 front 270 (PN CONN_01X08))
+      (place P13 203200 -60960 front 180 (PN CONN_01X08))
+      (place P14 185420 -55880 front 0 (PN CONN_01X08))
+      (place P15 220980 -55880 front 270 (PN CONN_01X08))
+      (place P16 218440 -73660 front 90 (PN CONN_01X08))
+      (place P17 203200 -66040 front 180 (PN CONN_01X08))
+      (place P18 185420 -71120 front 0 (PN CONN_01X08))
+      (place P1 185420 -101600 front 0 (PN CONN_01X08))
+      (place P2 185420 -86360 front 0 (PN CONN_01X08))
+      (place P3 220980 -127000 front 90 (PN CONN_01X08))
+      (place P4 220980 -129540 front 270 (PN CONN_01X08))
     )
     (component "button-pad-autotel:2x2-buttonpad-sparkfun-autotel"
       (place "PAD-matrix-1" 110000 -151500 front 90 (PN BP3))
       (place "PAD-matrix-2" 110000 -101500 front 90 (PN BP15))
       (place "PAD-matrix-3" 160000 -151500 front 90 (PN BP11))
       (place "PAD-matrix-4" 160000 -101500 front 90 (PN BP7))
-    )
-    (component Resistors_ThroughHole:Resistor_Horizontal_RM10mm
-      (place "A1 pulldown" 201500 -130000 front 90 (PN R))
-      (place "A0 pulldown" 205000 -119840 front 270 (PN R))
     )
     (component Buttons_Switches_ThroughHole:SW_PUSH_6mm
       (place SW1 172570 -142270 front 90 (PN SW_PUSH))
@@ -208,11 +204,15 @@
       (place SW4 172570 -67270 front 90 (PN SW_PUSH))
     )
     (component "SparkFun-DigitalIC:TSSOP-24"
-      (place U2 166000 -75500 front 270 (PN CD74HCT4067))
-      (place U3 166000 -128500 front 270 (PN CD74HCT4067))
+      (place U2 163830 -76200 front 270 (PN CD74HCT4067))
+      (place U3 163830 -127000 front 270 (PN CD74HCT4067))
     )
     (component "ArduProMiniTKB:ArduProMini-6"
-      (place uP1 185420 -151130 front 90 (PN "ARDUPROMINI-6"))
+      (place uP1 195580 -113030 front 0 (PN "ARDUPROMINI-6"))
+    )
+    (component Resistors_ThroughHole:Resistor_Horizontal_RM10mm
+      (place R1 193040 -147320 front 90 (PN R))
+      (place R2 186690 -137160 front 270 (PN R))
     )
   )
   (library
@@ -596,20 +596,6 @@
       (keepout "" (circle F.Cu 3000 47500 2500))
       (keepout "" (circle B.Cu 3000 47500 2500))
     )
-    (image Resistors_ThroughHole:Resistor_Horizontal_RM10mm
-      (outline (path signal 50  -1250 1500  11400 1500))
-      (outline (path signal 50  -1250 -1500  -1250 1500))
-      (outline (path signal 50  11400 1500  11400 -1500))
-      (outline (path signal 50  -1250 -1500  11400 -1500))
-      (outline (path signal 150  2540 1270  7620 1270))
-      (outline (path signal 150  7620 1270  7620 -1270))
-      (outline (path signal 150  7620 -1270  2540 -1270))
-      (outline (path signal 150  2540 -1270  2540 1270))
-      (outline (path signal 150  2540 0  1270 0))
-      (outline (path signal 150  7620 0  8890 0))
-      (pin Round[A]Pad_1998.98_um 1 0 0)
-      (pin Round[A]Pad_1998.98_um 2 10160 0)
-    )
     (image Buttons_Switches_ThroughHole:SW_PUSH_6mm
       (outline (path signal 150  3250 750  6250 750))
       (outline (path signal 150  6250 750  6250 -5250))
@@ -710,6 +696,20 @@
       (pin Round[A]Pad_1500_um 32 14859 -17653)
       (pin Round[A]Pad_1500_um 34 14859 -25527)
       (pin Round[A]Pad_1500_um 35 14859 -28067)
+    )
+    (image Resistors_ThroughHole:Resistor_Horizontal_RM10mm
+      (outline (path signal 50  -1250 1500  11400 1500))
+      (outline (path signal 50  -1250 -1500  -1250 1500))
+      (outline (path signal 50  11400 1500  11400 -1500))
+      (outline (path signal 50  -1250 -1500  11400 -1500))
+      (outline (path signal 150  2540 1270  7620 1270))
+      (outline (path signal 150  7620 1270  7620 -1270))
+      (outline (path signal 150  7620 -1270  2540 -1270))
+      (outline (path signal 150  2540 -1270  2540 1270))
+      (outline (path signal 150  2540 0  1270 0))
+      (outline (path signal 150  7620 0  8890 0))
+      (pin Round[A]Pad_1998.98_um 1 0 0)
+      (pin Round[A]Pad_1998.98_um 2 10160 0)
     )
     (padstack Round[A]Pad_1016_um
       (shape (circle F.Cu 1016))
@@ -832,61 +832,60 @@
       (pins D16-2 "PAD-matrix-4"-SIG4)
     )
     (net /VCC
-      (pins VCC-1 VCC-2 VCC-3 VCC-4 VCC-5 VCC-6 VCC-7 VCC-8 SW1-1 SW1-1@1 SW2-1 SW2-1@1
-        SW3-1 SW3-1@1 SW4-1 SW4-1@1 U2-24 U3-24 uP1-22 CONN_01X08-1 CONN_01X08-2 CONN_01X08-3
-        CONN_01X08-4 CONN_01X08-5 CONN_01X08-6 CONN_01X08-7 CONN_01X08-8)
+      (pins SW1-1 SW1-1@1 SW2-1 SW2-1@1 SW3-1 SW3-1@1 SW4-1 SW4-1@1 U2-24 U3-24 uP1-22
+        CONN_01X08-1 CONN_01X08-2 CONN_01X08-3 CONN_01X08-4 CONN_01X08-5 CONN_01X08-6
+        CONN_01X08-7 CONN_01X08-8 P1-1 P1-2 P1-3 P1-4 P1-5 P1-6 P1-7 P1-8)
     )
     (net GNDREF
-      (pins GND-1 GND-2 GND-3 GND-4 GND-5 GND-6 GND-7 GND-8 "A1 pulldown"-2 "A0 pulldown"-1
-        U2-15 U3-15 uP1-10)
+      (pins U2-15 U3-15 uP1-10 P2-1 P2-2 P2-3 P2-4 P2-5 P2-6 P2-7 P2-8 R1-2 R2-1)
     )
     (net /PB0
-      (pins "PB5-PB0"-1 uP1-17)
+      (pins uP1-17 P3-1)
     )
     (net /PB1
-      (pins "PB5-PB0"-2 uP1-18)
+      (pins uP1-18 P3-2)
     )
     (net /PB2
-      (pins "PB5-PB0"-3 uP1-30)
+      (pins uP1-30 P3-3)
     )
     (net /PB3
-      (pins "PB5-PB0"-4 uP1-29)
+      (pins uP1-29 P3-4)
     )
     (net /PB4
-      (pins "PB5-PB0"-5 uP1-28)
+      (pins uP1-28 P3-5)
     )
     (net /PB5
-      (pins "PB5-PB0"-6 uP1-27)
+      (pins uP1-27 P3-6)
     )
     (net "Net-(P3-Pad7)"
-      (pins "PB5-PB0"-7)
+      (pins P3-7)
     )
     (net "Net-(P3-Pad8)"
-      (pins "PB5-PB0"-8)
+      (pins P3-8)
     )
     (net /A2
-      (pins "A2-A6"-1 uP1-24)
+      (pins uP1-24 P4-1)
     )
     (net /A3
-      (pins "A2-A6"-2 uP1-23)
+      (pins uP1-23 P4-2)
     )
     (net /A4
-      (pins "A2-A6"-3 uP1-32)
+      (pins uP1-32 P4-3)
     )
     (net /A5
-      (pins "A2-A6"-4 uP1-31)
+      (pins uP1-31 P4-4)
     )
     (net /A6
-      (pins "A2-A6"-5 uP1-35)
+      (pins uP1-35 P4-5)
     )
     (net "Net-(P4-Pad6)"
-      (pins "A2-A6"-6)
+      (pins P4-6)
     )
     (net "Net-(P4-Pad7)"
-      (pins "A2-A6"-7)
+      (pins P4-7)
     )
     (net "Net-(P4-Pad8)"
-      (pins "A2-A6"-8)
+      (pins P4-8)
     )
     (net "Net-(P5-Pad1)"
       (pins P5-1 P6-8)
@@ -913,16 +912,20 @@
       (pins P5-8 P6-1)
     )
     (net /MUXAB7
-      (pins "PAD-matrix-1"-BLU3 "PAD-matrix-1"-BLU1 "PAD-matrix-3"-BLU3 U2-2)
+      (pins "PAD-matrix-1"-BLU3 "PAD-matrix-1"-BLU1 "PAD-matrix-3"-BLU3 "PAD-matrix-3"-BLU1
+        U2-2)
     )
     (net /MUXAG11
-      (pins "PAD-matrix-1"-GRN3 "PAD-matrix-1"-GRN1 "PAD-matrix-3"-GRN3 U2-20)
+      (pins "PAD-matrix-1"-GRN3 "PAD-matrix-1"-GRN1 "PAD-matrix-3"-GRN3 "PAD-matrix-3"-GRN1
+        U2-20)
     )
     (net /MUXAR15
-      (pins "PAD-matrix-1"-RED3 "PAD-matrix-1"-RED1 "PAD-matrix-3"-RED3 U2-16)
+      (pins "PAD-matrix-1"-RED3 "PAD-matrix-1"-RED1 "PAD-matrix-3"-RED3 "PAD-matrix-3"-RED1
+        U2-16)
     )
     (net /MUXAS3
-      (pins "PAD-matrix-1"-SIG1 "PAD-matrix-1"-SIG5 "PAD-matrix-3"-SIG5 U2-6)
+      (pins "PAD-matrix-1"-SIG1 "PAD-matrix-1"-SIG5 "PAD-matrix-3"-SIG1 "PAD-matrix-3"-SIG5
+        U2-6)
     )
     (net /MUXBG11
       (pins "PAD-matrix-3"-GND1 "PAD-matrix-3"-GND2 "PAD-matrix-4"-GND1 "PAD-matrix-4"-GND2
@@ -933,40 +936,52 @@
         U3-23)
     )
     (net /MUXAB6
-      (pins "PAD-matrix-1"-BLU4 "PAD-matrix-1"-BLU2 "PAD-matrix-3"-BLU4 U2-3)
+      (pins "PAD-matrix-1"-BLU4 "PAD-matrix-1"-BLU2 "PAD-matrix-3"-BLU4 "PAD-matrix-3"-BLU2
+        U2-3)
     )
     (net /MUXAG10
-      (pins "PAD-matrix-1"-GRN4 "PAD-matrix-1"-GRN2 "PAD-matrix-3"-GRN4 U2-21)
+      (pins "PAD-matrix-1"-GRN4 "PAD-matrix-1"-GRN2 "PAD-matrix-3"-GRN4 "PAD-matrix-3"-GRN2
+        U2-21)
     )
     (net /MUXAR14
-      (pins "PAD-matrix-1"-RED4 "PAD-matrix-1"-RED2 "PAD-matrix-3"-RED4 U2-17)
+      (pins "PAD-matrix-1"-RED4 "PAD-matrix-1"-RED2 "PAD-matrix-3"-RED4 "PAD-matrix-3"-RED2
+        U2-17)
     )
     (net /MUXAS2
-      (pins "PAD-matrix-1"-SIG3 "PAD-matrix-1"-SIG7 "PAD-matrix-3"-SIG7 U2-7)
+      (pins "PAD-matrix-1"-SIG3 "PAD-matrix-1"-SIG7 "PAD-matrix-3"-SIG3 "PAD-matrix-3"-SIG7
+        U2-7)
     )
     (net /MUXAB5
-      (pins "PAD-matrix-2"-BLU3 "PAD-matrix-2"-BLU1 "PAD-matrix-4"-BLU3 U2-4)
+      (pins "PAD-matrix-2"-BLU3 "PAD-matrix-2"-BLU1 "PAD-matrix-4"-BLU3 "PAD-matrix-4"-BLU1
+        U2-4)
     )
     (net /MUXAG9
-      (pins "PAD-matrix-2"-GRN3 "PAD-matrix-2"-GRN1 "PAD-matrix-4"-GRN3 U2-22)
+      (pins "PAD-matrix-2"-GRN3 "PAD-matrix-2"-GRN1 "PAD-matrix-4"-GRN3 "PAD-matrix-4"-GRN1
+        U2-22)
     )
     (net /MUXAR13
-      (pins "PAD-matrix-2"-RED3 "PAD-matrix-2"-RED1 "PAD-matrix-4"-RED3 U2-18)
+      (pins "PAD-matrix-2"-RED3 "PAD-matrix-2"-RED1 "PAD-matrix-4"-RED3 "PAD-matrix-4"-RED1
+        U2-18)
     )
     (net /MUXAS1
-      (pins "PAD-matrix-2"-SIG1 "PAD-matrix-2"-SIG5 "PAD-matrix-4"-SIG5 U2-8)
+      (pins "PAD-matrix-2"-SIG1 "PAD-matrix-2"-SIG5 "PAD-matrix-4"-SIG1 "PAD-matrix-4"-SIG5
+        U2-8)
     )
     (net /MUXAB4
-      (pins "PAD-matrix-2"-BLU4 "PAD-matrix-2"-BLU2 "PAD-matrix-4"-BLU4 U2-5)
+      (pins "PAD-matrix-2"-BLU4 "PAD-matrix-2"-BLU2 "PAD-matrix-4"-BLU4 "PAD-matrix-4"-BLU2
+        U2-5)
     )
     (net /MUXAG8
-      (pins "PAD-matrix-2"-GRN4 "PAD-matrix-2"-GRN2 "PAD-matrix-4"-GRN4 U2-23)
+      (pins "PAD-matrix-2"-GRN4 "PAD-matrix-2"-GRN2 "PAD-matrix-4"-GRN4 "PAD-matrix-4"-GRN2
+        U2-23)
     )
     (net /MUXAR12
-      (pins "PAD-matrix-2"-RED4 "PAD-matrix-2"-RED2 "PAD-matrix-4"-RED4 U2-19)
+      (pins "PAD-matrix-2"-RED4 "PAD-matrix-2"-RED2 "PAD-matrix-4"-RED4 "PAD-matrix-4"-RED2
+        U2-19)
     )
     (net /MUXAS0
-      (pins "PAD-matrix-2"-SIG3 "PAD-matrix-2"-SIG7 "PAD-matrix-4"-SIG7 U2-9)
+      (pins "PAD-matrix-2"-SIG3 "PAD-matrix-2"-SIG7 "PAD-matrix-4"-SIG3 "PAD-matrix-4"-SIG7
+        U2-9)
     )
     (net /MUXBG9
       (pins "PAD-matrix-1"-GND1 "PAD-matrix-1"-GND2 "PAD-matrix-2"-GND1 "PAD-matrix-2"-GND2
@@ -977,10 +992,10 @@
         U3-21)
     )
     (net /A1
-      (pins "A1 pulldown"-1 U2-1 uP1-25)
+      (pins U2-1 uP1-25 R1-1)
     )
     (net /A0
-      (pins "A0 pulldown"-2 U3-1 uP1-26)
+      (pins U3-1 uP1-26 R2-2)
     )
     (net /MUXBS4
       (pins SW1-2 SW1-2@1 U3-5)
@@ -1047,54 +1062,6 @@
     )
     (net /A7
       (pins uP1-34)
-    )
-    (net "Net-(PAD-matrix-3-PadBLU1)"
-      (pins "PAD-matrix-3"-BLU1)
-    )
-    (net "Net-(PAD-matrix-3-PadGRN1)"
-      (pins "PAD-matrix-3"-GRN1)
-    )
-    (net "Net-(PAD-matrix-3-PadRED1)"
-      (pins "PAD-matrix-3"-RED1)
-    )
-    (net "Net-(PAD-matrix-3-PadSIG1)"
-      (pins "PAD-matrix-3"-SIG1)
-    )
-    (net "Net-(PAD-matrix-3-PadBLU2)"
-      (pins "PAD-matrix-3"-BLU2)
-    )
-    (net "Net-(PAD-matrix-3-PadGRN2)"
-      (pins "PAD-matrix-3"-GRN2)
-    )
-    (net "Net-(PAD-matrix-3-PadRED2)"
-      (pins "PAD-matrix-3"-RED2)
-    )
-    (net "Net-(PAD-matrix-3-PadSIG3)"
-      (pins "PAD-matrix-3"-SIG3)
-    )
-    (net "Net-(PAD-matrix-4-PadBLU1)"
-      (pins "PAD-matrix-4"-BLU1)
-    )
-    (net "Net-(PAD-matrix-4-PadGRN1)"
-      (pins "PAD-matrix-4"-GRN1)
-    )
-    (net "Net-(PAD-matrix-4-PadRED1)"
-      (pins "PAD-matrix-4"-RED1)
-    )
-    (net "Net-(PAD-matrix-4-PadSIG1)"
-      (pins "PAD-matrix-4"-SIG1)
-    )
-    (net "Net-(PAD-matrix-4-PadBLU2)"
-      (pins "PAD-matrix-4"-BLU2)
-    )
-    (net "Net-(PAD-matrix-4-PadGRN2)"
-      (pins "PAD-matrix-4"-GRN2)
-    )
-    (net "Net-(PAD-matrix-4-PadRED2)"
-      (pins "PAD-matrix-4"-RED2)
-    )
-    (net "Net-(PAD-matrix-4-PadSIG3)"
-      (pins "PAD-matrix-4"-SIG3)
     )
     (net "Net-(P7-Pad1)"
       (pins P7-1 P8-8)
