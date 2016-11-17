@@ -171,23 +171,23 @@
       (place D16 160000 -64000 back 0 (PN D))
     )
     (component "SparkFun-Connectors:1X08"
-      (place P5 210820 -55880 front 270 (PN CONN_01X08))
-      (place P6 208280 -73660 front 90 (PN CONN_01X08))
-      (place CONN_01X08 185420 -96520 front 0 (PN VCC2))
-      (place P7 210820 -76200 front 270 (PN CONN_01X08))
-      (place P8 208280 -93980 front 90 (PN CONN_01X08))
-      (place P9 185420 -76200 front 0 (PN CONN_01X08))
-      (place P10 203200 -81280 front 180 (PN CONN_01X08))
-      (place P11 218440 -93980 front 90 (PN CONN_01X08))
-      (place P12 220980 -76200 front 270 (PN CONN_01X08))
-      (place P13 203200 -60960 front 180 (PN CONN_01X08))
-      (place P14 185420 -55880 front 0 (PN CONN_01X08))
-      (place P15 220980 -55880 front 270 (PN CONN_01X08))
-      (place P16 218440 -73660 front 90 (PN CONN_01X08))
-      (place P17 203200 -66040 front 180 (PN CONN_01X08))
-      (place P18 185420 -71120 front 0 (PN CONN_01X08))
-      (place P1 185420 -101600 front 0 (PN CONN_01X08))
-      (place P2 185420 -86360 front 0 (PN CONN_01X08))
+      (place P5 213360 -55880 front 270 (PN CONN_01X08))
+      (place P6 210820 -73660 front 90 (PN CONN_01X08))
+      (place CONN_01X08 187960 -96520 front 0 (PN VCC2))
+      (place P7 213360 -76200 front 270 (PN CONN_01X08))
+      (place P8 210820 -93980 front 90 (PN CONN_01X08))
+      (place P9 187960 -76200 front 0 (PN CONN_01X08))
+      (place P10 205740 -81280 front 180 (PN CONN_01X08))
+      (place P11 220980 -93980 front 90 (PN CONN_01X08))
+      (place P12 223520 -76200 front 270 (PN CONN_01X08))
+      (place P13 205740 -60960 front 180 (PN CONN_01X08))
+      (place P14 187960 -55880 front 0 (PN CONN_01X08))
+      (place P15 223520 -55880 front 270 (PN CONN_01X08))
+      (place P16 220980 -73660 front 90 (PN CONN_01X08))
+      (place P17 205740 -66040 front 180 (PN CONN_01X08))
+      (place P18 187960 -71120 front 0 (PN CONN_01X08))
+      (place P1 187960 -101600 front 0 (PN CONN_01X08))
+      (place P2 187960 -86360 front 0 (PN CONN_01X08))
       (place P3 220980 -127000 front 90 (PN CONN_01X08))
       (place P4 220980 -129540 front 270 (PN CONN_01X08))
     )
@@ -198,17 +198,17 @@
       (place "PAD-matrix-4" 160000 -101500 front 90 (PN BP7))
     )
     (component Buttons_Switches_ThroughHole:SW_PUSH_6mm
-      (place SW1 172570 -142270 front 90 (PN SW_PUSH))
-      (place SW2 172570 -117270 front 90 (PN SW_PUSH))
-      (place SW3 172570 -92270 front 90 (PN SW_PUSH))
-      (place SW4 172570 -67270 front 90 (PN SW_PUSH))
+      (place SW1 175820 -142270 front 90 (PN SW_PUSH))
+      (place SW2 175820 -117270 front 90 (PN SW_PUSH))
+      (place SW3 175820 -92270 front 90 (PN SW_PUSH))
+      (place SW4 175820 -67270 front 90 (PN SW_PUSH))
     )
     (component "SparkFun-DigitalIC:TSSOP-24"
-      (place U2 163830 -76200 front 270 (PN CD74HCT4067))
-      (place U3 163830 -127000 front 270 (PN CD74HCT4067))
+      (place U2 178250 -75750 back 90 (PN CD74HCT4067))
+      (place U3 178250 -126250 back 90 (PN CD74HCT4067))
     )
     (component "ArduProMiniTKB:ArduProMini-6"
-      (place uP1 195580 -113030 front 0 (PN "ARDUPROMINI-6"))
+      (place uP1 193141 -105933 front 0 (PN "ARDUPROMINI-6"))
     )
     (component Resistors_ThroughHole:Resistor_Horizontal_RM10mm
       (place R1 193040 -147320 front 90 (PN R))
@@ -1230,13 +1230,8 @@
       "Net-(P5-Pad1)" "Net-(P5-Pad2)" "Net-(P5-Pad3)" "Net-(P5-Pad4)" "Net-(P5-Pad5)"
       "Net-(P5-Pad6)" "Net-(P5-Pad7)" "Net-(P5-Pad8)" "Net-(P7-Pad1)" "Net-(P7-Pad2)"
       "Net-(P7-Pad3)" "Net-(P7-Pad4)" "Net-(P7-Pad5)" "Net-(P7-Pad6)" "Net-(P7-Pad7)"
-      "Net-(P7-Pad8)" "Net-(PAD-matrix-3-PadBLU1)" "Net-(PAD-matrix-3-PadBLU2)"
-      "Net-(PAD-matrix-3-PadGRN1)" "Net-(PAD-matrix-3-PadGRN2)" "Net-(PAD-matrix-3-PadRED1)"
-      "Net-(PAD-matrix-3-PadRED2)" "Net-(PAD-matrix-3-PadSIG1)" "Net-(PAD-matrix-3-PadSIG3)"
-      "Net-(PAD-matrix-4-PadBLU1)" "Net-(PAD-matrix-4-PadBLU2)" "Net-(PAD-matrix-4-PadGRN1)"
-      "Net-(PAD-matrix-4-PadGRN2)" "Net-(PAD-matrix-4-PadRED1)" "Net-(PAD-matrix-4-PadRED2)"
-      "Net-(PAD-matrix-4-PadSIG1)" "Net-(PAD-matrix-4-PadSIG3)" "Net-(uP1-Pad19)"
-      "Net-(uP1-Pad20)" "Net-(uP1-Pad21)" "Net-(uP1-Pad9)"
+      "Net-(P7-Pad8)" "Net-(uP1-Pad19)" "Net-(uP1-Pad20)" "Net-(uP1-Pad21)"
+      "Net-(uP1-Pad9)"
       (circuit
         (use_via Via[0-1]_749.3:500.38_um)
       )
