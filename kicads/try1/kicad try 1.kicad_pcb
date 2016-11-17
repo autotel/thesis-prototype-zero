@@ -2,8 +2,8 @@
 
   (general
     (links 166)
-    (no_connects 118)
-    (area 59.460541 49.121665 231.326042 162.267166)
+    (no_connects 166)
+    (area 59.036499 47.536499 230.502834 160.282)
     (thickness 1.6)
     (drawings 0)
     (tracks 0)
@@ -14,8 +14,8 @@
 
   (page A4)
   (layers
-    (0 F.Cu signal hide)
-    (31 B.Cu signal hide)
+    (0 F.Cu signal)
+    (31 B.Cu signal)
     (32 B.Adhes user)
     (33 F.Adhes user)
     (34 B.Paste user)
@@ -37,15 +37,15 @@
   )
 
   (setup
-    (last_trace_width 0.25)
-    (trace_clearance 0.2)
+    (last_trace_width 0.2032)
+    (trace_clearance 0.2032)
     (zone_clearance 0.508)
     (zone_45_only no)
     (trace_min 0.2)
     (segment_width 0.2)
     (edge_width 0.1)
-    (via_size 0.6)
-    (via_drill 0.4)
+    (via_size 0.7493)
+    (via_drill 0.50038)
     (via_min_size 0.4)
     (via_min_drill 0.3)
     (uvia_size 0.3)
@@ -62,7 +62,7 @@
     (pad_drill 0.6)
     (pad_to_mask_clearance 0)
     (aux_axis_origin 0 0)
-    (visible_elements 7FFFEFFF)
+    (visible_elements 7FFFFFFF)
     (pcbplotparams
       (layerselection 0x00030_80000001)
       (usegerberextensions false)
@@ -199,10 +199,10 @@
   (net 106 "Net-(PAD-matrix-4-PadSIG3)")
 
   (net_class Default "This is the default net class."
-    (clearance 0.2)
-    (trace_width 0.25)
-    (via_dia 0.6)
-    (via_drill 0.4)
+    (clearance 0.2032)
+    (trace_width 0.2032)
+    (via_dia 0.7493)
+    (via_drill 0.50038)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
     (add_net /A0)
@@ -313,8 +313,17 @@
     (add_net "Net-(uP1-Pad9)")
   )
 
+  (net_class seeed ""
+    (clearance 0.2032)
+    (trace_width 0.2032)
+    (via_dia 0.7493)
+    (via_drill 0.50038)
+    (uvia_dia 0.3)
+    (uvia_drill 0.1)
+  )
+
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBA8E)
-    (at 90.664042 151.182626 180)
+    (at 90 130 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582FD83C)
@@ -345,7 +354,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBA94)
-    (at 90.664042 128.322626 180)
+    (at 90 125 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582FD8F1)
@@ -376,7 +385,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBA9A)
-    (at 90.664042 100.382626 180)
+    (at 90 77.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582FE12B)
@@ -407,7 +416,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAA0)
-    (at 90.664042 74.982626 180)
+    (at 90 72.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /58305FB4)
@@ -438,7 +447,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAA6)
-    (at 114.794042 151.182626 180)
+    (at 115 130 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582FB076)
@@ -469,7 +478,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAAC)
-    (at 114.794042 125.782626 180)
+    (at 115 125 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582FB10D)
@@ -500,7 +509,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAB2)
-    (at 114.794042 100.382626 180)
+    (at 115 77.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582FB1BC)
@@ -531,7 +540,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAB8)
-    (at 114.385102 74.982626 180)
+    (at 115 72.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582FB708)
@@ -562,7 +571,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBABE)
-    (at 142.734042 151.185166 180)
+    (at 140 130 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F85EE)
@@ -593,7 +602,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAC4)
-    (at 142.734042 124.515166 180)
+    (at 140 125 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F8563)
@@ -624,7 +633,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBACA)
-    (at 142.734042 102.922626 180)
+    (at 140 77.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F8683)
@@ -655,7 +664,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAD0)
-    (at 142.734042 76.252626 180)
+    (at 140 72.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F8985)
@@ -686,7 +695,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAD6)
-    (at 165.594042 151.182626 180)
+    (at 165 130 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F65FE)
@@ -717,7 +726,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBADC)
-    (at 165.594042 128.322626 180)
+    (at 165 125 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F6140)
@@ -748,7 +757,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAE2)
-    (at 165.594042 99.112626 180)
+    (at 165 77.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F60B3)
@@ -779,7 +788,7 @@
   )
 
   (module Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10 (layer F.Cu) (tedit 552FFCCE) (tstamp 582CBAE8)
-    (at 165.594042 73.712626 180)
+    (at 165 72.5 180)
     (descr "Diode, DO-41, SOD81, Horizontal, RM 10mm,")
     (tags "Diode, DO-41, SOD81, Horizontal, RM 10mm, 1N4007, SB140,")
     (path /582F59AA)
@@ -1320,7 +1329,7 @@
   )
 
   (module button-pad-autotel:2x2-buttonpad-sparkfun-autotel (layer F.Cu) (tedit 582C5530) (tstamp 582CBB54)
-    (at 110.224042 153.685166 90)
+    (at 110 151.5 90)
     (path /582DAE3C)
     (fp_text reference PAD-matrix-1 (at 0 0 90) (layer F.SilkS)
       (effects (font (thickness 0.15)))
@@ -1623,7 +1632,7 @@
   )
 
   (module button-pad-autotel:2x2-buttonpad-sparkfun-autotel (layer F.Cu) (tedit 582C5530) (tstamp 582CBB78)
-    (at 110.384042 102.885166 90)
+    (at 110 101.5 90)
     (path /582EC1D0)
     (fp_text reference PAD-matrix-2 (at 0 0 90) (layer F.SilkS)
       (effects (font (thickness 0.15)))
@@ -1926,7 +1935,7 @@
   )
 
   (module button-pad-autotel:2x2-buttonpad-sparkfun-autotel (layer F.Cu) (tedit 582C5530) (tstamp 582CBB9C)
-    (at 161.024042 153.685166 90)
+    (at 160 151.5 90)
     (path /582EB41C)
     (fp_text reference PAD-matrix-3 (at 0 0 90) (layer F.SilkS)
       (effects (font (thickness 0.15)))
@@ -2229,7 +2238,7 @@
   )
 
   (module button-pad-autotel:2x2-buttonpad-sparkfun-autotel (layer F.Cu) (tedit 582C5530) (tstamp 582CBBC0)
-    (at 161.024042 102.885166 90)
+    (at 160 101.5 90)
     (path /582EB09E)
     (fp_text reference PAD-matrix-4 (at 0 0 90) (layer F.SilkS)
       (effects (font (thickness 0.15)))
@@ -2596,7 +2605,7 @@
   )
 
   (module Buttons_Switches_ThroughHole:SW_PUSH_6mm (layer F.Cu) (tedit 57BABF74) (tstamp 582CBBD4)
-    (at 171.254042 144.835166 90)
+    (at 179 142 90)
     (descr https://www.omron.com/ecb/products/pdf/en-b3f.pdf)
     (tags "tact sw push 6mm")
     (path /582B987C)
@@ -2639,7 +2648,7 @@
   )
 
   (module Buttons_Switches_ThroughHole:SW_PUSH_6mm (layer F.Cu) (tedit 57BABF74) (tstamp 582CBBDC)
-    (at 171.254042 119.435166 90)
+    (at 179 117 90)
     (descr https://www.omron.com/ecb/products/pdf/en-b3f.pdf)
     (tags "tact sw push 6mm")
     (path /582B9BF5)
@@ -2682,7 +2691,7 @@
   )
 
   (module Buttons_Switches_ThroughHole:SW_PUSH_6mm (layer F.Cu) (tedit 57BABF74) (tstamp 582CBBE4)
-    (at 171.254042 92.765166 90)
+    (at 179 92 90)
     (descr https://www.omron.com/ecb/products/pdf/en-b3f.pdf)
     (tags "tact sw push 6mm")
     (path /582B9CDF)
@@ -2725,7 +2734,7 @@
   )
 
   (module Buttons_Switches_ThroughHole:SW_PUSH_6mm (layer F.Cu) (tedit 57BABF74) (tstamp 582CBBEC)
-    (at 171.254042 68.635166 90)
+    (at 179 67 90)
     (descr https://www.omron.com/ecb/products/pdf/en-b3f.pdf)
     (tags "tact sw push 6mm")
     (path /582B9DCC)
@@ -2768,7 +2777,7 @@
   )
 
   (module SparkFun-DigitalIC:TSSOP-24 (layer F.Cu) (tedit 0) (tstamp 582CBC09)
-    (at 31.75 114.3)
+    (at 169 141)
     (descr "<h3>24-pin TSSOP with Exposed Thermal Pad</h3>\nUsed on: <ul>\n<li>Allegro A6282 16-bit LED driver</li>\n</ul>\nLast modified: 8/21/10<br>\n<b>***Unproven***</b><br>")
     (path /582B4D2F)
     (fp_text reference U2 (at -4.17 2.01 90) (layer F.SilkS)
@@ -2860,7 +2869,7 @@
   )
 
   (module SparkFun-DigitalIC:TSSOP-24 (layer F.Cu) (tedit 0) (tstamp 582CBC26)
-    (at 31.75 71.12)
+    (at 169 64)
     (descr "<h3>24-pin TSSOP with Exposed Thermal Pad</h3>\nUsed on: <ul>\n<li>Allegro A6282 16-bit LED driver</li>\n</ul>\nLast modified: 8/21/10<br>\n<b>***Unproven***</b><br>")
     (path /582B6075)
     (fp_text reference U3 (at -4.17 2.01 90) (layer F.SilkS)
@@ -2952,7 +2961,7 @@
   )
 
   (module ArduProMiniTKB:ArduProMini-6 (layer F.Cu) (tedit 54CFF598) (tstamp 582CBC46)
-    (at 196.074042 149.915166 90)
+    (at 186 151 90)
     (path /582D5713)
     (fp_text reference uP1 (at 11.43 1.27 90) (layer F.SilkS)
       (effects (font (size 1.5 1.5) (thickness 0.15)))
