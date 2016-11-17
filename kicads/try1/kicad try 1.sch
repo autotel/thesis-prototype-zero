@@ -228,37 +228,37 @@ Text Label 2350 2300 3    60   ~ 0
 MUXAR14
 Text Label 2250 2300 3    60   ~ 0
 MUXAR15
-Text Label 5750 10400 1    60   ~ 0
+Text Label 5750 10350 1    60   ~ 0
 MUXAS0
-Text Label 4700 10400 1    60   ~ 0
+Text Label 4700 10350 1    60   ~ 0
 MUXAS1
-Text Label 3650 10400 1    60   ~ 0
+Text Label 3650 10350 1    60   ~ 0
 MUXAS2
-Text Label 2600 10400 1    60   ~ 0
+Text Label 2600 10350 1    60   ~ 0
 MUXAS3
-Text Label 5650 10400 1    60   ~ 0
+Text Label 5650 10350 1    60   ~ 0
 MUXAB4
-Text Label 4600 10400 1    60   ~ 0
+Text Label 4600 10350 1    60   ~ 0
 MUXAB5
-Text Label 3550 10400 1    60   ~ 0
+Text Label 3550 10350 1    60   ~ 0
 MUXAB6
-Text Label 2500 10400 1    60   ~ 0
+Text Label 2500 10350 1    60   ~ 0
 MUXAB7
-Text Label 5550 10400 1    60   ~ 0
+Text Label 5550 10350 1    60   ~ 0
 MUXAG8
-Text Label 4500 10400 1    60   ~ 0
+Text Label 4500 10350 1    60   ~ 0
 MUXAG9
-Text Label 3450 10400 1    60   ~ 0
+Text Label 3450 10350 1    60   ~ 0
 MUXAG10
-Text Label 2400 10400 1    60   ~ 0
+Text Label 2400 10350 1    60   ~ 0
 MUXAG11
-Text Label 2300 10400 1    60   ~ 0
+Text Label 2300 10350 1    60   ~ 0
 MUXAR15
-Text Label 3350 10400 1    60   ~ 0
+Text Label 3350 10350 1    60   ~ 0
 MUXAR14
-Text Label 4400 10400 1    60   ~ 0
+Text Label 4400 10350 1    60   ~ 0
 MUXAR13
-Text Label 5450 10400 1    60   ~ 0
+Text Label 5450 10350 1    60   ~ 0
 MUXAR12
 Wire Wire Line
 	1800 11500 1800 11850
