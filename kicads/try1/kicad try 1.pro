@@ -1,4 +1,4 @@
-update=15-11-2016 22:14:36
+update=17-11-2016 17:07:49
 version=1
 last_client=kicad
 [cvpcb]
@@ -6,25 +6,6 @@ version=1
 NetIExt=net
 [general]
 version=1
-[pcbnew]
-version=1
-PageLayoutDescrFile=
-LastNetListRead=kicad try 1.net
-PadDrill=0.6
-PadDrillOvalY=0.6
-PadSizeH=1.5
-PadSizeV=1.5
-PcbTextSizeV=1.5
-PcbTextSizeH=1.5
-PcbTextThickness=0.3
-ModuleTextSizeV=1
-ModuleTextSizeH=1
-ModuleTextSizeThickness=0.15
-SolderMaskClearance=0
-SolderMaskMinWidth=0
-DrawSegmentWidth=0.2
-BoardOutlineThickness=0.09999999999999999
-ModuleOutlineThickness=0.15
 [eeschema]
 version=1
 LibDir=C:/Users/joaquin/Documents/kicad libraries;C:/Users/joaquin/Documents/kicad libraries/button_pad_silicon_2x2;C:/Users/joaquin/Documents/kicad libraries/kicad-library-master;C:/Users/joaquin/Documents/kicad libraries/SparkFun-Eagle-Libraries-master/SparkFun-Eagle-Libraries-master
@@ -63,3 +44,22 @@ LibName31=button_pad_silicon_2x2/button_pad_silicon_2x2
 LibName32=Custom libraries/4067 for 24-Pin SSOP
 LibName33=arduinos/ArduProMiniTKB
 LibName34=Custom libraries/Sparkfun-silicon-buttons-pad
+[pcbnew]
+version=1
+PageLayoutDescrFile=
+LastNetListRead=kicad try 1-more breadboard.net
+PadDrill=0.6
+PadDrillOvalY=0.6
+PadSizeH=1.5
+PadSizeV=1.5
+PcbTextSizeV=1.5
+PcbTextSizeH=1.5
+PcbTextThickness=0.3
+ModuleTextSizeV=1
+ModuleTextSizeH=1
+ModuleTextSizeThickness=0.15
+SolderMaskClearance=0
+SolderMaskMinWidth=0
+DrawSegmentWidth=0.2
+BoardOutlineThickness=0.09999999999999999
+ModuleOutlineThickness=0.15
