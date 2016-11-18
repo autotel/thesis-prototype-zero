@@ -1,4 +1,4 @@
-(module 2x2-buttonpad-sparkfun-autotel (layer F.Cu) (tedit 582EDD96)
+(module button-pad-autotel:2x2-buttonpad-sparkfun-autotel (layer F.Cu) (tedit 582EDD96)
   (fp_text reference PAD-matrix-2 (at 1.17 -19.83 90) (layer F.SilkS)
     (effects (font (thickness 0.15)))
   )
