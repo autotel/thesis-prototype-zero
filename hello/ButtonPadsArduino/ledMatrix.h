@@ -1,7 +1,7 @@
 #ifndef LedMatrix_h
 #define LedMatrix_h
 
-#include <Arduino.h>
+#include "Arduino.h"
 
 class LedMatrix
 {
@@ -10,17 +10,20 @@ class LedMatrix
     void setup();
     void change();
     void refresh();
-    void refresh(byte);
-    void sum(int,int);
-    void diff(int,int);
-    void sett(int,int);
+    int refresh(byte);
+    void sum(int,int,int);
+    void diff(int,int,int);
+    void sett(int,int,int);
+    int buttonPressed(byte);
   private:
     int _pin;
-    byte t;
     long lastchange;
-    int byteMapRed;
-    int byteMapBlue;
+    int  byteMaps [4];
     int registerOffset;
+    int clockpin;
+    int latchpin;
+    int serialpin;
+
 };
 
 #endif

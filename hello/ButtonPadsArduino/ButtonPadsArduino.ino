@@ -1,53 +1,83 @@
 #include <TimerOne.h>
-#include <LiquidCrystal.h>
 #include "ledMatrix.h"
-// initialize the library with the numbers of the interface pins
-//----------- lcd(23, 22, 16, 15, 14, 13);
-LiquidCrystal lcd(33, 24, 3,  4,  16, 17);
-
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
 LedMatrix lm;
 void setup() {
-  // set up the LCD's number of columns and rows:
-  lcd.begin(16, 2);
   lm.setup();
-  //set an interrupt for refreshing the leds. otherwise it flickers
-  Timer1.initialize(40);
-  Timer1.attachInterrupt(refreshLeds); 
+  lcd.begin(16, 2);
+  lcd.print("Sequencer");
+  lcd.setCursor(0,1);
+  lcd.print("transgression");
+  Timer1.initialize(100);
+  Timer1.attachInterrupt(refreshLeds);
 }
+
+byte pixelRefresh = 0;
+int largestButton = 0;
 
 long lastChange = 0;
 int beatPosition = 0;
 
-int refreshesEachPrint=0;
-void loop() {
-  if (millis() - lastChange > 250) {
-    int modularpos=beatPosition % 16;
-    lastChange = millis();
-    lm.sett((int)(1 << modularpos),(int)0x0000);
-    lm.sum((int)0x0000,(int) 0x8CA9);
-    beatPosition++;
-    lcd.setCursor(0, 0);
-    lcd.print("REA: "+String(refreshesEachPrint));
-    lcd.setCursor(0, 1);
-    lcd.print("beat: "+String(beatPosition));
-    refreshesEachPrint=0;
-  }
-  
+int refreshesEachPrint = 0;
 
-  //this is really slow!
-  // set the cursor to column 0, line 1
-  // (note: line 1 is the second row, since counting begins with 0):
-  //lcd.setCursor(0, 1);
-  // print the number of seconds since reset:
-  //lcd.print(/*String( GPIOD_PDIR, BIN)+"-"+*/String( 0xa00|GPIOD_PDOR, BIN)+"-");
+int testPattern = 0x0a00;
+void loop() {
+  int modularpos = beatPosition % 16;
+  if (millis() - lastChange > 250) {
+    onBeat(modularpos);
+    lastChange = millis();
+
+
+
+    beatPosition++;
+
+    
+    
+    //lm.diff(0x1<<modularpos,0,0);
+    refreshesEachPrint = 0;
+    lcd.setCursor(0,1);
+    lcd.print("0x"+String(largestButton,HEX)+"---");
+    largestButton=0;
+    testPattern=0;
+  }
+
+  //lm.sett((int)(1 << modularpos), 0xaa);
+  //lm.sum((int)testPattern, 0x00);
 
 }
-byte pixelRefresh=0;
-void refreshLeds(void){
+void onBeat(int beatn) {
 
+}
+
+void refreshLeds(void) {
+
+  int modularpos =beatPosition%16;
+  //int thispress = lm.buttonPressed(pixelRefresh)
+  int thispress = lm.refresh(pixelRefresh);
   
-  lm.refresh(pixelRefresh);
+  
+  
+  if (thispress > largestButton) {
+    largestButton = thispress;
+  }
+  
+  if (thispress > 0xF0) {
+    
+    testPattern |= (0x0001 << pixelRefresh);
+    
+    
+  } else {
+    testPattern &= ~(0x0001<<pixelRefresh);
+  }
+  lm.sett(testPattern|(1<<modularpos), 1<<modularpos, testPattern|(1<<modularpos));
+  //delay(100);
+
   pixelRefresh++;
-  pixelRefresh=pixelRefresh%16;
+  pixelRefresh = pixelRefresh % 64;
+  //delay(100);
+
+
+  //}
 }
 

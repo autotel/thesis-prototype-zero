@@ -1,5 +1,5 @@
 
-(rules PCB kicad try 1
+(rules PCB version with DIP muxes
   (snap_angle 
     fortyfive_degree
   )
@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 11747)
+    (start_pass_no 5732)
     (layer_rule F.Cu
       (active on)
       (preferred_direction horizontal)
@@ -86,9 +86,7 @@
     "Net-(P11-Pad7)" "Net-(P11-Pad8)" "Net-(P13-Pad1)" "Net-(P13-Pad2)" "Net-(P13-Pad3)" "Net-(P13-Pad4)" "Net-(P13-Pad5)" "Net-(P13-Pad6)"
     "Net-(P13-Pad7)" "Net-(P13-Pad8)" "Net-(P15-Pad1)" "Net-(P15-Pad2)" "Net-(P15-Pad3)" "Net-(P15-Pad4)" "Net-(P15-Pad5)" "Net-(P15-Pad6)"
     "Net-(P15-Pad7)" "Net-(P15-Pad8)" "Net-(P17-Pad1)" "Net-(P17-Pad2)" "Net-(P17-Pad3)" "Net-(P17-Pad4)" "Net-(P17-Pad5)" "Net-(P17-Pad6)"
-    "Net-(P17-Pad7)" "Net-(P17-Pad8)" "Net-(PAD-matrix-3-PadBLU1)" "Net-(PAD-matrix-3-PadGRN1)" "Net-(PAD-matrix-3-PadRED1)" "Net-(PAD-matrix-3-PadSIG1)" "Net-(PAD-matrix-3-PadBLU2)" "Net-(PAD-matrix-3-PadGRN2)"
-    "Net-(PAD-matrix-3-PadRED2)" "Net-(PAD-matrix-3-PadSIG3)" "Net-(PAD-matrix-4-PadBLU1)" "Net-(PAD-matrix-4-PadGRN1)" "Net-(PAD-matrix-4-PadRED1)" "Net-(PAD-matrix-4-PadSIG1)" "Net-(PAD-matrix-4-PadBLU2)" "Net-(PAD-matrix-4-PadGRN2)"
-    "Net-(PAD-matrix-4-PadRED2)" "Net-(PAD-matrix-4-PadSIG3)"
+    "Net-(P17-Pad7)" "Net-(P17-Pad8)"
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule
