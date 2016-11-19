@@ -111,7 +111,7 @@ int LedMatrix::refresh(byte currentPixel){
     pinMode(A1,INPUT);
     PORTC |= 0b1;
     PORTD = (nibbleB << 4) | (nibbleA);
-    delayMicroseconds(10);
+    //delayMicroseconds(10);
     return analogRead(A1);
   } else {
     
