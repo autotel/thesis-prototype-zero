@@ -21,8 +21,8 @@
       )
     )
     (boundary
-      (path pcb 0  60000 -51500  60000 -151500  226500 -151500  226500 -51500
-            60000 -51500  60000 -51500)
+      (path pcb 0  60000 -51500  60000 -151500  224500 -151500  226500 -149500
+            226500 -54000  224000 -51500  60000 -51500  60000 -51500)
     )
     (keepout "" (polygon F.Cu 0  145034 -70612  145415 -71120  145415 -71755  147320 -72009
             147828 -72009  149606 -71755  151638 -70866  153289 -69469  154178 -68199
@@ -143,6 +143,8 @@
             71882 -131636  70231 -131890  68326 -132778  66802 -134048  65913 -135192
             65151 -136716  64770 -138240  64770 -139890  64897 -141288  65786 -143192
             66802 -144590  67564 -145224  69215 -145606))
+    (keepout "" (polygon F.Cu 0  104140 -152400  106680 -147320  114300 -147320  114300 -152400))
+    (keepout "" (polygon F.Cu 0  160020 -152400  154940 -152400  154940 -147320  160020 -147320))
     (via "Via[0-1]_749.3:500.38_um")
     (rule
       (width 203.2)
@@ -152,6 +154,10 @@
     )
   )
   (placement
+    (component "SparkFun-Connectors:1X08"
+      (place P3 222250 -60960 front 270 (PN CONN_01X16))
+      (place P19 219710 -60960 front 270 (PN CONN_01X16))
+    )
     (component "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10"
       (place D1 70500 -149000 back 270 (PN D))
       (place D2 70002.5 -124000 back 270 (PN D))
@@ -170,25 +176,24 @@
       (place D15 160000 -89500 back 0 (PN D))
       (place D16 160000 -64000 back 0 (PN D))
     )
-    (component "SparkFun-Connectors:1X08"
-      (place P5 213360 -55880 front 270 (PN CONN_01X08))
-      (place P6 210820 -73660 front 90 (PN CONN_01X08))
+    (component "SparkFun-Connectors:1X08::1"
+      (place P5 212090 -55880 front 270 (PN CONN_01X08))
+      (place P6 209550 -73660 front 90 (PN CONN_01X08))
       (place CONN_01X08 187960 -96520 front 0 (PN VCC2))
-      (place P7 213360 -76200 front 270 (PN CONN_01X08))
-      (place P8 210820 -93980 front 90 (PN CONN_01X08))
+      (place P7 212090 -76200 front 270 (PN CONN_01X08))
+      (place P8 209550 -93980 front 90 (PN CONN_01X08))
       (place P9 187960 -76200 front 0 (PN CONN_01X08))
       (place P10 205740 -81280 front 180 (PN CONN_01X08))
-      (place P11 220980 -93980 front 90 (PN CONN_01X08))
-      (place P12 223520 -76200 front 270 (PN CONN_01X08))
+      (place P11 214630 -93980 front 90 (PN CONN_01X08))
+      (place P12 217170 -76200 front 270 (PN CONN_01X08))
       (place P13 205740 -60960 front 180 (PN CONN_01X08))
       (place P14 187960 -55880 front 0 (PN CONN_01X08))
-      (place P15 223520 -55880 front 270 (PN CONN_01X08))
-      (place P16 220980 -73660 front 90 (PN CONN_01X08))
+      (place P15 217170 -55880 front 270 (PN CONN_01X08))
+      (place P16 214630 -73660 front 90 (PN CONN_01X08))
       (place P17 205740 -66040 front 180 (PN CONN_01X08))
       (place P18 187960 -71120 front 0 (PN CONN_01X08))
       (place P1 187960 -101600 front 0 (PN CONN_01X08))
       (place P2 187960 -86360 front 0 (PN CONN_01X08))
-      (place P3 220980 -127000 front 90 (PN CONN_01X08))
       (place P4 220980 -129540 front 270 (PN CONN_01X08))
     )
     (component Buttons_Switches_ThroughHole:SW_PUSH_6mm
@@ -198,11 +203,11 @@
       (place SW4 170232 -67270 front 90 (PN SW_PUSH))
     )
     (component "ArduProMiniTKB:ArduProMini-6"
-      (place uP1 193141 -105933 front 0 (PN "ARDUPROMINI-6"))
+      (place uP1 219329 -153797 front 180 (PN "ARDUPROMINI-6"))
     )
     (component Resistors_ThroughHole:Resistor_Horizontal_RM10mm
-      (place R1 193040 -147320 front 90 (PN R))
-      (place R2 186690 -137160 front 270 (PN R))
+      (place R1 198120 -129540 front 90 (PN R))
+      (place R2 193040 -119380 front 270 (PN R))
     )
     (component "button-pad-autotel:2x2-buttonpad-sparkfun-autotel"
       (place "PAD-matrix-4" 160000 -101500 front 90 (PN BP7))
@@ -211,11 +216,32 @@
       (place "PAD-matrix-2" 110000 -101500 front 90 (PN BP15))
     )
     (component "SparkFun-DigitalIC:DIL24-6"
-      (place U3 172720 -135890 back 90 (PN CD74HCT4067))
-      (place U2 172720 -67310 back 90 (PN CD74HCT4067))
+      (place U3 172720 -133350 back 90 (PN CD74HCT4067))
+      (place U2 172720 -69850 back 90 (PN CD74HCT4067))
+    )
+    (component "SparkFun-Electromechanical:ENCODER_LED_2"
+      (place ENC0 191250 -141500 front 90 (PN ENC0))
     )
   )
   (library
+    (image "SparkFun-Connectors:1X08"
+      (pin Rect[A]Pad_1879.6x1879.6_um (rotate 90) 1 7620 0)
+      (pin Round[A]Pad_1879.6_um (rotate 90) 2 12700 0)
+      (pin Round[A]Pad_1879.6_um (rotate 90) 3 25400 0)
+      (pin Round[A]Pad_1879.6_um (rotate 90) 4 27940 0)
+      (pin Round[A]Pad_1879.6_um (rotate 90) 5 30480 0)
+      (pin Round[A]Pad_1879.6_um (rotate 90) 6 33020 0)
+      (pin Round[A]Pad_1879.6_um (rotate 90) 7 35560 0)
+      (pin Round[A]Pad_1879.6_um (rotate 90) 8 38100 0)
+      (pin Round[A]Pad_1524_um 9 0 0)
+      (pin Round[A]Pad_1524_um 10 2540 0)
+      (pin Round[A]Pad_1524_um 11 5080 0)
+      (pin Round[A]Pad_1524_um 12 10160 0)
+      (pin Round[A]Pad_1524_um 13 15240 0)
+      (pin Round[A]Pad_1524_um 14 17780 0)
+      (pin Round[A]Pad_1524_um 15 20320 0)
+      (pin Round[A]Pad_1524_um 16 22860 0)
+    )
     (image "Diodes_ThroughHole:Diode_DO-41_SOD81_Horizontal_RM10"
       (outline (path signal 150  7620 2.54  8636 2.54))
       (outline (path signal 150  2794 2.54  1524 2.54))
@@ -234,7 +260,7 @@
       (pin Round[A]Pad_1998.98_um (rotate 180) 2 10160 2.54)
       (pin Rect[A]Pad_1998.98x1998.98_um (rotate 180) 1 0 2.54)
     )
-    (image "SparkFun-Connectors:1X08"
+    (image "SparkFun-Connectors:1X08::1"
       (outline (path signal 203.2  14605 1270  15875 1270))
       (outline (path signal 203.2  15875 1270  16510 635))
       (outline (path signal 203.2  16510 -635  15875 -1270))
@@ -688,6 +714,34 @@
       (pin Oval[A]Pad_2641.6x1320.8_um (rotate 90) 23 -11430 7620)
       (pin Oval[A]Pad_2641.6x1320.8_um (rotate 90) 24 -13970 7620)
     )
+    (image "SparkFun-Electromechanical:ENCODER_LED_2"
+      (outline (path signal 203.2  -3900 6700  3900 6700))
+      (outline (path signal 203.2  -6200 1700  -6200 5893.8))
+      (outline (path signal 203.2  -5393.8 6700  -3900 6700))
+      (outline (path signal 203.2  3400 -6700  -3400 -6700))
+      (outline (path signal 203.2  -6200 -1700  -6200 1700))
+      (outline (path signal 203.2  6200 1700  6200 -1700))
+      (outline (path signal 203.2  5393.8 6700  3900 6700))
+      (outline (path signal 203.2  6200 1700  6200 5893.8))
+      (outline (path signal 203.2  6200 -1700  6200 -5893.8))
+      (outline (path signal 203.2  5393.8 -6700  3400 -6700))
+      (outline (path signal 203.2  -5393.8 -6700  -3400 -6700))
+      (outline (path signal 203.2  -6200 -1700  -6200 -5893.8))
+      (outline (path signal 203.2  3000 0  2853.17 -927.051  2427.05 -1763.36  1763.36 -2427.05
+            927.051 -2853.17  0 -3000  -927.051 -2853.17  -1763.36 -2427.05
+            -2427.05 -1763.36  -2853.17 -927.051  -3000 0  -2853.17 927.051
+            -2427.05 1763.36  -1763.36 2427.05  -927.051 2853.17  0 3000
+            927.051 2853.17  1763.36 2427.05  2427.05 1763.36  2853.17 927.051))
+      (pin Round[A]Pad_1800_um A -2500 -7500)
+      (pin Round[A]Pad_1800_um C 0 -7500)
+      (pin Round[A]Pad_1800_um B 2500 -7500)
+      (pin Round[A]Pad_1778_um +G 1000 7000)
+      (pin Round[A]Pad_1778_um +R -1000 7000)
+      (pin Round[A]Pad_3116_um P$1 -5550 0)
+      (pin Round[A]Pad_3116_um P$2 5550 0)
+      (pin Round[A]Pad_1778_um GND 3000 7000)
+      (pin Round[A]Pad_1778_um SW -3000 7000)
+    )
     (padstack Round[A]Pad_1016_um
       (shape (circle F.Cu 1016))
       (shape (circle B.Cu 1016))
@@ -708,6 +762,16 @@
       (shape (circle B.Cu 1524))
       (attach off)
     )
+    (padstack Round[A]Pad_1778_um
+      (shape (circle F.Cu 1778))
+      (shape (circle B.Cu 1778))
+      (attach off)
+    )
+    (padstack Round[A]Pad_1800_um
+      (shape (circle F.Cu 1800))
+      (shape (circle B.Cu 1800))
+      (attach off)
+    )
     (padstack Round[A]Pad_1879.6_um
       (shape (circle F.Cu 1879.6))
       (shape (circle B.Cu 1879.6))
@@ -721,6 +785,11 @@
     (padstack Round[A]Pad_2000_um
       (shape (circle F.Cu 2000))
       (shape (circle B.Cu 2000))
+      (attach off)
+    )
+    (padstack Round[A]Pad_3116_um
+      (shape (circle F.Cu 3116))
+      (shape (circle B.Cu 3116))
       (attach off)
     )
     (padstack Oval[A]Pad_2641.6x1320.8_um
@@ -810,32 +879,23 @@
         CONN_01X08-2 CONN_01X08-3 CONN_01X08-4 CONN_01X08-5 CONN_01X08-6 CONN_01X08-7
         CONN_01X08-8 P1-1 P1-2 P1-3 P1-4 P1-5 P1-6 P1-7 P1-8 U3-24 U2-24)
     )
-    (net GNDREF
-      (pins uP1-10 P2-1 P2-2 P2-3 P2-4 P2-5 P2-6 P2-7 P2-8 R1-2 R2-1 U3-15 U2-15)
-    )
     (net /PB0
-      (pins uP1-17 P3-1)
+      (pins P3-1 uP1-17 P19-1)
     )
     (net /PB1
-      (pins uP1-18 P3-2)
+      (pins P3-2 uP1-18 P19-2)
     )
     (net /PB2
-      (pins uP1-30 P3-3)
+      (pins P3-3 uP1-30 P19-3)
     )
     (net /PB3
-      (pins uP1-29 P3-4)
+      (pins P3-4 uP1-29 P19-4)
     )
     (net /PB4
-      (pins uP1-28 P3-5)
+      (pins P3-5 uP1-28 P19-5)
     )
     (net /PB5
-      (pins uP1-27 P3-6)
-    )
-    (net "Net-(P3-Pad7)"
-      (pins P3-7)
-    )
-    (net "Net-(P3-Pad8)"
-      (pins P3-8)
+      (pins P3-6 uP1-27 P19-6)
     )
     (net /A2
       (pins uP1-24 P4-1)
@@ -990,7 +1050,8 @@
       (pins uP1-7 U2-11)
     )
     (net GND
-      (pins U3-12 U2-12)
+      (pins uP1-10 P2-1 P2-2 P2-3 P2-4 P2-5 P2-6 P2-7 P2-8 R1-2 R2-1 U3-12 U3-15 U2-12
+        U2-15)
     )
     (net /PD3
       (pins uP1-12 U2-13)
@@ -999,16 +1060,16 @@
       (pins uP1-11 U2-14)
     )
     (net /MUX12
-      (pins U3-19)
+      (pins P13-1 P14-8 U3-19)
     )
     (net /MUX13
-      (pins U3-18)
+      (pins P13-2 P14-7 U3-18)
     )
     (net /MUX14
-      (pins U3-17)
+      (pins P13-3 P14-6 U3-17)
     )
     (net /MUX15
-      (pins U3-16)
+      (pins P13-4 P14-5 U3-16)
     )
     (net /PD4
       (pins uP1-13 U3-10)
@@ -1109,18 +1170,6 @@
     (net "Net-(P11-Pad8)"
       (pins P11-8 P12-1)
     )
-    (net "Net-(P13-Pad1)"
-      (pins P13-1 P14-8)
-    )
-    (net "Net-(P13-Pad2)"
-      (pins P13-2 P14-7)
-    )
-    (net "Net-(P13-Pad3)"
-      (pins P13-3 P14-6)
-    )
-    (net "Net-(P13-Pad4)"
-      (pins P13-4 P14-5)
-    )
     (net "Net-(P13-Pad5)"
       (pins P13-5 P14-4)
     )
@@ -1181,12 +1230,42 @@
     (net "Net-(P17-Pad8)"
       (pins P17-8 P18-1)
     )
+    (net "Net-(P19-Pad7)"
+      (pins P3-7 P19-7)
+    )
+    (net "Net-(P19-Pad8)"
+      (pins P3-8 P19-8)
+    )
+    (net "Net-(P19-Pad9)"
+      (pins P3-9 P19-9)
+    )
+    (net "Net-(P19-Pad10)"
+      (pins P3-10 P19-10)
+    )
+    (net "Net-(P19-Pad11)"
+      (pins P3-11 P19-11)
+    )
+    (net "Net-(P19-Pad12)"
+      (pins P3-12 P19-12)
+    )
+    (net "Net-(P19-Pad13)"
+      (pins P3-13 P19-13)
+    )
+    (net "Net-(P19-Pad14)"
+      (pins P3-14 P19-14)
+    )
+    (net "Net-(P19-Pad15)"
+      (pins P3-15 P19-15)
+    )
+    (net "Net-(P19-Pad16)"
+      (pins P3-16 P19-16)
+    )
     (class kicad_default "" /A0 /A1 /A2 /A3 /A4 /A5 /A6 /A7 /MUX12 /MUX13
       /MUX14 /MUX15 /MUXAB4 /MUXAB5 /MUXAB6 /MUXAB7 /MUXAG10 /MUXAG11 /MUXAG8
       /MUXAG9 /MUXAR12 /MUXAR13 /MUXAR14 /MUXAR15 /MUXAS0 /MUXAS1 /MUXAS2
       /MUXAS3 /MUXBG10 /MUXBG11 /MUXBG8 /MUXBG9 /MUXBS0 /MUXBS1 /MUXBS2 /MUXBS3
       /MUXBS4 /MUXBS5 /MUXBS6 /MUXBS7 /PB0 /PB1 /PB2 /PB3 /PB4 /PB5 /PD0 /PD1
-      /PD2 /PD3 /PD4 /PD5 /PD6 /PD7 /VCC GND GNDREF "Net-(D1-Pad2)" "Net-(D10-Pad2)"
+      /PD2 /PD3 /PD4 /PD5 /PD6 /PD7 /VCC GND "Net-(D1-Pad2)" "Net-(D10-Pad2)"
       "Net-(D11-Pad2)" "Net-(D12-Pad2)" "Net-(D13-Pad2)" "Net-(D14-Pad2)"
       "Net-(D15-Pad2)" "Net-(D16-Pad2)" "Net-(D2-Pad2)" "Net-(D3-Pad2)" "Net-(D4-Pad2)"
       "Net-(D5-Pad2)" "Net-(D6-Pad2)" "Net-(D7-Pad2)" "Net-(D8-Pad2)" "Net-(D9-Pad2)"
@@ -1194,13 +1273,14 @@
       "Net-(P10-Pad5)" "Net-(P10-Pad6)" "Net-(P10-Pad7)" "Net-(P10-Pad8)"
       "Net-(P11-Pad1)" "Net-(P11-Pad2)" "Net-(P11-Pad3)" "Net-(P11-Pad4)"
       "Net-(P11-Pad5)" "Net-(P11-Pad6)" "Net-(P11-Pad7)" "Net-(P11-Pad8)"
-      "Net-(P13-Pad1)" "Net-(P13-Pad2)" "Net-(P13-Pad3)" "Net-(P13-Pad4)"
       "Net-(P13-Pad5)" "Net-(P13-Pad6)" "Net-(P13-Pad7)" "Net-(P13-Pad8)"
       "Net-(P15-Pad1)" "Net-(P15-Pad2)" "Net-(P15-Pad3)" "Net-(P15-Pad4)"
       "Net-(P15-Pad5)" "Net-(P15-Pad6)" "Net-(P15-Pad7)" "Net-(P15-Pad8)"
       "Net-(P17-Pad1)" "Net-(P17-Pad2)" "Net-(P17-Pad3)" "Net-(P17-Pad4)"
       "Net-(P17-Pad5)" "Net-(P17-Pad6)" "Net-(P17-Pad7)" "Net-(P17-Pad8)"
-      "Net-(P3-Pad7)" "Net-(P3-Pad8)" "Net-(P4-Pad6)" "Net-(P4-Pad7)" "Net-(P4-Pad8)"
+      "Net-(P19-Pad10)" "Net-(P19-Pad11)" "Net-(P19-Pad12)" "Net-(P19-Pad13)"
+      "Net-(P19-Pad14)" "Net-(P19-Pad15)" "Net-(P19-Pad16)" "Net-(P19-Pad7)"
+      "Net-(P19-Pad8)" "Net-(P19-Pad9)" "Net-(P4-Pad6)" "Net-(P4-Pad7)" "Net-(P4-Pad8)"
       "Net-(P5-Pad1)" "Net-(P5-Pad2)" "Net-(P5-Pad3)" "Net-(P5-Pad4)" "Net-(P5-Pad5)"
       "Net-(P5-Pad6)" "Net-(P5-Pad7)" "Net-(P5-Pad8)" "Net-(P7-Pad1)" "Net-(P7-Pad2)"
       "Net-(P7-Pad3)" "Net-(P7-Pad4)" "Net-(P7-Pad5)" "Net-(P7-Pad6)" "Net-(P7-Pad7)"

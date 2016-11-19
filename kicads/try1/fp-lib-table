@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name button-pad-autotel)(type KiCad)(uri "$(KIPRJMOD)\\button-pad-autotel.pretty")(options "")(descr ""))
+  (lib (name lcd32-breakout-connector)(type KiCad)(uri "$(KIPRJMOD)\\lcd32-breakout-connector.pretty")(options "")(descr ""))
 )
