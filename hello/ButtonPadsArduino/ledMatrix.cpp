@@ -24,19 +24,19 @@ void LedMatrix::setup() {
   byteMaps[3] = 0;
 }
 void LedMatrix::sum(int red, int green, int blue) {
-  byteMaps[1] |= blue;
+  byteMaps[1] |= red;
   byteMaps[2] |= green;
-  byteMaps[3] |= red;
+  byteMaps[3] |= blue;
 }
 void LedMatrix::diff(int red, int green, int blue) {
-  byteMaps[1] ^= blue;
+  byteMaps[1] ^= red;
   byteMaps[2] ^= green;
-  byteMaps[3] ^= red;
+  byteMaps[3] ^= blue;
 }
 void LedMatrix::sett(int red, int green, int blue) {
-  byteMaps[1] = blue;
+  byteMaps[1] = red;
   byteMaps[2] = green;
-  byteMaps[3] = red;
+  byteMaps[3] = blue;
 }
 /*int LedMatrix::buttonPressed(byte currentPixel) {
 

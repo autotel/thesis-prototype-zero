@@ -18,10 +18,10 @@ int largestButton = 0;
 
 long lastChange = 0;
 int beatPosition = 0;
-
 int refreshesEachPrint = 0;
-
 int testPattern = 0x0a00;
+
+
 void loop() {
   int modularpos = beatPosition % 16;
   if (millis() - lastChange > 250) {
