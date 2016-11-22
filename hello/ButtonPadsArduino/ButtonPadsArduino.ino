@@ -39,7 +39,7 @@ void loop() {
     lcd.setCursor(0,1);
     lcd.print("0x"+String(largestButton,HEX)+"---");
     largestButton=0;
-    testPattern=0;
+    //testPattern=0;
   }
 
   //lm.sett((int)(1 << modularpos), 0xaa);
@@ -62,13 +62,10 @@ void refreshLeds(void) {
     largestButton = thispress;
   }
   
-  if (thispress > 0xF0) {
-    
+  if (thispress > 0xF) {
     testPattern |= (0x0001 << pixelRefresh);
-    
-    
   } else {
-    testPattern &= ~(0x0001<<pixelRefresh);
+    //testPattern &= ~(0x0001<<pixelRefresh);
   }
   lm.sett(testPattern|(1<<modularpos), 1<<modularpos, testPattern|(1<<modularpos));
   //delay(100);

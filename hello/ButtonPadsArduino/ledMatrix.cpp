@@ -10,11 +10,12 @@ void LedMatrix::setup() {
   lastchange = 0;
   _pin = 0;
   //the perfect pulldown is 2.5K ohms
+  analogA=A0;
+  analogB=A1;
 
-  //analog reader}
-  pinMode(A0, INPUT);
-  pinMode(A1, OUTPUT);
- 
+  pinMode(analogA, OUTPUT);
+  pinMode(analogB, OUTPUT);
+  digitalWrite(analogA,HIGH);
   //set all pins from 0 to 7 to output
   DDRD = 0xFF;
   //empty byteMaps.. I guess this is useless anyways
@@ -83,8 +84,8 @@ void LedMatrix::sett(int red, int green, int blue) {
     }else{
       return 0x00;
     }
-    pinMode(A1,INPUT);
-    return analogRead(A1);/**
+    pinMode(analogB,INPUT);
+    return analogRead(analogB);/**
   }*/
 
 int LedMatrix::refresh(byte currentPixel){
@@ -108,18 +109,18 @@ int LedMatrix::refresh(byte currentPixel){
   
   if (currentLayer == 0) {
     nibbleB += 4; //~0x10 << ((currentPixel / 4) % 4);
-    pinMode(A1,INPUT);
+    pinMode(analogB,INPUT);
     PORTC |= 0b1;
     PORTD = (nibbleB << 4) | (nibbleA);
     //delayMicroseconds(10);
-    return analogRead(A1);
+    return analogRead(analogB);
   } else {
     
     //if we are displaying a layer of pixels,
     //pinMode(A0, OUTPUT);
     
     if ((byteMaps[currentLayer] >> currentPixel % 16) & 0x0001) {
-      pinMode(A1,OUTPUT);
+      pinMode(analogB,OUTPUT);
       //ground & power the led
       PORTC |= 0b1;
       PORTC &= ~0b10;

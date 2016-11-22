@@ -15,6 +15,8 @@ class LedMatrix
     void diff(int,int,int);
     void sett(int,int,int);
     int buttonPressed(byte);
+    int analogA;
+    int analogB;
   private:
     int _pin;
     long lastchange;

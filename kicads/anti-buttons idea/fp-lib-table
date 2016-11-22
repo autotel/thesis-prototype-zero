@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name antiButton)(type KiCad)(uri "$(KIPRJMOD)\\antiButton.pretty")(options "")(descr ""))
+)
