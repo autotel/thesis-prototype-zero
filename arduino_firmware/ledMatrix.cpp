@@ -49,7 +49,6 @@ void LedMatrix::sett(int red, int green, int blue) {
 
 int LedMatrix::refresh(byte currentPixel) {
   int buttonRead = 0;
-
   //nibble A is connected to the mux address for the anodes / btn inputs
   byte nibbleA = 0xF;
   //nibble B is connected to the mux for the cathodes / btn outputs
@@ -58,8 +57,6 @@ int LedMatrix::refresh(byte currentPixel) {
 
   //(currentPixel>>2)&12 is the same than doing floor(currentPixel/16)*4. try it  in codechef
   nibbleA &= (currentPixel % 4) + (currentPixel >> 2 & 12); //[0-15]=0,[16-31]=4,[32-47]=8,[48-63]=12
-
-
   nibbleB &= (currentPixel / 4) % 4; //~0x10 << ((currentPixel / 4) % 4);
 
 

@@ -21,7 +21,7 @@ class LedMatrix
     //functions the programmer can use to attach function handlers to button pad events
     //is afunction that takes as arguments a function, that return void and is called passing a byte as argument
     //in the future the callback will be called with two values; the second being the pressure intensity
-    void onButtonPressed(void (*cbk)(byte)) {
+   /* void onButtonPressed(void (*cbk)(byte)) {
       _buttonPressedCallback = cbk;
     }
     void (*_buttonPressedCallback)(byte);
@@ -31,7 +31,8 @@ class LedMatrix
     }
     void (*_buttonReleasedCallback)(byte);
     byte pixelRefresh;
-    void refreshNextPixel();
+    void refreshNextPixel();*/
+    int  byteMaps [4];
   private:
     
     int _pin;
@@ -42,7 +43,7 @@ class LedMatrix
       [1-3] contain 16 bits representing which leds to turn on and off.
        A future implementation should be a byte per pixel for more colors
     */
-    int  byteMaps [4];
+    
     
 };
 
