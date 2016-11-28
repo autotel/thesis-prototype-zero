@@ -87,32 +87,7 @@ int LedMatrix::refresh(byte currentPixel) {
     return ~0;
   }
 }
-void LedMatrix::refreshNextPixel() {
-  int thispress = refresh(pixelRefresh);
-  //a mask to select the corresponding bit on byteMaps[0]
-  int currentBitMask = (0x0001 << pixelRefresh);
-  //function to detect if the button changed it's state of pressed
-  if (thispress > 0xF) {
-    //if in the previous check this button was not pressed, means this button has just been pressed.
-    if (byteMaps[0]&currentBitMask > 0) {
-      byteMaps[0] |= currentBitMask;
-      if (lem._buttonPressedCallback != 0)
-        lem._buttonPressedCallback(pixelRefresh);
-    }
-  } else {
-    //if in the previous check this button was pressed, means it has just been released.
-    if (byteMaps[0]&currentBitMask > 0) {
-      byteMaps[0] &= ~currentBitMask;
-      if (lem._buttonReleasedCallback != 0)
-        lem._buttonReleasedCallback(pixelRefresh);
-    }
-  }
-  //lm.sett(testPattern|(1<<modularpos), 1<<modularpos, testPattern|(1<<modularpos));
-  //delay(100);
 
-  pixelRefresh++;
-  pixelRefresh = pixelRefresh % 64;
-}
 void LedMatrix::refresh()
 {
 

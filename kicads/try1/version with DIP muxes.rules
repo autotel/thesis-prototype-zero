@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 68)
+    (start_pass_no 11512)
     (layer_rule F.Cu
       (active on)
       (preferred_direction horizontal)
@@ -40,32 +40,14 @@
     )
     (attach off)
   )
-  (padstack "Via[0-1]_749.4:500.38_um"
-    (shape
-      (circle F.Cu 749.4 0.0 0.0)
-    )
-    (shape
-      (circle B.Cu 749.4 0.0 0.0)
-    )
-    (attach off)
-  )
   (via 
     "Via[0-1]_749.3:500.38_um" "Via[0-1]_749.3:500.38_um" default
-  )
-  (via 
-    "Via[0-1]_749.4:500.38_um" "Via[0-1]_749.4:500.38_um" default
   )
   (via 
     "Via[0-1]_749.3:500.38_um-kicad_default" "Via[0-1]_749.3:500.38_um" "kicad_default"
   )
   (via 
-    "Via[0-1]_749.4:500.38_um-kicad_default" "Via[0-1]_749.4:500.38_um" "kicad_default"
-  )
-  (via 
     "Via[0-1]_749.3:500.38_um-seeed" "Via[0-1]_749.3:500.38_um" seeed
-  )
-  (via 
-    "Via[0-1]_749.4:500.38_um-seeed" "Via[0-1]_749.4:500.38_um" seeed
   )
   (via_rule
     default "Via[0-1]_749.3:500.38_um"
@@ -97,14 +79,14 @@
     /MUXAS1 /MUXAB4 /MUXAG8 /MUXAR12 /MUXAS0 /MUXBG9 /MUXBG10 /A1
     /A0 /MUXBS4 /MUXBS5 /MUXBS6 /MUXBS7 /PD0 /PD1 GND
     /PD3 /PD2 /MUX12 /MUX13 /MUX14 /MUX15 /PD4 /PD5
-    /PD7 /PD6 "Net-(uP1-Pad9)" "Net-(uP1-Pad19)" "Net-(uP1-Pad20)" "Net-(uP1-Pad21)" /A7 "Net-(P7-Pad1)"
-    "Net-(P7-Pad2)" "Net-(P7-Pad3)" "Net-(P7-Pad4)" "Net-(P7-Pad5)" "Net-(P7-Pad6)" "Net-(P7-Pad7)" "Net-(P7-Pad8)" "Net-(P10-Pad8)"
-    "Net-(P10-Pad7)" "Net-(P10-Pad6)" "Net-(P10-Pad5)" "Net-(P10-Pad4)" "Net-(P10-Pad3)" "Net-(P10-Pad2)" "Net-(P10-Pad1)" "Net-(P11-Pad1)"
-    "Net-(P11-Pad2)" "Net-(P11-Pad3)" "Net-(P11-Pad4)" "Net-(P11-Pad5)" "Net-(P11-Pad6)" "Net-(P11-Pad7)" "Net-(P11-Pad8)" "Net-(P13-Pad5)"
-    "Net-(P13-Pad6)" "Net-(P13-Pad7)" "Net-(P13-Pad8)" "Net-(P15-Pad1)" "Net-(P15-Pad2)" "Net-(P15-Pad3)" "Net-(P15-Pad4)" "Net-(P15-Pad5)"
-    "Net-(P15-Pad6)" "Net-(P15-Pad7)" "Net-(P15-Pad8)" "Net-(P17-Pad1)" "Net-(P17-Pad2)" "Net-(P17-Pad3)" "Net-(P17-Pad4)" "Net-(P17-Pad5)"
-    "Net-(P17-Pad6)" "Net-(P17-Pad7)" "Net-(P17-Pad8)" "Net-(P19-Pad7)" "Net-(P19-Pad8)" "Net-(P19-Pad9)" "Net-(P19-Pad10)" "Net-(P19-Pad11)"
-    "Net-(P19-Pad12)" "Net-(P19-Pad13)" "Net-(P19-Pad14)" "Net-(P19-Pad15)" "Net-(P19-Pad16)"
+    /PD7 /PD6 "Net-(uP1-Pad9)" "Net-(uP1-Pad20)" "Net-(uP1-Pad21)" /A7 "Net-(P7-Pad1)" "Net-(P7-Pad2)"
+    "Net-(P7-Pad3)" "Net-(P7-Pad4)" "Net-(P7-Pad5)" "Net-(P7-Pad6)" "Net-(P7-Pad7)" "Net-(P7-Pad8)" "Net-(P10-Pad8)" "Net-(P10-Pad7)"
+    "Net-(P10-Pad6)" "Net-(P10-Pad5)" "Net-(P10-Pad4)" "Net-(P10-Pad3)" "Net-(P10-Pad2)" "Net-(P10-Pad1)" "Net-(P11-Pad1)" "Net-(P11-Pad2)"
+    "Net-(P11-Pad3)" "Net-(P11-Pad4)" "Net-(P11-Pad5)" "Net-(P11-Pad6)" "Net-(P11-Pad7)" "Net-(P11-Pad8)" "Net-(P13-Pad5)" "Net-(P13-Pad6)"
+    "Net-(P13-Pad7)" "Net-(P13-Pad8)" "Net-(P15-Pad1)" "Net-(P15-Pad2)" "Net-(P15-Pad3)" "Net-(P15-Pad4)" "Net-(P15-Pad5)" "Net-(P15-Pad6)"
+    "Net-(P15-Pad7)" "Net-(P15-Pad8)" "Net-(P17-Pad1)" "Net-(P17-Pad2)" "Net-(P17-Pad3)" "Net-(P17-Pad4)" "Net-(P17-Pad5)" "Net-(P17-Pad6)"
+    "Net-(P17-Pad7)" "Net-(P17-Pad8)" "Net-(P19-Pad7)" "Net-(P19-Pad8)" "Net-(P19-Pad9)" "Net-(P19-Pad10)" "Net-(P19-Pad11)" "Net-(P19-Pad12)"
+    "Net-(P19-Pad13)" "Net-(P19-Pad14)" "Net-(P19-Pad15)" "Net-(P19-Pad16)" "Net-(CON1-Pad3)" RAWVCC
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule
