@@ -36,15 +36,21 @@ int pressedButtonsBitmap = 0x0000;
 void timedLoop() {
   byte cp16 = cp64 % 16;
   int buttonPressure = readMatrixButton(cp16);
+  int evaluator = 0x1 << cp16;
   if (buttonPressure > 1) {
-    int evaluator = 0x1 << cp16;
     //if last lap this button was not pressed, trigger on  button pressed
     if ((evaluator & pressedButtonsBitmap) == 0) {
-      onButtonPressed(cp16, buttonPressure);
+      onButtonPressed(cp16);
       pressedButtonsBitmap |= evaluator;
+    } else {
+      onButtonHold(cp16, buttonPressure);
     }
   } else {
-    pressedButtonsBitmap &= ~(0x1 << cp16);
+    if ((evaluator & pressedButtonsBitmap) != 0) {
+      onButtonReleased(cp16);
+      pressedButtonsBitmap &= ~(0x1 << cp16);
+    }
+
   }
   /*layers[0]=readMatrixButton(3);
     layers[1]=readMatrixButton(1);
@@ -56,19 +62,19 @@ void timedLoop() {
   cp64++;
   cp64 = cp64 % 64;
 }
-
-void onButtonPressed(byte button, int buttonPressure) {
-
+void onButtonHold(byte button, int buttonPressure) {}
+void onButtonPressed(byte button) {
   int evaluator = 0x1 << button;
   if ((evaluator & layers[2]) == 0) {
     layers[2] |= evaluator;
-  }else{
+  } else {
     layers[2] &= ~ evaluator;
   }
-
   layers[1] = 0x1 << button;
 }
-void onButtonReleased(byte button) {}
+void onButtonReleased(byte button) {
+  layers[1] = 0;
+}
 
 void updatePixel(byte currentPixel) {
 
