@@ -4,7 +4,7 @@
 #include <TimerOne.h>
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(18, 19); // RX, TX
+//SoftwareSerial mySerial(18, 19); // RX, TX
 
 LiquidCrystal lcd(9, 8, 10, 11, 12, 13);
 LedMatrix lm;
@@ -14,9 +14,9 @@ int playhead = 0x0001;
 void setup() {
  // Serial.begin(9600);
   lcd.begin(16, 2);
-  lcd.print("Sequencer");
+  lcd.print(random()*0xFF);
   lcd.setCursor(0, 1);
-  lcd.print("transgression");
+  lcd.print("-");
   lm.setup();
   //lm.onButtonPressed(onSequencerButtonPressed);
   //lm.onButtonReleased(onSequencerButtonReleased);
@@ -25,7 +25,11 @@ void setup() {
   Timer1.attachInterrupt(refreshNextPixel);
 
   // set the data rate for the SoftwareSerial port
-  mySerial.begin(38400);
+  //mySerial.begin(38400);
+
+  pinMode(A6,INPUT_PULLUP);//encoder's
+  pinMode(A7,INPUT_PULLUP);
+
   
   
 }
@@ -33,17 +37,29 @@ String watching = "";
 int beatPosition = 0;
 long lastBeat = 0;
 void loop() {
+  
   int modularpos = beatPosition % 16;
+
+  lm.sett(0xFFFF, playhead << modularpos, pattern);
+  
   if (millis() - lastBeat > 250) {
     lastBeat = millis();
     beatPosition++;
-    lm.sett(0xFFFF, playhead << modularpos, pattern);
+    
     lcd.setCursor(0, 1);
-    lcd.print(watching + "-");
+    
+    int numberwang=0b0;
+   // for(int a=8; a<16; a++){
+      //if(lm.readMuxB(a))
+     // numberwang|=1<<a;
+   // }
+    lcd.print(watching+"-");//""+String(numberwang,BIN)+"-"+
+    
+    
     //Serial.print("heelooo");
-    mySerial.println("Hello, world?");
+    //mySerial.println("Hello, world?");
   }
-
+  
 }
 
 void watch(String what)
@@ -51,7 +67,11 @@ void watch(String what)
   watching = what;
 }
 byte pixelRefresh = 0;
+//readouts behind the mux last 4 addresses 
+byte muxBS8=0x00;
 void refreshNextPixel() {
+  
+  
   int thispress = lm.refresh(pixelRefresh);
   //a mask to select the corresponding bit on byteMaps[0]
   int currentBitMask = (0x1 << pixelRefresh);
@@ -77,13 +97,16 @@ void refreshNextPixel() {
   //delay(100);
 
   pixelRefresh++;
-  pixelRefresh = pixelRefresh % 64;
+  pixelRefresh = pixelRefresh % 32;
 }
 void buttonPressedCallback(byte button) {
   if (pattern & (1 << button)) {
     pattern &= ~(1 << button);
   } else {
     pattern |= 1 << button;
+  }
+  if(button>16){
+    watch(String(button));
   }
   //  = (pattern | (1 << button));
   //pattern=0xFFFF;
