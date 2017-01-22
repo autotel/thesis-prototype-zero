@@ -8,6 +8,9 @@ int analogB;
 int _pin;
 long lastchange;
 
+//contains the midi sequence to play
+byte sequence [96][3];
+
 unsigned int layers [] = {0xfff0, 0x0, 0x0};
 
 void setup() {
@@ -23,10 +26,49 @@ void setup() {
   DDRD = 0xFF;
   Timer1.initialize(200);
   Timer1.attachInterrupt(timedLoop);
+  sequence[2][0]=0x90;
 }
 
 void loop() {
+  evaluateSequence();
+}
 
+bool frameHasNote(byte frame){
+  return (sequence[frame][0]&0xF0)==0x90;
+}
+
+int graph_pointer=0x00;
+int graph_fingers=0x00;
+int graph_sequence=0x00;
+void draw(){
+  
+  layers[2]=graph_sequence;
+  layers[1]=graph_fingers;
+  layers[1]|=graph_pointer;
+  layers[2]|=graph_fingers;
+  
+}
+int currentStep16=0;
+long lastMillis=0;
+unsigned int stepInterval=200;
+void evaluateSequence(){
+  
+  long thisMillis=millis();
+  //evaluate wether to step
+  if(thisMillis-lastMillis>=stepInterval){
+    lastMillis=thisMillis;
+    currentStep16=(currentStep16+1)%16;
+    graph_pointer=1<<currentStep16;
+  }
+  //create the graphic layer to display the sequence
+  
+  graph_sequence=0;
+  for(byte a=0; a<16; a++){
+    if(frameHasNote(a)){
+      graph_sequence|=0x1<<a;
+    }
+  }
+  
 }
 
 byte cp64 = 0;
@@ -34,6 +76,8 @@ byte cp64 = 0;
 int pressedButtonsBitmap = 0x0000;
 
 void timedLoop() {
+  draw();
+  
   byte cp16 = cp64 % 16;
   int buttonPressure = readMatrixButton(cp16);
   int evaluator = 0x1 << cp16;
@@ -57,23 +101,21 @@ void timedLoop() {
     layers[2]=readMatrixButton(2);*/
   updatePixel(cp64);
   //readMatrixButton(cp%16);
-
-
   cp64++;
   cp64 = cp64 % 64;
 }
 void onButtonHold(byte button, int buttonPressure) {}
 void onButtonPressed(byte button) {
   int evaluator = 0x1 << button;
-  if ((evaluator & layers[2]) == 0) {
-    layers[2] |= evaluator;
+  if (frameHasNote(button)) {
+    sequence[button][0]=0x00;
   } else {
-    layers[2] &= ~ evaluator;
+    sequence[button][0]=0x90;
   }
-  layers[1] = 0x1 << button;
+  graph_fingers |= 0x1 << button;
 }
 void onButtonReleased(byte button) {
-  layers[1] = 0;
+  graph_fingers &= ~(0x1 << button);
 }
 
 void updatePixel(byte currentPixel) {
