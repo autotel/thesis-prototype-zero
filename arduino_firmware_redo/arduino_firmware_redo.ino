@@ -11,7 +11,7 @@ int midiOut = A2;
 
 
 SoftwareSerial mySerial(midiIn, midiOut); // RX, TX
-
+LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 
 long lastchange;
 
@@ -36,6 +36,11 @@ void setup() {
   sequence[2][0] = 0x90;
 
   mySerial.begin(31250);
+
+  
+  lcd.begin(16, 2);
+  lcd.print("hello, world!");
+
 }
 
 
@@ -163,9 +168,21 @@ void onButtonPressed(byte button) {
     sequence[button][0] = 0x90;
   }
   graph_fingers |= 0x1 << button;
+  //for debug
+  sendMidi(0x90+button,36,127);
+  
+  
+}
+
+void sendMidi(byte a, byte b, byte c){
+  mySerial.write(a);
+  mySerial.write(b);
+  mySerial.write(c);
 }
 void onButtonReleased(byte button) {
   graph_fingers &= ~(0x1 << button);
+  //for debug
+  sendMidi(0x80+button,36,127);
 }
 
 void updatePixel(byte currentPixel) {
