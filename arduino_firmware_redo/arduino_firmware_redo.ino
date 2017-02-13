@@ -6,8 +6,8 @@
 int analogA;
 int analogB;
 
-int midiIn = 11;
-int midiOut = 10;
+int midiIn = A3;
+int midiOut = A2;
 
 
 SoftwareSerial mySerial(midiIn, midiOut); // RX, TX
@@ -41,7 +41,7 @@ void setup() {
 
 unsigned int graph_debug = 0x00;
 int currentStep16 = 0;
-int currentStep16x24 = 0;
+int currentStep16x12 = 0;
 void loop() {
 
   if (mySerial.available()) {
@@ -56,15 +56,15 @@ void loop() {
     if (midiHeader == 0xF8) {
 
 
-      currentStep16x24 = (currentStep16x24 + 1) % (16 * 24);
-      if (currentStep16x24 % 24 == 0) {
-        currentStep16 = currentStep16x24 / 24;
+      currentStep16x12 = (currentStep16x12 + 1) % (16 * 12);
+      if (currentStep16x12 % 12 == 0) {
+        currentStep16 = currentStep16x12 / 12;
 
       }
     }
     //start
     if (midiHeader == 0xFA) {
-      currentStep16x24 = 0;
+      currentStep16x12 = 0;
       currentStep16 = 0;
     }
   }
@@ -72,9 +72,9 @@ void loop() {
 
   evaluateSequence();
 
-  for (int a = 0; a < 64; a++) {
+  //for (int a = 0; a < 64; a++) {
     timedLoop();
-  }
+  //}
 }
 
 bool frameHasNote(byte frame) {
