@@ -5,7 +5,14 @@
 
 int analogA;
 int analogB;
-int _pin;
+
+int midiIn = 11;
+int midiOut = 10;
+
+
+SoftwareSerial mySerial(midiIn, midiOut); // RX, TX
+
+
 long lastchange;
 
 //contains the midi sequence to play
@@ -24,51 +31,94 @@ void setup() {
   digitalWrite(analogB, LOW);
   //set all pins from 0 to 7 to output
   DDRD = 0xFF;
-  Timer1.initialize(200);
-  Timer1.attachInterrupt(timedLoop);
-  sequence[2][0]=0x90;
+  //Timer1.initialize(9000);//200
+  //Timer1.attachInterrupt(timedLoop);
+  sequence[2][0] = 0x90;
+
+  mySerial.begin(31250);
 }
 
+
+unsigned int graph_debug = 0x00;
+int currentStep16 = 0;
+int currentStep16x24 = 0;
 void loop() {
-  evaluateSequence();
-}
 
-bool frameHasNote(byte frame){
-  return (sequence[frame][0]&0xF0)==0x90;
-}
+  if (mySerial.available()) {
+    byte midiHeader = mySerial.read();
 
-int graph_pointer=0x00;
-int graph_fingers=0x00;
-int graph_sequence=0x00;
-void draw(){
-  
-  layers[2]=graph_sequence;
-  layers[1]=graph_fingers;
-  layers[1]|=graph_pointer;
-  layers[2]|=graph_fingers;
-  
-}
-int currentStep16=0;
-long lastMillis=0;
-unsigned int stepInterval=200;
-void evaluateSequence(){
-  
-  long thisMillis=millis();
-  //evaluate wether to step
-  if(thisMillis-lastMillis>=stepInterval){
-    lastMillis=thisMillis;
-    currentStep16=(currentStep16+1)%16;
-    graph_pointer=1<<currentStep16;
-  }
-  //create the graphic layer to display the sequence
-  
-  graph_sequence=0;
-  for(byte a=0; a<16; a++){
-    if(frameHasNote(a)){
-      graph_sequence|=0x1<<a;
+    if ((midiHeader & 0xF0) == 0x90) {
+      sequence[currentStep16][0] = midiHeader;//pendant: this is not right implementation of midi in
+      sequence[currentStep16][1] =  mySerial.read();
+      sequence[currentStep16][2] =  mySerial.read();
+    }
+    //clock
+    if (midiHeader == 0xF8) {
+
+
+      currentStep16x24 = (currentStep16x24 + 1) % (16 * 24);
+      if (currentStep16x24 % 24 == 0) {
+        currentStep16 = currentStep16x24 / 24;
+
+      }
+    }
+    //start
+    if (midiHeader == 0xFA) {
+      currentStep16x24 = 0;
+      currentStep16 = 0;
     }
   }
-  
+
+
+  evaluateSequence();
+
+  for (int a = 0; a < 64; a++) {
+    timedLoop();
+  }
+}
+
+bool frameHasNote(byte frame) {
+  return (sequence[frame][0] & 0xF0) == 0x90;
+}
+
+int graph_pointer = 0x00;
+int graph_fingers = 0x00;
+int graph_sequence = 0x00;
+void draw() {
+
+  layers[2] = graph_sequence;
+  layers[1] = graph_fingers;
+
+  layers[1] |= graph_pointer;
+  layers[2] |= graph_fingers;
+
+  layers[0] = graph_debug;
+  // layers[1]|=graph_debug;
+  layers[2] |= graph_debug;
+}
+
+long lastMillis = 0;
+unsigned int stepInterval = 200;
+void evaluateSequence() {
+  graph_pointer = 1 << currentStep16;
+
+  /*
+    long thisMillis = millis();
+    //evaluate wether to step
+    if (thisMillis - lastMillis >= stepInterval) {
+    lastMillis = thisMillis;
+    //currentStep16=(currentStep16+1)%16;
+    graph_pointer = 1 << currentStep16;
+    }*/
+  //create the graphic layer to display the sequence
+
+  graph_sequence = 0;
+  for (byte a = 0; a < 16; a++) {
+    if (frameHasNote(a)) {
+      graph_sequence |= 0x1 << a;
+    }
+  }
+
 }
 
 byte cp64 = 0;
@@ -77,7 +127,7 @@ int pressedButtonsBitmap = 0x0000;
 
 void timedLoop() {
   draw();
-  
+
   byte cp16 = cp64 % 16;
   int buttonPressure = readMatrixButton(cp16);
   int evaluator = 0x1 << cp16;
@@ -108,9 +158,9 @@ void onButtonHold(byte button, int buttonPressure) {}
 void onButtonPressed(byte button) {
   int evaluator = 0x1 << button;
   if (frameHasNote(button)) {
-    sequence[button][0]=0x00;
+    sequence[button][0] = 0x00;
   } else {
-    sequence[button][0]=0x90;
+    sequence[button][0] = 0x90;
   }
   graph_fingers |= 0x1 << button;
 }
