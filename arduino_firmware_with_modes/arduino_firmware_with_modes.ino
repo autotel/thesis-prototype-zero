@@ -115,7 +115,13 @@ void loop() {
   delayMicroseconds(1);
   //}
 }
-
+/**
+  Check if a given frame has a note on it or not.
+  a frame is the smallest unit of time in the sequencer memory. All event data is quantized into these frames.
+  @method frameHasNote
+  @return {boolean} true if there is a note, false if there is not.
+  @example frameHasNote(32);
+*/
 bool frameHasNote(byte frame) {
   return (sequence[frame][0] & 0xF0) == 0x90;
 }
@@ -188,6 +194,7 @@ void evaluateSequence() {
 byte cp64 = 0;
 //buttons that were pressed on last evaluation;
 int pressedMatrixButtonsBitmap = 0x0000;
+byte pressedSelectorButtonsBitmap = 0x00;
 
 void timedLoop() {
   if (cp64 == 0) {
@@ -216,13 +223,26 @@ void timedLoop() {
     layers[2]=readMatrixButton(2);*/
   updatePixel(cp64 % 32 + 16); //originally no operation should be performed over cp64, but it helps to have brighter leds at cost of no red
 
-  //evaluate tact buttons on top of the matrix
+  //evaluate Selector buttons (the tact buttons on top of the matrix)
   //less frequently than matrix, because these are not performance buttons
   if (cp16 == 0) {
     //cp64/16 will be 0,1,2,3 alernatingly each time cp16 is 0
     int cb_4 = cp64 / 16;
+    //see previous use of this var for more reference
+    evaluator = 0x1 << cb_4;
     if (readMuxB(cb_4 + 4)) {
-      lcdPrintB("N" + String(cb_4) + "-");
+      //if last lap this button was not pressed, trigger on  button pressed
+      if ((evaluator & pressedSelectorButtonsBitmap) == 0) {
+        onSelectorButtonPressed(cb_4);
+        pressedSelectorButtonsBitmap |= evaluator;
+      } else {
+        onSelectorButtonHold(cb_4);
+      }
+    } else {
+      if ((evaluator & pressedSelectorButtonsBitmap) != 0) {
+        onSelectorButtonReleased(cb_4);
+        pressedSelectorButtonsBitmap &= ~(0x1 << cb_4);
+      }
     }
   }
 
@@ -238,12 +258,17 @@ void onMatrixButtonPressed(byte button) {
 //actions to take once a button is pressed
 void onMatrixButtonPressed(byte button, int buttonPressure) {
   graph_fingers |= 0x1 << button;
-  //for debug
   switch (m_mode) {
+    //modeselector
     case 0:
+      changeMode(button + 1);
+      break;
+    //performer
+    case 1:
       sendMidi(0x90, 36 + button, 127);
       break;
-    case 1:
+    //sequencer
+    case 2:
       int evaluator = 0x1 << button;
       if (frameHasNote(button)) {
         sequence[button][0] = 0x00;
@@ -251,27 +276,63 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
         sequence[button][0] = 0x90;
       }
       break;
+      //jumper1
+      //jumper2
   }
 }
-//
 //actions to take once a button is released
 void onMatrixButtonReleased(byte button) {
   graph_fingers &= ~(0x1 << button);
   //for debug
   switch (m_mode) {
-    case 0:
+    case 1:
       sendMidi(0x80, 36 + button, 127);
       break;
-    case 1:
+    case 2:
       break;
   }
 }
+//
+void onSelectorButtonPressed(byte button) {
+
+  lcdPrintB("Selector " + String(button) + "-");
+
+  if (button == 0) {
+    changeMode(0);
+  } else {
+    switch (m_mode) {
+      case 0:
+        changeMode(0);
+        break;
+    }
+  }
+}
+//
+void onSelectorButtonReleased(byte button) {
+  lcdPrintB("No selector-");
+  if (button == 0) {
+    changeMode(0);
+  } else {
+    switch (m_mode) {
+      case 0:
+
+        break;
+    }
+  }
+}
+void onSelectorButtonHold(byte button) {}
 //send a midi event to the midi output
 void sendMidi(byte a, byte b, byte c) {
   mySerial.write(a);
   mySerial.write(b);
   mySerial.write(c);
 }
+//change mode to and perform all necessary operations with respect to that.
+//avoid setting up many variables here because it gets messy. instead the program should check the currentmode and act accordingly
+void changeMode(byte to) {
+  m_mode = to;
+  lcdPrintA(m_list[to]);
+};
 //update one pixel on one of the color channels behind the mux
 void updatePixel(byte currentPixel) {
 
