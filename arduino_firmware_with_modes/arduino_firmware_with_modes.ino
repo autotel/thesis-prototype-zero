@@ -26,13 +26,15 @@ bool m_recording = false;
 String  m_list [] = {
   "performer", "sequencer", "jumper 1", "jumper 2",
   "scale", "chordset", "patternset 1", "patternset 2",
-  "Tesseractor A", "Tesseractor B", "Tesseractor C", "Tesseractor D"
-  "undefined", "undefined", "undefined", "undefined"
+  "Tesseractor A", "Tesseractor B", "Tesseractor C", "Tesseractor D",
+  "Tesseractor E", "Tesseractor F", "Tesseractor G", "Tesseractor H",
 };
 //modifier states
 //example boolean shift=false;
-bool s_modeselector = false;
-bool s_knobShift = false;
+bool selector_mode = false;
+bool selector_a = false;
+bool selector_b = false;
+bool selector_c = false;
 
 //text to print in screens
 String screenA = "KALKULAITOR";
@@ -85,6 +87,7 @@ void setup() {
 unsigned int graph_debug = 0x00;
 int currentStep16 = 0;
 int currentStep16x12 = 0;
+int loop128 = 0;
 void loop() {
   if (mySerial.available()) {
     byte midiHeader = mySerial.read();
@@ -113,10 +116,11 @@ void loop() {
 
   evaluateSequence();
 
-  //for (int a = 0; a < 64; a++) {
-  timedLoop();
-  delayMicroseconds(1);
-  //}
+  if (loop128 % 4 == 0)
+    timedLoop();
+
+  loop128++;
+  loop128 %= 128;
 }
 /**
   Check if a given frame has a note on it or not.
@@ -147,17 +151,26 @@ void draw() {
   // layers[1]|=graph_debug;
   layers[2] |= graph_debug;
 
+
+
   if (screenChanged) {
     screenChanged = false;
     if (lastScreenA != screenA) {
       lastScreenA = screenA;
       lcd.setCursor(0, 0);
       lcd.print(screenA);
+
+      for (byte strl = screenA.length(); strl > 0; strl--) {
+        lcd.write(' ');
+      }
     }
     if (lastScreenB != screenB) {
       lastScreenB = screenB;
       lcd.setCursor(0, 1);
       lcd.print(screenB);
+      for (byte strl = screenB.length(); strl > 0; strl--) {
+        lcd.write(' ');
+      }
     }
   }
 }
@@ -201,15 +214,13 @@ byte pressedSelectorButtonsBitmap = 0x00;
 
 void timedLoop() {
 
-  if (cp64 == 0) {
-    draw();
-  }
-
 
 
 
   //evaluate matrix buttons
   byte cp16 = cp64 % 16;
+  byte cp32 = cp64 % 32;
+
   int buttonPressure = readMatrixButton(cp16);
   int evaluator = 0x1 << cp16;
   if (buttonPressure > 1) {
@@ -229,12 +240,30 @@ void timedLoop() {
   /*layers[0]=readMatrixButton(3);
     layers[1]=readMatrixButton(1);
     layers[2]=readMatrixButton(2);*/
-  updatePixel(cp64 % 32 + 16); //originally no operation should be performed over cp64, but it helps to have brighter leds at cost of no red
+
+
+
+  if (selector_mode || selector_a || selector_b || selector_c) {
+    /*
+        turnPixelOn(cp16 + 48);
+        turnPixelOn(cp16 + 32);
+        turnPixelOn(cp16 + 16);*/
+    if (cp16 != m_mode) {
+      turnPixelOn(cp16 + 32);
+      turnPixelOn(cp16 + 16);
+      
+    } else {
+      turnPixelOn(cp16 + 32);
+    }
+  } else {
+    updatePixel(cp32 + 0xF); //using 32 instead of 64 for more light at cost of the red channel
+  }
+
   //evaluate Selector buttons (the tact buttons on top of the matrix)
   //less frequently than matrix, because these are not performance buttons
   if (cp16 == 0) {
     //cp64/16 will be 0,1,2,3 alernatingly each time cp16 is 0
-    int cb_4 = cp64 / 16;
+    int cb_4 = cp64 / 0xf;
     //see previous use of this var for more reference
     evaluator = 0x1 << cb_4;
     if (readMuxB(cb_4 + 4)) {
@@ -253,8 +282,14 @@ void timedLoop() {
     }
   }
 
+  if (cp64 == m_mode) {
+    draw();
+  }
+
   cp64++;
   cp64 = cp64 % 64;
+
+
 }
 //actions to take while a button is held, taking the pressure into account
 void onMatrixButtonHold(byte button, int buttonPressure) {}
@@ -265,13 +300,13 @@ void onMatrixButtonPressed(byte button) {
 //actions to take once a button is pressed
 void onMatrixButtonPressed(byte button, int buttonPressure) {
   graph_fingers |= 0x1 << button;
-  if (s_modeselector) {
+  if (selector_mode) {
     changeMode(button);
   } else {
     switch (m_mode) {
       //performer
       case 0:
-        sendMidi(0x90, 36 + button, 127,true);
+        sendMidi(0x90, 36 + button, 127, true);
         break;
       //sequencer
       case 1:
@@ -305,7 +340,7 @@ void onSelectorButtonPressed(byte button) {
   lcdPrintB("Selector " + String(button) + "-");
 
   if (button == 0) {
-    s_modeselector = true;
+    selector_mode = true;
     lcdPrintB("Mode Selector");
   } else {
     /*switch (m_mode) {
@@ -319,7 +354,7 @@ void onSelectorButtonPressed(byte button) {
 void onSelectorButtonReleased(byte button) {
   lcdPrintB("No selector-");
   if (button == 0) {
-    s_modeselector = false;
+    selector_mode = false;
   } else {
     switch (m_mode) {
       case 0:
@@ -335,7 +370,7 @@ void sendMidi(byte a, byte b, byte c) {
   mySerial.write(c);
 }
 void sendMidi(byte a, byte b, byte c, bool debug) {
-  sendMidi(a,b,c);
+  sendMidi(a, b, c);
   if (debug)
     lcdPrintB(String( a, HEX) + "," + String( b, HEX) + "," + String( c, HEX) + "");
 }
@@ -345,25 +380,45 @@ void changeMode(byte to) {
   m_mode = to;
   lcdPrintA(m_list[to]);
 };
-//update one pixel on one of the color channels behind the mux
+//update one pixel on one of the color channels behind the mux. Be aware that redPixel function exists
 void updatePixel(byte currentPixel) {
-
   //nibble A is connected to the mux address for the anodes / btn inputs
   byte nibbleA = 0xF;
   //nibble B is connected to the mux for the cathodes / btn outputs
   byte nibbleB = 0xF;
   byte currentLayer = currentPixel >> 4;
   if ((layers[currentLayer] >> currentPixel % 16) & 0x0001) {
+
     //(currentPixel>>2)&12 is the same than doing floor(currentPixel/16)*4. try it  in codechef
     nibbleA &= (currentPixel % 4) + (currentPixel >> 2 & 12); //[0-15]=0,[16-31]=4,[32-47]=8,[48-63]=12
     nibbleB &= (currentPixel / 4) % 4; //~0x10 << ((currentPixel / 4) % 4); //0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3, will happen 4 times within 64 loop
 
     nibbleB += 8;
-    //ground & power the led
-    //PORTC |= 0b1;
-    //PORTC &= ~0b10;
+    //ground & power the led. strangely still works without these lines
+    /*PORTC |= 0b10;
+      PORTC &= ~0b1;*/
+
     PORTD = (nibbleB << 4) | (nibbleA);
+
   }
+}
+
+//just draw a pixel disregarding the layer information
+void turnPixelOn(byte currentPixel) {
+  //nibble A is connected to the mux address for the anodes / btn inputs
+  byte nibbleA = 0xF;
+  //nibble B is connected to the mux for the cathodes / btn outputs
+  byte nibbleB = 0xF;
+  byte currentLayer = currentPixel >> 4;
+  //(currentPixel>>2)&12 is the same than doing floor(currentPixel/16)*4. try it  in codechef
+  nibbleA &= (currentPixel % 4) + (currentPixel >> 2 & 12); //[0-15]=0,[16-31]=4,[32-47]=8,[48-63]=12
+  nibbleB &= (currentPixel / 4) % 4; //~0x10 << ((currentPixel / 4) % 4); //0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3, will happen 4 times within 64 loop
+
+  nibbleB += 8;
+  //ground & power the led
+  /*PORTC |= 0b1;
+    PORTC &= ~0b10;*/
+  PORTD = (nibbleB << 4) | (nibbleA);
 }
 
 //read one button behind the multiplexor to check whether is pressed or not.
@@ -429,7 +484,7 @@ void doEncoder() {
   }
   lcdPrintB(String(encoder0Pos));
 
-  Serial.println (encoder0Pos, DEC);
+
 }
 
 
