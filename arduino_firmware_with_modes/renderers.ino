@@ -19,7 +19,7 @@ void modifierGraph(byte selection, unsigned int * _graph) {
       break;
     //single point, performance layer selector
     case 16:
-      graph[0] = ~(0xFFFF << 6);
+      graph[0] = ~(0xFFFF << 8);
       graph[1] = 0x1 << lastMatrixButtonPressed;
       break;
   }

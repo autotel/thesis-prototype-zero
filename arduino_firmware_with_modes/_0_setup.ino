@@ -36,7 +36,7 @@ String  m_list [] = {
 //pm_ player modes
 byte pm_current = 2;
 String pm_layerList [] = {
-  "chords", "grades", "notes", "channels", "cc's", "custom"
+  "chords", "grades", "notes", "channels", "cc's", "Notes+Cutoff", "Notes+Pitch", "custom"
 };
 byte pm_selectedChannel = 0;
 byte pm_selectedNote = 36;

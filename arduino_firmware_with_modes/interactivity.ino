@@ -1,7 +1,25 @@
 
 
 //actions to take while a button is held, taking the pressure into account
-void onMatrixButtonHold(byte button, int buttonPressure) {}
+void onMatrixButtonHold(byte button, int buttonPressure) {
+  switch (m_mode) {
+    //performer m_mode
+    case 0:
+      switch (pm_current) {
+        //test
+        case 5:
+          //only one button should ride the cc, otherwise chaos
+          if (button == lastMatrixButtonPressed)
+            sendMidi(0xB0 | pm_selectedChannel, 0x4A, buttonPressure / 4, true);
+          break;
+        case 6:
+          //only one button should ride the cc, otherwise chaos
+          if (button == lastMatrixButtonPressed)
+            sendMidi(0xB0 | pm_selectedChannel, 0x50, buttonPressure / 4, true);
+          break;
+      }
+  }
+}
 //actions to take while a button is pressed
 void onMatrixButtonPressed(byte button) {
   onMatrixButtonPressed(button, 127);
@@ -41,7 +59,7 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
               break;
             //grades
             case 1:
-              noteOn(pm_selectedChannel, getNoteFromScale(se_selectedScale,button,4), pm_selectedVelocity, button, true);
+              noteOn(pm_selectedChannel, getNoteFromScale(se_selectedScale, button, 4), pm_selectedVelocity, button, true);
               break;
             //notes
             case 2:
@@ -54,6 +72,14 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
               noteOn(button, pm_selectedNote, pm_selectedVelocity, button, true);
               break;
             case 4:
+              break;
+            //test;
+            case 5:
+              //pm_selectedNote = button;
+              noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, true);
+            break; case 6:
+              //pm_selectedNote = button;
+              noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, true);
               break;
           }
 

@@ -356,7 +356,7 @@ void doEncoder() {
   }
   lcdPrintB(String(encoder0Pos));
 
-  Serial.println (encoder0Pos, DEC);
+  //Serial.println (encoder0Pos, DEC);
 }
 
 
