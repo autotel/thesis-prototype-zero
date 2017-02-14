@@ -41,6 +41,7 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
               break;
             //grades
             case 1:
+              noteOn(pm_selectedChannel, getNoteFromScale(se_selectedScale,button,4), pm_selectedVelocity, button, true);
               break;
             //notes
             case 2:
@@ -77,13 +78,17 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
       case 4:
         {
           int evaluator = 0x1 << button;
-          if (button < 12)
+
+          if (button < 12) {
             if (structure_scales[se_selectedScale][2] & evaluator) {
               structure_scales[se_selectedScale][2] &= ~evaluator;
             } else {
               structure_scales[se_selectedScale][2] |= evaluator;
             }
-
+            byte gradesInScale = countOnes(structure_scales[se_selectedScale][2]);
+            structure_scales[se_selectedScale][0] = gradesInScale;
+            lcdPrintB(String(gradesInScale, DEC));
+          }
         } break;
     }
   }

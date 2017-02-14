@@ -40,7 +40,7 @@ String pm_layerList [] = {
 };
 byte pm_selectedChannel = 0;
 byte pm_selectedNote = 36;
-byte pm_selectedVelocity = 36;
+byte pm_selectedVelocity = 120;
 byte pm_selectedScale = 0;
 
 //se_ scale editor related vars
@@ -58,6 +58,11 @@ String lastScreenB = "";
 //structure_
 //scales are binary. The 1's are the white keys and the 0's are the black keys, starting from the lsb
 int structure_scales[16][3] = {
+  //major c
+  {
+    7, 0, //amount of selected notes in this scale, base note
+    0b101010110101
+  },
   //chromatic c
   {
     12,0,
