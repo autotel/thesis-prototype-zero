@@ -3,14 +3,39 @@
 #include <TimerOne.h>
 #include <SoftwareSerial.h>
 
+//analog inputs that are connected to the multiplexor commons
 int analogA;
 int analogB;
 
+//pins that are connected to the encoder A and B
+#define encoder0PinA  A4
+#define encoder0PinB  A5
+volatile unsigned int encoder0Pos = 0;
+
+//pins that are connected to the midi plugs as software serial
 int midiIn = A3;
 int midiOut = A2;
-
-
 SoftwareSerial mySerial(midiIn, midiOut); // RX, TX
+
+
+//current mode
+int m_mode = 0;
+//wether it is recording the midi stream
+bool m_recording = false;
+//names for the m_mode possible values
+String  m_list [] = {
+  "modeselector",
+  "performer", "sequencer", "jumper 1", "jumper 2",
+  "scale", "chordset", "patternset 1", "patternset 2",
+  "Tesseractor A", "Tesseractor B", "Tesseractor C", "Tesseractor D"
+  "undefined", "undefined", "undefined", "undefined"
+};
+//text to print in screens
+String screenA = "KALKULAITOR";
+String screenB = "0";
+//flag that indicates that the screen should be redrawn when possible
+bool screenChanged = true;
+
 LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 
 long lastchange;
@@ -33,13 +58,24 @@ void setup() {
   DDRD = 0xFF;
   //Timer1.initialize(9000);//200
   //Timer1.attachInterrupt(timedLoop);
-  sequence[2][0] = 0x90;
+  //sequence[2][0] = 0x90;
 
   mySerial.begin(31250);
 
-  
+
+  //lcd screen initial write
   lcd.begin(16, 2);
   lcd.print("hello, world!");
+
+  //encoder set up
+  pinMode(encoder0PinA, INPUT);
+  digitalWrite(encoder0PinA, HIGH);       // turn on pull-up resistor
+  pinMode(encoder0PinB, INPUT);
+  digitalWrite(encoder0PinB, HIGH);       // turn on pull-up resistor
+
+  //attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
+  Serial.begin (9600);
+  Serial.println("start");                // a personal quirk
 
 }
 
@@ -48,19 +84,17 @@ unsigned int graph_debug = 0x00;
 int currentStep16 = 0;
 int currentStep16x12 = 0;
 void loop() {
-
   if (mySerial.available()) {
     byte midiHeader = mySerial.read();
-
-    if ((midiHeader & 0xF0) == 0x90) {
-      sequence[currentStep16][0] = midiHeader;//pendant: this is not right implementation of midi in
-      sequence[currentStep16][1] =  mySerial.read();
-      sequence[currentStep16][2] =  mySerial.read();
+    if (m_recording) {
+      if ((midiHeader & 0xF0) == 0x90) {
+        sequence[currentStep16][0] = midiHeader;//pendant: this is not right implementation of midi in
+        sequence[currentStep16][1] =  mySerial.read();
+        sequence[currentStep16][2] =  mySerial.read();
+      }
     }
     //clock
     if (midiHeader == 0xF8) {
-
-
       currentStep16x12 = (currentStep16x12 + 1) % (16 * 12);
       if (currentStep16x12 % 12 == 0) {
         currentStep16 = currentStep16x12 / 12;
@@ -78,7 +112,8 @@ void loop() {
   evaluateSequence();
 
   //for (int a = 0; a < 64; a++) {
-    timedLoop();
+  timedLoop();
+  delayMicroseconds(1);
   //}
 }
 
@@ -89,6 +124,9 @@ bool frameHasNote(byte frame) {
 int graph_pointer = 0x00;
 int graph_fingers = 0x00;
 int graph_sequence = 0x00;
+String lastScreenA = "";
+String lastScreenB = "";
+
 void draw() {
 
   layers[2] = graph_sequence;
@@ -100,6 +138,29 @@ void draw() {
   layers[0] = graph_debug;
   // layers[1]|=graph_debug;
   layers[2] |= graph_debug;
+  
+  if (screenChanged) {
+    screenChanged = false;
+    if (lastScreenA != screenA) {
+      lastScreenA = screenA;
+      lcd.setCursor(0, 0);
+      lcd.print(screenA);
+    }
+    if (lastScreenB != screenB) {
+      lastScreenB = screenB;
+      lcd.setCursor(0, 1);
+      lcd.print(screenB);
+    }
+  }
+}
+
+void lcdPrintA(String what){
+  screenChanged=true;
+  screenA=what;
+}
+void lcdPrintB(String what){
+  screenChanged=true;
+  screenB=what;
 }
 
 long lastMillis = 0;
@@ -123,7 +184,6 @@ void evaluateSequence() {
       graph_sequence |= 0x1 << a;
     }
   }
-
 }
 
 byte cp64 = 0;
@@ -139,7 +199,7 @@ void timedLoop() {
   if (buttonPressure > 1) {
     //if last lap this button was not pressed, trigger on  button pressed
     if ((evaluator & pressedButtonsBitmap) == 0) {
-      onButtonPressed(cp16);
+      onButtonPressed(cp16, buttonPressure);
       pressedButtonsBitmap |= evaluator;
     } else {
       onButtonHold(cp16, buttonPressure);
@@ -154,37 +214,55 @@ void timedLoop() {
   /*layers[0]=readMatrixButton(3);
     layers[1]=readMatrixButton(1);
     layers[2]=readMatrixButton(2);*/
-  updatePixel(cp64);
+  updatePixel(cp64 % 32 + 16); //originally no operation should be performed over cp64, but it helps to have brighter leds
   //readMatrixButton(cp%16);
   cp64++;
   cp64 = cp64 % 64;
 }
+//actions to take while a button is held, taking the pressure into account
 void onButtonHold(byte button, int buttonPressure) {}
+//actions to take while a button is pressed
 void onButtonPressed(byte button) {
-  int evaluator = 0x1 << button;
-  if (frameHasNote(button)) {
-    sequence[button][0] = 0x00;
-  } else {
-    sequence[button][0] = 0x90;
-  }
+  onButtonPressed(button, 127);
+}
+//actions to take once a button is pressed
+void onButtonPressed(byte button, int buttonPressure) {
+
   graph_fingers |= 0x1 << button;
   //for debug
-  sendMidi(0x90+button,36,127);
-  
-  
+  switch (m_mode) {
+    case 0:
+      sendMidi(0x90, 36 + button, 127);
+      break;
+    case 1:
+      int evaluator = 0x1 << button;
+      if (frameHasNote(button)) {
+        sequence[button][0] = 0x00;
+      } else {
+        sequence[button][0] = 0x90;
+      }
+      break;
+  }
 }
-
-void sendMidi(byte a, byte b, byte c){
+//actions to take once a button is released
+void onButtonReleased(byte button) {
+  graph_fingers &= ~(0x1 << button);
+  //for debug
+  switch (m_mode) {
+    case 0:
+      sendMidi(0x80, 36 + button, 127);
+      break;
+    case 1:
+      break;
+  }
+}
+//send a midi event to the midi output
+void sendMidi(byte a, byte b, byte c) {
   mySerial.write(a);
   mySerial.write(b);
   mySerial.write(c);
 }
-void onButtonReleased(byte button) {
-  graph_fingers &= ~(0x1 << button);
-  //for debug
-  sendMidi(0x80+button,36,127);
-}
-
+//update one pixel on one of the color channels behind the mux
 void updatePixel(byte currentPixel) {
 
   //nibble A is connected to the mux address for the anodes / btn inputs
@@ -204,6 +282,7 @@ void updatePixel(byte currentPixel) {
     PORTD = (nibbleB << 4) | (nibbleA);
   }
 }
+//read one button behind the multiplexor to check whether is pressed or not.
 int readMatrixButton(byte currentButton) {
   //nibble A is connected to the mux address for the anodes / btn inputs
   byte nibbleA = 0xF;
@@ -220,7 +299,23 @@ int readMatrixButton(byte currentButton) {
   int ret = analogRead(analogB);
   pinMode(analogB, OUTPUT);
   return ret;
+}
+//read encoder. sourced from http://playground.arduino.cc/Main/RotaryEncoders#Example2
+void doEncoder() {
+  /* If pinA and pinB are both high or both low, it is spinning
+   * forward. If they're different, it's going backward.
+   *
+   * For more information on speeding up this process, see
+   * [Reference/PortManipulation], specifically the PIND register.
+   */
+  if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB)) {
+    encoder0Pos++;
+  } else {
+    encoder0Pos--;
+  }
+  lcdPrintB(String(encoder0Pos));
 
+  Serial.println (encoder0Pos, DEC);
 }
 
 
