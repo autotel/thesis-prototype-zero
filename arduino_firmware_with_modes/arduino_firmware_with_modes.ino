@@ -29,18 +29,44 @@ String  m_list [] = {
   "Tesseractor A", "Tesseractor B", "Tesseractor C", "Tesseractor D",
   "Tesseractor E", "Tesseractor F", "Tesseractor G", "Tesseractor H",
 };
+//pm_
+byte pm_current = 2;
+String pm_layerList [] = {
+  "chords", "grades", "notes", "channels", "cc's", "custom"
+};
+byte pm_selectedChannel = 0;
+byte pm_selectedNote = 36;
+byte pm_selectedVelocity = 36;
+//structure_
+/*byte structure_scale[] = {0, 2, 4, 5, 7, 9, 11};
+  byte structure_chords[16][16];
+  byte structure_chords[0] = {0, 2, 4};
+  byte structure_chords[1] = {1, 3, 5};
+  byte structure_chords[2] = {2, 4, 8};
+  byte structure_chords[3] = {3, 5, 7};*/
 //modifier states
 //example boolean shift=false;
 bool selector_mode = false;
 bool selector_a = false;
 bool selector_b = false;
 bool selector_c = false;
-
+//midi tracking
+//[0,0]=wether last thing sent was a note on (off is due)
+//[0,1]=channel...
+byte MIDI_NoteOns [16][4];
 //text to print in screens
-String screenA = "KALKULAITOR";
+String screenA = "CALCUTRATOR";
 String screenB = "0";
 //flag that indicates that the screen should be redrawn when possible
 bool screenChanged = true;
+
+//the last button that has been pressed on the matrix buttons
+byte lastMatrixButtonPressed = 0;
+//buttons that were pressed on last evaluation;
+unsigned int pressedMatrixButtonsBitmap = 0x0000;
+byte pressedSelectorButtonsBitmap = 0x00;
+//the buttons that are active while engaged in binary number input (ex. note selector)
+unsigned int binaryInputActiveBitmap = 0x0000;
 
 LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 
@@ -80,7 +106,8 @@ void setup() {
   digitalWrite(encoder0PinB, HIGH);       // turn on pull-up resistor
 
   //attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
-
+  //Timer1.initialize(200);//200
+  //Timer1.attachInterrupt(doEncoder);
 }
 
 
@@ -114,8 +141,8 @@ void loop() {
   }
 
 
-  evaluateSequence();
 
+  evaluateSequence();
   if (loop128 % 4 == 0)
     timedLoop();
 
@@ -140,19 +167,34 @@ String lastScreenA = "";
 String lastScreenB = "";
 
 void draw() {
+  byte selectedGraph = 0;
+  if (selector_mode || selector_a || selector_b || selector_c) {
+    switch (m_mode) {
+      case 0:
+        if (selector_a) {
+          selectedGraph = 16;
+        } else if (selector_b) {
+          selectedGraph = 1;
+        } else if (selector_c) {
+          selectedGraph = 0;
+        }
+        break;
+    }
+    unsigned int graph [] = {0, 0};
+    modifierGraph(selectedGraph, graph);
+    layers[1] = graph [0];
+    layers[2] = graph [1];
+  } else {
+    layers[2] = graph_sequence;
+    layers[1] = graph_fingers;
 
-  layers[2] = graph_sequence;
-  layers[1] = graph_fingers;
+    layers[1] |= graph_pointer;
+    layers[2] |= graph_fingers;
 
-  layers[1] |= graph_pointer;
-  layers[2] |= graph_fingers;
-
-  layers[0] = graph_debug;
-  // layers[1]|=graph_debug;
-  layers[2] |= graph_debug;
-
-
-
+    layers[0] = graph_debug;
+    // layers[1]|=graph_debug;
+    layers[2] |= graph_debug;
+  }
   if (screenChanged) {
     screenChanged = false;
     if (lastScreenA != screenA) {
@@ -160,7 +202,7 @@ void draw() {
       lcd.setCursor(0, 0);
       lcd.print(screenA);
 
-      for (byte strl = screenA.length(); strl > 0; strl--) {
+      for (byte strl = 16 - screenA.length(); strl > 0; strl--) {
         lcd.write(' ');
       }
     }
@@ -168,11 +210,39 @@ void draw() {
       lastScreenB = screenB;
       lcd.setCursor(0, 1);
       lcd.print(screenB);
-      for (byte strl = screenB.length(); strl > 0; strl--) {
+      for (byte strl = 16 - screenB.length(); strl > 0; strl--) {
         lcd.write(' ');
       }
     }
   }
+}
+//different colouring schemes for when a selector button is being held
+void modifierGraph(byte selection, unsigned int * _graph) {
+  unsigned int graph [] = {0, 0};
+  switch (selection) {
+    //generic single point among 16 selection
+    case 0:
+      graph[0] = 0x1 << lastMatrixButtonPressed;
+      graph[1] = ~graph[0];
+      break;
+    //binary number or multi point selector
+    case 1:
+      graph[0] = binaryInputActiveBitmap;
+      graph[1] = 0xFFFF;
+      break;
+    //calculator
+    case 2:
+      graph[0] = 0b111011101110;
+      graph[1] = ~graph[0];
+      break;
+    //single point, performance layer selector
+    case 16:
+      graph[0] = ~(0xFFFF << 6);
+      graph[1] = 0x1 << lastMatrixButtonPressed;
+      break;
+  }
+  *_graph = graph[0];
+  *(_graph + 1) = graph[1];
 }
 
 void lcdPrintA(String what) {
@@ -208,15 +278,11 @@ void evaluateSequence() {
 }
 
 byte cp64 = 0;
-//buttons that were pressed on last evaluation;
-int pressedMatrixButtonsBitmap = 0x0000;
-byte pressedSelectorButtonsBitmap = 0x00;
+
+
+
 
 void timedLoop() {
-
-
-
-
   //evaluate matrix buttons
   byte cp16 = cp64 % 16;
   byte cp32 = cp64 % 32;
@@ -226,15 +292,15 @@ void timedLoop() {
   if (buttonPressure > 1) {
     //if last lap this button was not pressed, trigger on  button pressed
     if ((evaluator & pressedMatrixButtonsBitmap) == 0) {
-      onMatrixButtonPressed(cp16, buttonPressure);
       pressedMatrixButtonsBitmap |= evaluator;
+      onMatrixButtonPressed(cp16, buttonPressure);
     } else {
       onMatrixButtonHold(cp16, buttonPressure);
     }
   } else {
     if ((evaluator & pressedMatrixButtonsBitmap) != 0) {
-      onMatrixButtonReleased(cp16);
       pressedMatrixButtonsBitmap &= ~(0x1 << cp16);
+      onMatrixButtonReleased(cp16);
     }
   }
   /*layers[0]=readMatrixButton(3);
@@ -243,21 +309,10 @@ void timedLoop() {
 
 
 
-  if (selector_mode || selector_a || selector_b || selector_c) {
-    /*
-        turnPixelOn(cp16 + 48);
-        turnPixelOn(cp16 + 32);
-        turnPixelOn(cp16 + 16);*/
-    if (cp16 != m_mode) {
-      turnPixelOn(cp16 + 32);
-      turnPixelOn(cp16 + 16);
-      
-    } else {
-      turnPixelOn(cp16 + 32);
-    }
-  } else {
-    updatePixel(cp32 + 0xF); //using 32 instead of 64 for more light at cost of the red channel
-  }
+
+
+  updatePixel(cp32 + 0xF); //using 32 instead of 64 for more light at cost of the red channel
+
 
   //evaluate Selector buttons (the tact buttons on top of the matrix)
   //less frequently than matrix, because these are not performance buttons
@@ -269,15 +324,15 @@ void timedLoop() {
     if (readMuxB(cb_4 + 4)) {
       //if last lap this button was not pressed, trigger on  button pressed
       if ((evaluator & pressedSelectorButtonsBitmap) == 0) {
-        onSelectorButtonPressed(cb_4);
         pressedSelectorButtonsBitmap |= evaluator;
+        onSelectorButtonPressed(cb_4);
       } else {
         onSelectorButtonHold(cb_4);
       }
     } else {
       if ((evaluator & pressedSelectorButtonsBitmap) != 0) {
-        onSelectorButtonReleased(cb_4);
         pressedSelectorButtonsBitmap &= ~(0x1 << cb_4);
+        onSelectorButtonReleased(cb_4);
       }
     }
   }
@@ -291,24 +346,67 @@ void timedLoop() {
 
 
 }
+
 //actions to take while a button is held, taking the pressure into account
 void onMatrixButtonHold(byte button, int buttonPressure) {}
 //actions to take while a button is pressed
 void onMatrixButtonPressed(byte button) {
   onMatrixButtonPressed(button, 127);
 }
+
 //actions to take once a button is pressed
+
 void onMatrixButtonPressed(byte button, int buttonPressure) {
+  lastMatrixButtonPressed = button;
   graph_fingers |= 0x1 << button;
   if (selector_mode) {
     changeMode(button);
   } else {
     switch (m_mode) {
-      //performer
+      //performer m_mode
       case 0:
-        sendMidi(0x90, 36 + button, 127, true);
+        //check wether we are engaged in a selector mode
+        if (selector_a) {
+          changePerformanceLayer(button);// channels, chords, grades, notes, velocities
+        } else if (selector_b) {
+          if ((0x1 << button)&binaryInputActiveBitmap) {
+            binaryInputActiveBitmap &= ~(0x1 << button);
+          } else {
+            binaryInputActiveBitmap |= 0x1 << button;
+          }
+          pm_selectedNote = (byte) binaryInputActiveBitmap; //works as binary input
+          lcdPrintB("note now " + String(binaryInputActiveBitmap, DEC));
+        } else if (selector_c) {
+          pm_selectedChannel = button;
+          lcdPrintB("channel now " + String(button, DEC));
+        } else {
+          //we are not in selector mode, therefore we just perform
+          //"chords", "grades", "notes", "channels", "cc's", "custom"
+          switch (pm_current) {
+            //chords
+            case 0:
+              break;
+            //grades
+            case 1:
+              break;
+            //notes
+            case 2:
+              //pm_selectedNote = button;
+              noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, true);
+              break;
+            //channels
+            case 3:
+              //pm_selectedChannel = button;
+              noteOn(button, pm_selectedNote + button, pm_selectedVelocity, button, true);
+              break;
+            case 4:
+              break;
+          }
+
+          break;
+        }
         break;
-      //sequencer
+      //sequencer m_mode
       case 1:
         int evaluator = 0x1 << button;
         if (frameHasNote(button)) {
@@ -325,10 +423,20 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
 //actions to take once a button is released
 void onMatrixButtonReleased(byte button) {
   graph_fingers &= ~(0x1 << button);
+  //if this button has generated a note on, send a note off.
+  if (MIDI_NoteOns[button][0]) {
+    sendMidi(0x80 | (MIDI_NoteOns[button][1] & 0xf), MIDI_NoteOns[button][2], 0);
+  }
   //for debug
   switch (m_mode) {
     case 0:
-      sendMidi(0x80, 36 + button, 127);
+      if (selector_b) {
+       // pm_selectedNote = (pressedMatrixButtonsBitmap); //works as binary input
+       // lcdPrintB("note now " + String(pressedMatrixButtonsBitmap, DEC));
+      } else {
+        switch (pm_current) {
+        }
+      }
       break;
     case 1:
       break;
@@ -337,29 +445,51 @@ void onMatrixButtonReleased(byte button) {
 //
 void onSelectorButtonPressed(byte button) {
 
-  lcdPrintB("Selector " + String(button) + "-");
-
+  String selectorName = "-";
+  //set the selector to active (to be detected in other places) and set default names to print on screen
   if (button == 0) {
     selector_mode = true;
-    lcdPrintB("Mode Selector");
-  } else {
-    /*switch (m_mode) {
-      case 0:
-
-        break;
-      }*/
+    selectorName = "Mode";
+  } else if (button == 1) {
+    selector_a = true;
+    selectorName = "A";
+  } else if (button == 2) {
+    selector_b = true;
+    selectorName = "B";
+  } else if (button == 3) {
+    selector_c = true;
+    selectorName = "C";
   }
+  switch (m_mode) {
+    case 0:
+      switch (button) {
+        case 1:
+          selectorName = "Perform type";
+          break;
+        case 2:
+          selectorName = "Note";
+          binaryInputActiveBitmap = pm_selectedNote;
+          break;
+        case 3:
+          selectorName = "Channel";
+          break;
+      }
+
+      break;
+  }
+  lcdPrintB(selectorName + " selector");
 }
 //
 void onSelectorButtonReleased(byte button) {
-  lcdPrintB("No selector-");
+  lcdPrintB("-");
   if (button == 0) {
     selector_mode = false;
-  } else {
-    switch (m_mode) {
-      case 0:
-        break;
-    }
+  } else if (button == 1) {
+    selector_a = false;
+  } else if (button == 2) {
+    selector_b = false;
+  } else if (button == 3) {
+    selector_c = false;
   }
 }
 void onSelectorButtonHold(byte button) {}
@@ -374,12 +504,24 @@ void sendMidi(byte a, byte b, byte c, bool debug) {
   if (debug)
     lcdPrintB(String( a, HEX) + "," + String( b, HEX) + "," + String( c, HEX) + "");
 }
+void noteOn(byte channel, byte b, byte c, byte button, bool debug) {
+  byte a = (0x0f & channel) | 0x90;
+  MIDI_NoteOns[button][0] = 0xFF;
+  MIDI_NoteOns[button][1] = channel;
+  MIDI_NoteOns[button][2] = b;
+  MIDI_NoteOns[button][3] = c;
+  sendMidi(a, b, c, debug);
+}
 //change mode to and perform all necessary operations with respect to that.
 //avoid setting up many variables here because it gets messy. instead the program should check the currentmode and act accordingly
 void changeMode(byte to) {
   m_mode = to;
   lcdPrintA(m_list[to]);
 };
+void changePerformanceLayer(byte to) {
+  pm_current = to;
+  lcdPrintB("PM_" + pm_layerList[to]);
+}
 //update one pixel on one of the color channels behind the mux. Be aware that redPixel function exists
 void updatePixel(byte currentPixel) {
   //nibble A is connected to the mux address for the anodes / btn inputs
