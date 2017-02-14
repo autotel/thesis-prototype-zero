@@ -24,12 +24,15 @@ int m_mode = 0;
 bool m_recording = false;
 //names for the m_mode possible values
 String  m_list [] = {
-  "modeselector",
   "performer", "sequencer", "jumper 1", "jumper 2",
   "scale", "chordset", "patternset 1", "patternset 2",
   "Tesseractor A", "Tesseractor B", "Tesseractor C", "Tesseractor D"
   "undefined", "undefined", "undefined", "undefined"
 };
+//modifier states
+//example boolean shift=false;
+bool s_modeselector = false;
+bool s_knobShift = false;
 
 //text to print in screens
 String screenA = "KALKULAITOR";
@@ -197,9 +200,14 @@ int pressedMatrixButtonsBitmap = 0x0000;
 byte pressedSelectorButtonsBitmap = 0x00;
 
 void timedLoop() {
+
   if (cp64 == 0) {
     draw();
   }
+
+
+
+
   //evaluate matrix buttons
   byte cp16 = cp64 % 16;
   int buttonPressure = readMatrixButton(cp16);
@@ -222,7 +230,6 @@ void timedLoop() {
     layers[1]=readMatrixButton(1);
     layers[2]=readMatrixButton(2);*/
   updatePixel(cp64 % 32 + 16); //originally no operation should be performed over cp64, but it helps to have brighter leds at cost of no red
-
   //evaluate Selector buttons (the tact buttons on top of the matrix)
   //less frequently than matrix, because these are not performance buttons
   if (cp16 == 0) {
@@ -258,26 +265,26 @@ void onMatrixButtonPressed(byte button) {
 //actions to take once a button is pressed
 void onMatrixButtonPressed(byte button, int buttonPressure) {
   graph_fingers |= 0x1 << button;
-  switch (m_mode) {
-    //modeselector
-    case 0:
-      changeMode(button + 1);
-      break;
-    //performer
-    case 1:
-      sendMidi(0x90, 36 + button, 127);
-      break;
-    //sequencer
-    case 2:
-      int evaluator = 0x1 << button;
-      if (frameHasNote(button)) {
-        sequence[button][0] = 0x00;
-      } else {
-        sequence[button][0] = 0x90;
-      }
-      break;
-      //jumper1
-      //jumper2
+  if (s_modeselector) {
+    changeMode(button);
+  } else {
+    switch (m_mode) {
+      //performer
+      case 0:
+        sendMidi(0x90, 36 + button, 127,true);
+        break;
+      //sequencer
+      case 1:
+        int evaluator = 0x1 << button;
+        if (frameHasNote(button)) {
+          sequence[button][0] = 0x00;
+        } else {
+          sequence[button][0] = 0x90;
+        }
+        break;
+        //jumper1
+        //jumper2
+    }
   }
 }
 //actions to take once a button is released
@@ -285,10 +292,10 @@ void onMatrixButtonReleased(byte button) {
   graph_fingers &= ~(0x1 << button);
   //for debug
   switch (m_mode) {
-    case 1:
+    case 0:
       sendMidi(0x80, 36 + button, 127);
       break;
-    case 2:
+    case 1:
       break;
   }
 }
@@ -298,24 +305,24 @@ void onSelectorButtonPressed(byte button) {
   lcdPrintB("Selector " + String(button) + "-");
 
   if (button == 0) {
-    changeMode(0);
+    s_modeselector = true;
+    lcdPrintB("Mode Selector");
   } else {
-    switch (m_mode) {
+    /*switch (m_mode) {
       case 0:
-        changeMode(0);
+
         break;
-    }
+      }*/
   }
 }
 //
 void onSelectorButtonReleased(byte button) {
   lcdPrintB("No selector-");
   if (button == 0) {
-    changeMode(0);
+    s_modeselector = false;
   } else {
     switch (m_mode) {
       case 0:
-
         break;
     }
   }
@@ -326,6 +333,11 @@ void sendMidi(byte a, byte b, byte c) {
   mySerial.write(a);
   mySerial.write(b);
   mySerial.write(c);
+}
+void sendMidi(byte a, byte b, byte c, bool debug) {
+  sendMidi(a,b,c);
+  if (debug)
+    lcdPrintB(String( a, HEX) + "," + String( b, HEX) + "," + String( c, HEX) + "");
 }
 //change mode to and perform all necessary operations with respect to that.
 //avoid setting up many variables here because it gets messy. instead the program should check the currentmode and act accordingly
