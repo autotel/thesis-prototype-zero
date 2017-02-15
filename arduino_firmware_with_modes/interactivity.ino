@@ -141,6 +141,66 @@ void onMatrixButtonReleased(byte button) {
       break;
   }
 }
+void onEncoderScroll(int absolute, int delta) {
+  switch (m_mode) {
+    //performer m_mode
+    case 0:
+      //check wether we are engaged in a selector mode
+      if (selector_a) {
+        changePerformanceLayer(pm_current+delta);// channels, chords, grades, notes, velocities
+      } else if (selector_b) {
+        binaryInputActiveBitmap+=delta;
+        pm_selectedNote = (byte) binaryInputActiveBitmap; //works as binary input
+        lcdPrintB("note now " + String(binaryInputActiveBitmap, DEC) + "(" + noteNameArray[binaryInputActiveBitmap % 12] + ")");
+      } else if (selector_c) {
+        pm_selectedChannel +=delta;
+        pm_selectedChannel%=16;
+        lcdPrintB("channel now " + String(pm_selectedChannel, DEC));
+      } else {
+        //we are not in selector mode, therefore we just perform
+        //"chords", "grades", "notes", "channels", "cc's", "custom"
+        switch (pm_current) {
+          //chords
+          case 0:
+            break;
+          //grades
+          case 1:
+            break;
+          //notes
+          case 2:
+            //pm_selectedNote = button;
+            break;
+          //channels
+          case 3:
+            //pm_selectedChannel = button;
+            break;
+          case 4:
+            break;
+          //test;
+          case 5:
+            //pm_selectedNote = button;
+          break; case 6:
+            //pm_selectedNote = button;
+            break;
+        }
+
+        break;
+      }
+      break;
+    //sequencer m_mode
+    case 1:
+    //jumper1 m_mode
+    case 2:
+      break;
+    //jumper2 m_mode
+    case 3:
+      break;
+    //scale m_mode
+    case 4:
+      break;
+  }
+}
+void onEncoderPressed() {}
 //
 void onSelectorButtonPressed(byte button) {
   String selectorName = "-";

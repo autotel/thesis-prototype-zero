@@ -47,20 +47,31 @@ int analogReadMuxB(byte address) {
   pinMode(analogB, OUTPUT);
   return ret;
 }
+byte enc_last = 0;
+//this would be an array, but a byte has enough space
+byte grayToBinary = 0b10110100;
 //read encoder. sourced from http://playground.arduino.cc/Main/RotaryEncoders#Example2
 void doEncoder() {
-  /* If pinA and pinB are both high or both low, it is spinning
-     forward. If they're different, it's going backward.
+  //encread turns around as follows: <- 0,1,3,2 ->
+  //upon conversion it will turn as: <- 0,1,2,3 ->
+  //pendant: we should compare using the gray code, is more economic than converting each time
+  byte enc_read = (grayToBinary >> ( ( (PINC >> 4) & 0x3) * 2 ) ) & 0x3;
+  if (enc_read != enc_last) {
+    signed char enc_inc = enc_read - enc_last;
 
-     For more information on speeding up this process, see
-     [Reference/PortManipulation], specifically the PIND register.
-  */
-  if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB)) {
-    encoder0Pos++;
-  } else {
-    encoder0Pos--;
+    if (enc_inc > 2) {
+      enc_inc = -1;
+    }
+    if (enc_inc < -2) {
+      enc_inc = +1;
+    }
+
+    encoder0Pos += enc_inc;
+    onEncoderScroll(encoder0Pos, enc_inc);
+    enc_last = enc_read;
+    //lcdPrintB(String(enc_read, HEX)+"-"+String(encoder0Pos, HEX)+"-"+String(enc_inc, HEX));
   }
-  lcdPrintB(String(encoder0Pos));
+
 
 
 }

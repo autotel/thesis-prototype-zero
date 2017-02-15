@@ -1,1 +1,1 @@
-
+/*encoder is conected to a muxb addr*/

@@ -10,6 +10,7 @@ int analogA;
 int analogB;
 
 //pins that are connected to the encoder A and B
+//pc4 & pc5
 #define encoder0PinA  A4
 #define encoder0PinB  A5
 volatile unsigned int encoder0Pos = 0;
@@ -65,7 +66,7 @@ int structure_scales[16][3] = {
   },
   //chromatic c
   {
-    12,0,
+    12, 0,
     0b111111111111//all 12 notes are used in chromatic
   },
   //major c
@@ -102,7 +103,7 @@ bool selector_c = false;
 //[0,1]=channel...
 byte MIDI_NoteOns [16][4];
 //text to print in screens
-String screenA = "CALCUTRATOR";
+String screenA = "CALCURATOR";
 String screenB = "0";
 //flag that indicates that the screen should be redrawn when possible
 bool screenChanged = true;
@@ -146,17 +147,20 @@ void setup() {
 
   //lcd screen initial write
   lcd.begin(16, 2);
-  lcd.print("hello, world!");
 
   //encoder set up
+
+  
   pinMode(encoder0PinA, INPUT);
   digitalWrite(encoder0PinA, HIGH);       // turn on pull-up resistor
   pinMode(encoder0PinB, INPUT);
   digitalWrite(encoder0PinB, HIGH);       // turn on pull-up resistor
 
+
   //attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
-  //Timer1.initialize(200);//200
-  //Timer1.attachInterrupt(doEncoder);
+  Timer1.initialize(1000);//200
+  Timer1.attachInterrupt(doEncoder);
+
 }
 
 
