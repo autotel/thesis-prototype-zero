@@ -6,30 +6,32 @@
   @example frameHasNote(32);
 */
 bool frameHasNote(byte frame) {
-  return (sequence[frame][0] & 0xF0) == 0x90;
+  return (seq_ence[0][frame][0]) != 0x0;
 }
+
+
 
 byte getNoteFromScale(byte scalenumber, byte grade, byte octave) {
   byte ret = 0;
   //grade may warp around scale
   octave += grade / structure_scales[scalenumber][0];
-  
+
   //fix grade if is larger than scale length
   grade = grade % structure_scales[scalenumber][0];
-  
+
   ret = octave * 12 + structure_scales[scalenumber][1]; //put ret to the base note on current octave;
-  
+
   //count 1's until we get to the grade
   byte count = 0;
   byte found = 0;
   while (found <= grade) {
-    if ((structure_scales[scalenumber][2] ) & (0x1<<count)) {
+    if ((structure_scales[scalenumber][2] ) & (0x1 << count)) {
       found++;
     }
     count++;
   }
-  lcdPrintA(String(count,DEC)+","+String(octave,DEC)+","+String(found,DEC));
-  ret+=count;
+  //lcdPrintA(String(count, DEC) + "," + String(octave, DEC) + "," + String(found, DEC));
+  ret += count;
 
   /*
     int structure_scales[16][3] = {
@@ -62,5 +64,10 @@ byte countOnes(int i) {
          + ((i >> 2) & 1)
          + ((i >> 1) & 1)
          + (i & 1);
+}
+//recalculate all the modulus of currentStep128x12
+void recalculateSeqSteps() {
+  seq_currentStep128 = seq_currentStep128x12 / 12;
+  seq_currentStep16 = seq_currentStep128 % 16;
 }
 

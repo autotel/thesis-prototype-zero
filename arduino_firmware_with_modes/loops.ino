@@ -1,35 +1,28 @@
 
-unsigned int graph_debug = 0x00;
-int currentStep16 = 0;
-int currentStep16x12 = 0;
+
 int loop128 = 0;
 void loop() {
   if (mySerial.available()) {
     byte midiHeader = mySerial.read();
     if (m_recording) {
       if ((midiHeader & 0xF0) == 0x90) {
-        sequence[currentStep16][0] = midiHeader;//pendant: this is not right implementation of midi in
-        sequence[currentStep16][1] =  mySerial.read();
-        sequence[currentStep16][2] =  mySerial.read();
+        seq_ence[0][seq_currentStep16][0] = 0x1;
+        seq_ence[0][seq_currentStep16][1] = midiHeader;//pendant: this is not right implementation of midi in
+        seq_ence[0][seq_currentStep16][2] =  mySerial.read();
+        seq_ence[0][seq_currentStep16][3] =  mySerial.read();
       }
     }
     //clock
     if (midiHeader == 0xF8) {
-      currentStep16x12 = (currentStep16x12 + 1) % (16 * 12);
-      if (currentStep16x12 % 12 == 0) {
-        currentStep16 = currentStep16x12 / 12;
-
-      }
+      seq_currentStep128x12  = (seq_currentStep128x12  + 1) % (128 * 12);
+      recalculateSeqSteps();
     }
     //start
     if (midiHeader == 0xFA) {
-      currentStep16x12 = 0;
-      currentStep16 = 0;
+      seq_currentStep128x12 = 0;
+      recalculateSeqSteps();
     }
   }
-
-
-
   evaluateSequence();
   if (loop128 % 4 == 0)
     timedLoop();
@@ -62,11 +55,11 @@ void draw() {
   } else {
     switch (m_mode) {
       case 4:
-        layers[2] = structure_scales[se_selectedScale][2]^graph_fingers;
+        layers[2] = structure_scales[se_selectedScale][2] ^ graph_fingers;
         layers[1] = structure_scales[se_selectedScale][2];
         //this because is just nice to see how the scale patterns up
-        layers[2]|=layers[2]<<12;
-        layers[1]|=layers[1]<<12;
+        layers[2] |= layers[2] << 12;
+        layers[1] |= layers[1] << 12;
         break;
 
       default:
@@ -85,18 +78,24 @@ void draw() {
   if (screenChanged) {
     screenChanged = false;
     if (lastScreenA != screenA) {
+      if(screenA.length()>16)
+        screenA=screenA.substring(0,16);
       lastScreenA = screenA;
       lcd.setCursor(0, 0);
       lcd.print(screenA);
-
+      
       for (byte strl = 16 - screenA.length(); strl > 0; strl--) {
         lcd.write(' ');
       }
     }
     if (lastScreenB != screenB) {
+      if(screenB.length()>16)
+        screenB=screenB.substring(0,16);
+        
       lastScreenB = screenB;
       lcd.setCursor(0, 1);
       lcd.print(screenB);
+
       for (byte strl = 16 - screenB.length(); strl > 0; strl--) {
         lcd.write(' ');
       }
@@ -164,6 +163,29 @@ void timedLoop() {
       }
     }
   }
+  doEncoder();
+  /* encoder needs to be connected the other way around, because muxB is pulled down
+    if (cp16 == 0) {
+    //encoder is soldered to muxB12
+    //see previous use of this var for more reference
+    evaluator = 0x1;
+    //encoder button needs internal pullup and works reverse logic
+    digitalWrite(A0,HIGH);
+    if (!readMuxB(11)) {
+      //if last lap this button was not pressed, trigger on  button pressed
+      if ((evaluator & pressedSelectorButtonsBitmap) == 0) {
+        pressedSelectorButtonsBitmap |= evaluator;
+        onSelectorButtonPressed(4);
+      } else {
+        onSelectorButtonHold(4);
+      }
+    } else {
+      if ((evaluator & pressedSelectorButtonsBitmap) != 0) {
+        pressedSelectorButtonsBitmap &= ~(0x1);
+        onSelectorButtonReleased(4);
+      }
+    }
+    }*/
 
   if (cp64 == m_mode) {
     draw();

@@ -2,7 +2,7 @@
 
 
 #include <LiquidCrystal.h>
-#include <TimerOne.h>
+//#include <TimerOne.h>
 #include <SoftwareSerial.h>
 
 //analog inputs that are connected to the multiplexor commons
@@ -26,18 +26,18 @@ int m_mode = 0;
 //wether it is recording the midi stream
 bool m_recording = false;
 //names for the m_mode possible values
-String  m_list [] = {
-  "performer", "sequencer", "jumper 1", "jumper 2",
-  "scaleset", "chordset", "patternset 1", "patternset 2",
-  "Arpeggiator", "Tesseractor F", "Tesseractor G", "Tesseractor H",
-  "Tesseractor A", "Tesseractor B", "Tesseractor C", "Tesseractor D",
+const String  m_list [] = {
+  "PERF", "SEQ", "JMP1", "JMP2",
+  "SCALE", "CHRD", "MIX1", "MIX2",
+  "ARP", "TSX1", "TSX2", "TSX3",
+  "TSX4", "TSX5", "TSX6", "ERR!",
 
 };
 //submodes of the modes
 //pm_ player modes
 byte pm_current = 2;
-String pm_layerList [] = {
-  "chords", "grades", "notes", "channels", "cc's", "Notes+Cutoff", "Notes+Pitch", "custom"
+const String pm_POVList [] = {
+  "chord", "grade", "note", "channel", "CC", "Note+LP", "Note+FQ"
 };
 byte pm_selectedChannel = 0;
 byte pm_selectedNote = 36;
@@ -52,13 +52,11 @@ byte se_selectedScale = 0;
 int graph_pointer = 0x00;
 int graph_fingers = 0x00;
 int graph_sequence = 0x00;
-String lastScreenA = "";
-String lastScreenB = "";
 
 
 //structure_
 //scales are binary. The 1's are the white keys and the 0's are the black keys, starting from the lsb
-int structure_scales[16][3] = {
+int structure_scales[4][3] = {
   //major c
   {
     7, 0, //amount of selected notes in this scale, base note
@@ -78,11 +76,6 @@ int structure_scales[16][3] = {
   {
     7, 0, //amount of selected notes in this scale, base note
     0b010110101101
-  },
-  //whatever
-  {
-    7, 0, //amount of selected notes in this scale, base note
-    0b10100110101
   }
 };
 /*  byte structure_chords[16][16];
@@ -90,8 +83,8 @@ int structure_scales[16][3] = {
   byte structure_chords[1] = {1, 3, 5};
   byte structure_chords[2] = {2, 4, 8};
   byte structure_chords[3] = {3, 5, 7};*/
-
-String noteNameArray[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+//to save on memory, these text variables go in PROGMEM. They are read by pgm_read_word_near(charSet + index);
+const String noteNameArray[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 //modifier states
 //example boolean shift=false;
 bool selector_mode = false;
@@ -101,10 +94,15 @@ bool selector_c = false;
 //midi tracking
 //[0,0]=wether last thing sent was a note on (off is due)
 //[0,1]=channel...
-byte MIDI_NoteOns [16][4];
+
+byte MIDI_NoteOns [16][2];
+
 //text to print in screens
-String screenA = "CALCURATOR";
-String screenB = "0";
+String screenA = "";
+String screenB = "";
+String lastScreenA = "";
+String lastScreenB = "";
+
 //flag that indicates that the screen should be redrawn when possible
 bool screenChanged = true;
 
@@ -121,10 +119,26 @@ LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 long lastchange;
 
 //contains the midi sequence to play
-byte sequence [96][3];
+// 16 sequences, 
+//64 length(+32 for the global sequence=96), 
+//2 bytes of data (first indicates the type of event, the second indicates the event value). no raw midi here because memory
+byte seq_ence [4][64][2];
+
+//at what time to loop each sequence.
+byte seq_lengths [8];
+
+//all other currentStep's are modulus of the following one:
+unsigned int seq_currentStep128x12 = 0;
+unsigned int seq_currentStep128 = 0;
+byte seq_currentStep16=0;
+
+byte seq_currentSequences [16];
+byte seq_current = 0;
+
 
 unsigned int layers [] = {0xfff0, 0x0, 0x0};
 
+unsigned int graph_debug = 0x00;
 
 
 void setup() {
@@ -150,7 +164,7 @@ void setup() {
 
   //encoder set up
 
-  
+
   pinMode(encoder0PinA, INPUT);
   digitalWrite(encoder0PinA, HIGH);       // turn on pull-up resistor
   pinMode(encoder0PinB, INPUT);
@@ -158,8 +172,8 @@ void setup() {
 
 
   //attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
-  Timer1.initialize(1000);//200
-  Timer1.attachInterrupt(doEncoder);
+  //Timer1.initialize(1000);//200
+  //Timer1.attachInterrupt(doEncoder);
 
 }
 
@@ -173,14 +187,14 @@ void sendMidi(byte a, byte b, byte c) {
 }
 void sendMidi(byte a, byte b, byte c, bool debug) {
   sendMidi(a, b, c);
+  
   if (debug)
     lcdPrintB(String( a, HEX) + "," + String( b, HEX) + "(" + noteNameArray[b % 12] + ")," + String( c, HEX) + "");
 }
 void noteOn(byte channel, byte b, byte c, byte button, bool debug) {
   byte a = (0x0f & channel) | 0x90;
-  MIDI_NoteOns[button][0] = 0xFF;
-  MIDI_NoteOns[button][1] = channel;
-  MIDI_NoteOns[button][2] = b;
-  MIDI_NoteOns[button][3] = c;
+  MIDI_NoteOns[button][0] = channel;
+  MIDI_NoteOns[button][1] = b;//note
+//  MIDI_NoteOns[button][3] = c;
   sendMidi(a, b, c, debug);
 }
