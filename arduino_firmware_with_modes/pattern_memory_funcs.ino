@@ -1,12 +1,62 @@
 /**
   Check if a given frame has a note on it or not.
   a frame is the smallest unit of time in the sequencer memory. All event data is quantized into these frames.
-  @method frameHasNote
+  @method seq_frameHasNote
   @return {boolean} true if there is a note, false if there is not.
-  @example frameHasNote(32);
+  @example seq_frameHasNote(32);
 */
-bool frameHasNote(byte frame) {
-  return (seq_ence[0][frame][0]) != 0x0;
+
+void evaluateSequence() {
+  if (seq_frameHasNote(seq_currentStep16)) {
+  }
+}
+
+bool seq_frameHasNote(byte frame) {
+
+  return true;
+  
+  /*
+  for (byte a = 0; a < seq_enceLength; a++) {
+    //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
+    if (seq_ence[a][0] & 0x80)
+      return true;
+  }
+  return false;
+  /*¿¿*/
+  
+  //return (seq_ence[0][frame][0]) != 0x0;
+}
+
+byte seq_nextEmptyFrame() {
+  /*
+  for (byte a = 0; a < seq_enceLength; a++) {
+    //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
+    if (!(seq_ence[a][0] & 0x80))
+      return a;
+  }
+  lcdPrintB(F("MEMORY OVERFLOW"));*/
+  return 0;
+}
+byte seq_findEvent(byte frame, byte head, byte number) {
+  /*
+  for (byte a = 0; a < seq_enceLength; a++) {
+    //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
+    if ((seq_ence[a][0] & 0x7f) == frame)
+      return a;
+  }
+  return -1;*/
+}
+void seq_addNote(byte frame, byte channel, byte note, byte velo) {
+  byte ef = seq_nextEmptyFrame();
+  seq_ence[ef][0] = frame | 0x80;
+  seq_ence[ef][1] = 0x90 | (channel & 0xF);
+  seq_ence[ef][2] = note;
+  seq_ence[ef][3] = velo;
+}
+void seq_removeNote(byte frame, byte channel, byte note) {
+  byte ff = seq_findEvent(frame, 0x90 | channel, note);
+  if (ff)
+    seq_ence[ff][0] = 0;
 }
 
 

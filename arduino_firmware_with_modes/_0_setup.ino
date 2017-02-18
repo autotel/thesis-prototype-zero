@@ -47,7 +47,7 @@ const char string_9[] PROGMEM = "DEATH";
 
 
 
-char stringBuffer[6];
+char stringBuffer[8];
 
 
 //submodes of the modes
@@ -59,7 +59,7 @@ byte pm_current = 2;
 const char string_10[] PROGMEM = "grade";
 const char string_11[] PROGMEM = "note";
 const char string_12[] PROGMEM = "channel";
-const char string_13[] PROGMEM = "CC/n▀";
+const char string_13[] PROGMEM = "CC/no";
 const char string_14[] PROGMEM = "CC/ch";
 const char string_15[] PROGMEM = "Note+A";
 const char string_16[] PROGMEM = "Note+B";
@@ -164,10 +164,19 @@ LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 long lastchange;
 
 //contains the midi sequence to play
-// 16 sequences,
-//64 length(+32 for the global sequence=96),
-//2 bytes of data (first indicates the type of event, the second indicates the event value). no raw midi here because memory
-byte seq_ence [4][64][2];
+
+//64 event memory
+// (active+time),(type+channel),(number),(velocity or value)
+// step 17, cc in channel 4, number 74, to 140
+// step 32, noteon in channel 1, number 60 (c3), velocity 97
+// step 0, grade in channel 2, numbeer 60 (c3), velocity 90
+// step 0, grade in channel 2, numbeer 64, velocity 90
+// step 0, grade in channel 2, numbeer 67, velocity 90
+
+#define SQLN 128
+byte seq_ence [SQLN][4];
+byte seq_enceLength=SQLN;
+#undef SQLN
 
 //at what time to loop each sequence.
 byte seq_lengths [8];

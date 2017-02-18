@@ -6,16 +6,19 @@ void loop() {
     byte midiHeader = mySerial.read();
     if (m_recording) {
       if ((midiHeader & 0xF0) == 0x90) {
-        seq_ence[0][seq_currentStep16][0] = 0x1;
-        seq_ence[0][seq_currentStep16][1] = midiHeader;//pendant: this is not right implementation of midi in
-        seq_ence[0][seq_currentStep16][2] =  mySerial.read();
-        seq_ence[0][seq_currentStep16][3] =  mySerial.read();
+        /*seq_ence[0][seq_currentStep16][0] = 0x1;
+          seq_ence[0][seq_currentStep16][1] = midiHeader;//pendant: this is not right implementation of midi in
+          seq_ence[0][seq_currentStep16][2] =  mySerial.read();
+          seq_ence[0][seq_currentStep16][3] =  mySerial.read();*/
       }
     }
     //clock
     if (midiHeader == 0xF8) {
       seq_currentStep128x12  = (seq_currentStep128x12  + 1) % (128 * 12);
       recalculateSeqSteps();
+      if (seq_currentStep128 % 12 == 0) {
+        //evaluateSequence();
+      }
     }
     //start
     if (midiHeader == 0xFA) {
@@ -23,9 +26,11 @@ void loop() {
       recalculateSeqSteps();
     }
   }
-  evaluateSequence();
-  if (loop128 % 4 == 0)
+  if (loop128 % 4 == 0) {
+
     timedLoop();
+
+  }
 
   loop128++;
   loop128 %= 128;
@@ -34,74 +39,6 @@ void loop() {
 
 
 
-void draw() {
-  byte selectedGraph = 0;
-  if (selector_mode || selector_a || selector_b || selector_c) {
-    switch (m_mode) {
-      case 0:
-        if (selector_a) {
-          selectedGraph = 16;
-        } else if (selector_b) {
-          selectedGraph = 1;
-        } else if (selector_c) {
-          selectedGraph = 0;
-        }
-        break;
-    }
-    unsigned int graph [] = {0, 0};
-    modifierGraph(selectedGraph, graph);
-    layers[1] = graph [0];
-    layers[2] = graph [1];
-  } else {
-    switch (m_mode) {
-      case 4:
-        layers[2] = structure_scales[se_selectedScale][2] ^ graph_fingers;
-        layers[1] = structure_scales[se_selectedScale][2];
-        //this because is just nice to see how the scale patterns up
-        layers[2] |= layers[2] << 12;
-        layers[1] |= layers[1] << 12;
-        break;
-
-      default:
-        layers[2] = graph_sequence;
-        layers[1] = graph_fingers;
-
-        layers[1] |= graph_pointer;
-        layers[2] |= graph_fingers;
-
-        layers[0] = 0xFFFF;
-        // layers[1]|=graph_debug;
-        layers[2] |= graph_debug;
-        break;
-    }
-  }
-  if (screenChanged) {
-    screenChanged = false;
-    if (lastScreenA != screenA) {
-      if(screenA.length()>16)
-        screenA=screenA.substring(0,16);
-      lastScreenA = screenA;
-      lcd.setCursor(0, 0);
-      lcd.print(screenA);
-      
-      for (byte strl = 16 - screenA.length(); strl > 0; strl--) {
-        lcd.write(' ');
-      }
-    }
-    if (lastScreenB != screenB) {
-      if(screenB.length()>16)
-        screenB=screenB.substring(0,16);
-        
-      lastScreenB = screenB;
-      lcd.setCursor(0, 1);
-      lcd.print(screenB);
-
-      for (byte strl = 16 - screenB.length(); strl > 0; strl--) {
-        lcd.write(' ');
-      }
-    }
-  }
-}
 
 
 byte cp64 = 0;
@@ -114,7 +51,7 @@ void timedLoop() {
   byte cp16 = cp64 % 16;
   byte cp32 = cp64 % 32;
 
-  int buttonPressure = readMatrixButton(cp16);
+  byte buttonPressure = (byte)(readMatrixButton(cp16) / 2);
   int evaluator = 0x1 << cp16;
   if (buttonPressure > 1) {
     //if last lap this button was not pressed, trigger on  button pressed
@@ -193,6 +130,85 @@ void timedLoop() {
 
   cp64++;
   cp64 = cp64 % 64;
+}
 
 
+
+void draw() {
+  byte selectedGraph = 0;
+  if (selector_mode || selector_a || selector_b || selector_c) {
+    switch (m_mode) {
+      case 0:
+        if (selector_a) {
+          selectedGraph = 16;
+        } else if (selector_b) {
+          selectedGraph = 1;
+        } else if (selector_c) {
+          selectedGraph = 0;
+        }
+        break;
+    }
+    unsigned int graph [] = {0, 0};
+    modifierGraph(selectedGraph, graph);
+    layers[1] = graph [0];
+    layers[2] = graph [1];
+  } else {
+    switch (m_mode) {
+      /*case 0:
+        layers[2] = structure_scales[se_selectedScale][2] ^ graph_fingers;
+        layers[1] = structure_scales[se_selectedScale][2];
+        //this because is just nice to see how the scale patterns up
+        layers[2] |= structure_scales[se_selectedScale][2] << 12;
+        layers[1] |= structure_scales[se_selectedScale][2] << 12;
+        break;*/
+      case 1:
+        //updateSequenceGraph();
+        break;
+      case 4:
+        layers[2] = structure_scales[se_selectedScale][2] ^ graph_fingers;
+        layers[1] = structure_scales[se_selectedScale][2];
+        //this because is just nice to see how the scale patterns up
+        layers[2] |= layers[2] << 12;
+        layers[1] |= layers[1] << 12;
+        break;
+
+      default:
+        layers[2] = graph_sequence;
+        layers[1] = graph_fingers;
+
+        layers[1] |= graph_pointer;
+        layers[2] |= graph_fingers;
+
+        layers[0] = 0xFFFF;
+        // layers[1]|=graph_debug;
+        layers[2] |= graph_debug;
+        break;
+    }
+  }
+  if (screenChanged) {
+    screenChanged = false;
+    if (lastScreenA != screenA) {
+      if (screenA.length() > 16)
+        screenA = screenA.substring(0, 16);
+      lastScreenA = screenA;
+      lcd.setCursor(0, 0);
+      lcd.print(screenA);
+
+      for (byte strl = 16 - screenA.length(); strl > 0; strl--) {
+        lcd.write(' ');
+      }
+    }
+    if (lastScreenB != screenB) {
+      if (screenB.length() > 16)
+        screenB = screenB.substring(0, 16);
+
+      lastScreenB = screenB;
+      lcd.setCursor(0, 1);
+      lcd.print(screenB);
+
+      for (byte strl = 16 - screenB.length(); strl > 0; strl--) {
+        lcd.write(' ');
+      }
+    }
+  }
 }

@@ -73,47 +73,27 @@ void lcdUpdateStatus() {
 
 long lastMillis = 0;
 unsigned int stepInterval = 200;
-void evaluateSequence() {
+void updateSequenceGraph(){
 
-  graph_pointer = 1 << seq_currentStep16;
+    graph_pointer = 1 << seq_currentStep16;
 
-  /*
-    long thisMillis = millis();
-    //evaluate wether to step
-    if (thisMillis - lastMillis >= stepInterval) {
-    lastMillis = thisMillis;
-    //currentStep16=(currentStep16+1)%16;
-    graph_pointer = 1 << currentStep16;
-    }*/
-  //create the graphic layer to display the sequence
+    /*
+      long thisMillis = millis();
+      //evaluate wether to step
+      if (thisMillis - lastMillis >= stepInterval) {
+      lastMillis = thisMillis;
+      //currentStep16=(currentStep16+1)%16;
+      graph_pointer = 1 << currentStep16;
+      }*/
+    //create the graphic layer to display the sequence
 
-  graph_sequence = 0;
-  for (byte a = 0; a < 16; a++) {
-    if (frameHasNote(a)) {
-      graph_sequence |= 0x1 << a;
+    graph_sequence = 0;
+    for (byte a = 0; a < 16; a++) {
+      if (seq_frameHasNote(a)) {
+        graph_sequence |= 0x1 << a;
+      }
     }
-  }
-  if (frameHasNote(seq_currentStep16)) {
-    switch (seq_ence[0][seq_currentStep16][0] & 0xF0) {
-      //sivester midi note
-      case 0x90:
-        break;
-      //a chord
-      case 2:
-        break;
-      //a grade
-      case 3:
-        break;
-      //note
-      case 4:
-        break;
-      //cc
-      case 5:
-        break;
-      //a sequence?
-      case 6:
-        break;
-    }
-  }
+
 }
+
 

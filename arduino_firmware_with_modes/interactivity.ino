@@ -1,7 +1,7 @@
 
 
 //actions to take while a button is held, taking the pressure into account
-void onMatrixButtonHold(byte button, int buttonPressure) {
+void onMatrixButtonHold(byte button, byte buttonPressure) {
   switch (m_mode) {
     //performer m_mode
     case 0:
@@ -9,18 +9,18 @@ void onMatrixButtonHold(byte button, int buttonPressure) {
         case 4:
           //only one button should ride the cc, otherwise chaos
           if (button == lastMatrixButtonPressed)
-            sendMidi(0xB0 | button, pm_selectedNote, buttonPressure / 4, true);
+            sendMidi(0xB0 | button, pm_selectedNote, buttonPressure / 2, true);
           break;
         //test
         case 5:
           //only one button should ride the cc, otherwise chaos
           if (button == lastMatrixButtonPressed)
-            sendMidi(0xB0 | pm_selectedChannel, 0x4A, buttonPressure / 4);
+            sendMidi(0xB0 | pm_selectedChannel, 0x4A, buttonPressure / 2);
           break;
         case 6:
           //only one button should ride the cc, otherwise chaos
           if (button == lastMatrixButtonPressed)
-            sendMidi(0xB0 | pm_selectedChannel, 0x50, buttonPressure / 4);
+            sendMidi(0xB0 | pm_selectedChannel, 0x50, buttonPressure / 2);
           break;
       }
   }
@@ -94,10 +94,10 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
         break;
       //sequencer m_mode
       case 1:
-        if (frameHasNote(button)) {
-          seq_ence[0][button][0] = 0x0;
+        if (seq_frameHasNote(button)) {
+          seq_removeNote(button,0,60);
         } else {
-          seq_ence[0][button][0] = 0x01;
+          seq_addNote(button,0,60,97);
         }
         break;
       //jumper1 m_mode
