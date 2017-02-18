@@ -57,38 +57,39 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
           lcdPrintB("channel: " + String(button, DEC));
         } else {
           //we are not in selector mode, therefore we just perform
-          //"chords", "grades", "notes", "channels", "cc's", "custom"
+          //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
           switch (pm_current) {
-            //chords
-            case 0:
-              break;
             //grades
-            case 1:
+            case 0:
               noteOn(pm_selectedChannel, getNoteFromScale(se_selectedScale, button, 4), pm_selectedVelocity, button, false);
               break;
             //notes
-            case 2:
+            case 1:
               //pm_selectedNote = button;
               noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, false);
               break;
             //channels
-            case 3:
+            case 2:
               //pm_selectedChannel = button;
               noteOn(button, pm_selectedNote, pm_selectedVelocity, button, true);
               break;
+            //CC/n
+            case 3:
+              break;
+            //CC/ch
             case 4:
               break;
-            //test;
+            //Note+A
             case 5:
               //pm_selectedNote = button;
               noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, true);
-            break; case 6:
+              break;
+            //note+B
+            case 6:
               //pm_selectedNote = button;
               noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, true);
               break;
           }
-
-          break;
         }
         break;
       //sequencer m_mode
@@ -190,49 +191,55 @@ void onEncoderScroll(int absolute, int delta) {
     //scale m_mode
     case 4:
       break;
+    //DEATH
+    case 9:
+      lcdPrintB(String(absolute)+"-"+(char)absolute);
+      break;
   }
 }
 void scrollAccordingToPm(int delta) {
-  //"chords", "grades", "notes", "channels", "cc's", "custom"
+  //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
   switch (pm_current) {
-    //chords
-    case 0:
-      break;
     //grades
-    case 1:
+    case 0:
       pm_selectedChannel += delta;
       lcdUpdateStatus();
       break;
     //notes
-    case 2:
+    case 1:
       pm_selectedChannel += delta;
       lcdUpdateStatus();
       //pm_selectedNote = button;
       break;
     //channels
-    case 3:
+    case 2:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       //pm_selectedChannel = button;
       break;
-    //cc
+    //CC/n
+    case 3:
+      pm_selectedNote += delta;
+      lcdUpdateStatus();
+      break;
+    //CC/ch
     case 4:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       break;
-    //test;
+    //note+A
     case 5:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       //pm_selectedNote = button;
       break;
+    //note+B
     case 6:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       //pm_selectedNote = button;
       break;
   }
-  break;
 }
 void onEncoderPressed() {}
 //

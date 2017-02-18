@@ -26,19 +26,64 @@ int m_mode = 0;
 //wether it is recording the midi stream
 bool m_recording = false;
 //names for the m_mode possible values
-const String  m_list [] = {
+/*instead of making usual arrays, to save space for local vars, I'm writing constant strings to progmem.*/
+
+/*const String  m_list [] = {
   "PERF", "SEQ", "JMP1", "JMP2",
   "SCALE", "CHRD", "MIX1", "MIX2",
   "ARP", "TSX1", "TSX2", "TSX3",
   "TSX4", "TSX5", "TSX6", "ERR!",
+  };*/
+const char string_0[] PROGMEM = "PADS";
+const char string_1[] PROGMEM = "SEQ";
+const char string_2[] PROGMEM = "JUMP1";
+const char string_3[] PROGMEM = "JUMP2";
+const char string_4[] PROGMEM = "SCALE";
+const char string_5[] PROGMEM = "CHORD";
+const char string_6[] PROGMEM = "MIX1";
+const char string_7[] PROGMEM = "MIX2";
+const char string_8[] PROGMEM = "ARP";
+const char string_9[] PROGMEM = "DEATH";
 
-};
+
+
+char stringBuffer[6];
+
+
 //submodes of the modes
 //pm_ player modes
 byte pm_current = 2;
-const String pm_POVList [] = {
-  "chord", "grade", "note", "channel", "CC", "Note+LP", "Note+FQ"
+/*const String pm_POVList [] = {
+  "grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
+  };*/
+const char string_10[] PROGMEM = "grade";
+const char string_11[] PROGMEM = "note";
+const char string_12[] PROGMEM = "channel";
+const char string_13[] PROGMEM = "CC/n▀";
+const char string_14[] PROGMEM = "CC/ch";
+const char string_15[] PROGMEM = "Note+A";
+const char string_16[] PROGMEM = "Note+B";
+
+//build array with all strings for lookup
+const char* const string_table[] PROGMEM = {
+  string_0, string_1, string_2, string_3, string_4, string_5, string_6, string_7, string_8,
+  string_9, string_10, string_11, string_12, string_13, string_14, string_15, string_16
 };
+
+//get string of mode name
+String getString_mode(byte n) {
+  strcpy_P(stringBuffer, (char*)pgm_read_word(&(string_table[n]))); // Necessary casts
+  return stringBuffer;
+}
+//get string of submode name
+String getString_POV(byte n) {
+  n += 10;
+  strcpy_P(stringBuffer, (char*)pgm_read_word(&(string_table[n]))); // Necessary casts
+  return stringBuffer;
+}
+
+
+
 byte pm_selectedChannel = 0;
 byte pm_selectedNote = 36;
 byte pm_selectedVelocity = 120;
@@ -83,8 +128,8 @@ int structure_scales[4][3] = {
   byte structure_chords[1] = {1, 3, 5};
   byte structure_chords[2] = {2, 4, 8};
   byte structure_chords[3] = {3, 5, 7};*/
-//to save on memory, these text variables go in PROGMEM. They are read by pgm_read_word_near(charSet + index);
 const String noteNameArray[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+
 //modifier states
 //example boolean shift=false;
 bool selector_mode = false;
@@ -119,8 +164,8 @@ LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 long lastchange;
 
 //contains the midi sequence to play
-// 16 sequences, 
-//64 length(+32 for the global sequence=96), 
+// 16 sequences,
+//64 length(+32 for the global sequence=96),
 //2 bytes of data (first indicates the type of event, the second indicates the event value). no raw midi here because memory
 byte seq_ence [4][64][2];
 
@@ -130,7 +175,7 @@ byte seq_lengths [8];
 //all other currentStep's are modulus of the following one:
 unsigned int seq_currentStep128x12 = 0;
 unsigned int seq_currentStep128 = 0;
-byte seq_currentStep16=0;
+byte seq_currentStep16 = 0;
 
 byte seq_currentSequences [16];
 byte seq_current = 0;
@@ -187,7 +232,7 @@ void sendMidi(byte a, byte b, byte c) {
 }
 void sendMidi(byte a, byte b, byte c, bool debug) {
   sendMidi(a, b, c);
-  
+
   if (debug)
     lcdPrintB(String( a, HEX) + "," + String( b, HEX) + "(" + noteNameArray[b % 12] + ")," + String( c, HEX) + "");
 }
@@ -195,6 +240,6 @@ void noteOn(byte channel, byte b, byte c, byte button, bool debug) {
   byte a = (0x0f & channel) | 0x90;
   MIDI_NoteOns[button][0] = channel;
   MIDI_NoteOns[button][1] = b;//note
-//  MIDI_NoteOns[button][3] = c;
+  //  MIDI_NoteOns[button][3] = c;
   sendMidi(a, b, c, debug);
 }

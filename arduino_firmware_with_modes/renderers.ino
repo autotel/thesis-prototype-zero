@@ -39,7 +39,7 @@ void lcdPrintB(String what) {
 
 void lcdUpdateMode() {
   //concatenate both text of the first row of the lcd. one from left to right, other from roght to left
-  lcdPrintA((m_list [m_mode] + "/" + pm_POVList[pm_current]).substring(0, 16));
+  lcdPrintA((getString_mode(m_mode) + "/" + getString_POV(pm_current)).substring(0, 16));
 }
 void lcdUpdatePOV(String is) {
   //efficiency coming some other day...
@@ -49,13 +49,15 @@ void lcdUpdateStatus() {
   switch (m_mode) {
     default:
       switch (pm_current) {
-        //"chord", "grade", "note", "channel", "CC", "Note+LP", "Note+FQ"
+        //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
+        case 3:
+          lcdPrintB(getString_POV(pm_current) + String(pm_selectedNote));
+          break;
         case 4:
-          lcdPrintB("CC n°" + String(pm_selectedNote));
+          lcdPrintB(getString_POV(pm_current) + String(pm_selectedChannel));
           break;
         default:
-          lcdPrintB("ch" + String(pm_selectedChannel, DEC) + ", note" + noteNameArray[binaryInputActiveBitmap % 12] + String(pm_selectedNote / 12, DEC));
-
+          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(", note")) + noteNameArray[binaryInputActiveBitmap % 12] + String(pm_selectedNote / 12, DEC));
           break;
       }
   }
@@ -92,25 +94,25 @@ void evaluateSequence() {
     }
   }
   if (frameHasNote(seq_currentStep16)) {
-    switch(seq_ence[0][seq_currentStep16][0]&0xF0){
+    switch (seq_ence[0][seq_currentStep16][0] & 0xF0) {
       //sivester midi note
       case 0x90:
-      break;
+        break;
       //a chord
       case 2:
-      break;
+        break;
       //a grade
       case 3:
-      break;
+        break;
       //note
       case 4:
-      break;
+        break;
       //cc
       case 5:
-      break;
+        break;
       //a sequence?
       case 6:
-      break;
+        break;
     }
   }
 }
