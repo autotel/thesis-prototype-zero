@@ -95,9 +95,9 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
       //sequencer m_mode
       case 1:
         if (seq_frameHasNote(button)) {
-          seq_removeNote(button,0,60);
+          seq_removeNote(button,pm_selectedChannel,pm_selectedNote);
         } else {
-          seq_addNote(button,0,60,97);
+          seq_addNote(button,pm_selectedChannel,pm_selectedNote,pm_selectedVelocity,1);
         }
         break;
       //jumper1 m_mode

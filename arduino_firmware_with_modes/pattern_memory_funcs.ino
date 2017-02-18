@@ -7,44 +7,43 @@
 */
 
 void evaluateSequence() {
-  if (seq_frameHasNote(seq_currentStep16)) {
+ // lcdPrintA("EVA" + String(seq_currentStep16, DEC));
+  for (byte a = 0; a < seq_enceLength; a++) {
+    //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
+    if ((seq_ence[a][0]) == (seq_currentStep16 | 0x80)) {
+      noteOn(seq_ence[a][1], seq_ence[a][2], seq_ence[a][3], 17, false);
+     // lcdPrintA("HAS"+String(seq_currentStep16,DEC));
+    }
   }
 }
 
 bool seq_frameHasNote(byte frame) {
-
-  return true;
-  
-  /*
   for (byte a = 0; a < seq_enceLength; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
-    if (seq_ence[a][0] & 0x80)
+    //the rest 7 lsb's indicate the time.
+    if ((seq_ence[a][0]) == (frame | 0x80))
       return true;
   }
   return false;
-  /*¿¿*/
-  
   //return (seq_ence[0][frame][0]) != 0x0;
 }
 
 byte seq_nextEmptyFrame() {
-  /*
   for (byte a = 0; a < seq_enceLength; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
     if (!(seq_ence[a][0] & 0x80))
       return a;
   }
-  lcdPrintB(F("MEMORY OVERFLOW"));*/
+  lcdPrintB(F("MEMORY OVERFLOW"));
   return 0;
 }
 byte seq_findEvent(byte frame, byte head, byte number) {
-  /*
   for (byte a = 0; a < seq_enceLength; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
     if ((seq_ence[a][0] & 0x7f) == frame)
       return a;
   }
-  return -1;*/
+  return -1;
 }
 void seq_addNote(byte frame, byte channel, byte note, byte velo) {
   byte ef = seq_nextEmptyFrame();

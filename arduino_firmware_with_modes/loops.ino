@@ -16,8 +16,8 @@ void loop() {
     if (midiHeader == 0xF8) {
       seq_currentStep128x12  = (seq_currentStep128x12  + 1) % (128 * 12);
       recalculateSeqSteps();
-      if (seq_currentStep128 % 12 == 0) {
-        //evaluateSequence();
+      if (seq_currentStep128x12 % 12 == 0) {
+        evaluateSequence();
       }
     }
     //start
@@ -162,7 +162,14 @@ void draw() {
         layers[1] |= structure_scales[se_selectedScale][2] << 12;
         break;*/
       case 1:
-        //updateSequenceGraph();
+        updateSequenceGraph();
+        layers[2] = graph_sequence;
+        layers[1] = graph_fingers;
+
+        layers[1] |= graph_pointer;
+        layers[2] |= graph_fingers;
+
+        layers[0] = 0xFFFF;
         break;
       case 4:
         layers[2] = structure_scales[se_selectedScale][2] ^ graph_fingers;
@@ -171,15 +178,9 @@ void draw() {
         layers[2] |= layers[2] << 12;
         layers[1] |= layers[1] << 12;
         break;
-
       default:
-        layers[2] = graph_sequence;
-        layers[1] = graph_fingers;
-
-        layers[1] |= graph_pointer;
-        layers[2] |= graph_fingers;
-
-        layers[0] = 0xFFFF;
+        layers[2] = 0xFFFF ^ graph_fingers;
+        layers[1] = 0xFFFF;
         // layers[1]|=graph_debug;
         layers[2] |= graph_debug;
         break;

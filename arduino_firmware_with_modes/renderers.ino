@@ -57,7 +57,7 @@ void lcdUpdateStatus() {
           lcdPrintB(getString_POV(pm_current) + String(pm_selectedChannel));
           break;
         default:
-          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(", note")) + noteNameArray[binaryInputActiveBitmap % 12] + String(pm_selectedNote / 12, DEC));
+          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(", note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));
           break;
       }
   }
@@ -86,7 +86,6 @@ void updateSequenceGraph(){
       graph_pointer = 1 << currentStep16;
       }*/
     //create the graphic layer to display the sequence
-
     graph_sequence = 0;
     for (byte a = 0; a < 16; a++) {
       if (seq_frameHasNote(a)) {

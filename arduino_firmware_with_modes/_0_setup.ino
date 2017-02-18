@@ -167,14 +167,14 @@ long lastchange;
 
 //64 event memory
 // (active+time),(type+channel),(number),(velocity or value)
-// step 17, cc in channel 4, number 74, to 140
-// step 32, noteon in channel 1, number 60 (c3), velocity 97
-// step 0, grade in channel 2, numbeer 60 (c3), velocity 90
-// step 0, grade in channel 2, numbeer 64, velocity 90
-// step 0, grade in channel 2, numbeer 67, velocity 90
+// step 17, cc in channel 4, number 74, to 140, --
+// step 32, noteon in channel 1, number 60 (c3), velocity 97, length of 1
+// step 0, grade in channel 2, numbeer 60 (c3), velocity 90, length of 2
+// step 0, grade in channel 2, numbeer 64, velocity 90, length of 2
+// step 0, grade in channel 2, numbeer 67, velocity 90, length of 2
 
 #define SQLN 128
-byte seq_ence [SQLN][4];
+byte seq_ence [SQLN][5];
 byte seq_enceLength=SQLN;
 #undef SQLN
 
