@@ -42,15 +42,15 @@ void loop() {
 
 
 byte cp64 = 0;
-
-
-
-
+byte cp48 = 0;
+byte cp49 = 0;
 void timedLoop() {
   //evaluate matrix buttons
+  cp64 = cp64 % 64;
   byte cp16 = cp64 % 16;
   byte cp32 = cp64 % 32;
-
+  cp48 = cp48 % 48;
+  cp49 = cp49 % 49;
   byte buttonPressure = (byte)(readMatrixButton(cp16) / 2);
   int evaluator = 0x1 << cp16;
   if (buttonPressure > 1) {
@@ -71,11 +71,7 @@ void timedLoop() {
     layers[1]=readMatrixButton(1);
     layers[2]=readMatrixButton(2);*/
 
-
-
-
-
-  updatePixel(cp32 + 0xF); //using 32 instead of 64 for more light at cost of the red channel
+  updatePixel(cp49);
 
 
   //evaluate Selector buttons (the tact buttons on top of the matrix)
@@ -129,7 +125,9 @@ void timedLoop() {
   }
 
   cp64++;
-  cp64 = cp64 % 64;
+
+  cp48++;
+  cp49++;
 }
 
 
@@ -138,7 +136,16 @@ void draw() {
   byte selectedGraph = 0;
   if (selector_mode || selector_a || selector_b || selector_c) {
     switch (m_mode) {
-      case 0:
+      case MODE_PERF:
+        if (selector_a) {
+          selectedGraph = 16;
+        } else if (selector_b) {
+          selectedGraph = 1;
+        } else if (selector_c) {
+          selectedGraph = 0;
+        }
+        break;
+      case MODE_SEQ:
         if (selector_a) {
           selectedGraph = 16;
         } else if (selector_b) {
@@ -153,6 +160,7 @@ void draw() {
     layers[1] = graph [0];
     layers[2] = graph [1];
   } else {
+    //green, blue, red
     switch (m_mode) {
       /*case 0:
         layers[2] = structure_scales[se_selectedScale][2] ^ graph_fingers;
@@ -163,26 +171,29 @@ void draw() {
         break;*/
       case 1:
         updateSequenceGraph();
-        layers[2] = graph_sequence;
-        layers[1] = graph_fingers;
+        layers[0] = graph_sequence;
+        layers[1] = graph_sequence ^ graph_fingers;
 
         layers[1] |= graph_pointer;
-        layers[2] |= graph_fingers;
 
-        layers[0] = 0xFFFF;
+
+        layers[2] = graph_pointer;
         break;
       case 4:
-        layers[2] = structure_scales[se_selectedScale][2] ^ graph_fingers;
-        layers[1] = structure_scales[se_selectedScale][2];
+        layers[1] = structure_scales[se_selectedScale][2] ^ graph_fingers;
+        layers[0] = structure_scales[se_selectedScale][2];
+        layers[2] = structure_scales[se_selectedScale][2];
         //this because is just nice to see how the scale patterns up
-        layers[2] |= layers[2] << 12;
-        layers[1] |= layers[1] << 12;
+        layers[1] |= layers[2] << 12;
+        layers[0] |= layers[1] << 12;
+
+
         break;
       default:
-        layers[2] = 0xFFFF ^ graph_fingers;
-        layers[1] = 0xFFFF;
+        layers[1] = 0xFFFF ^ graph_fingers;
+        layers[0] = 0xFFFF;
         // layers[1]|=graph_debug;
-        layers[2] |= graph_debug;
+        layers[2] |= structure_scales[se_selectedScale][2];
         break;
     }
   }

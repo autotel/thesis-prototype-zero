@@ -1,4 +1,3 @@
-
 //read one button behind the multiplexor to check whether is pressed or not.
 int readMatrixButton(byte currentButton) {
   //nibble A is connected to the mux address for the anodes / btn inputs

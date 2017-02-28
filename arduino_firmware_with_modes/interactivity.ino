@@ -30,6 +30,31 @@ void onMatrixButtonPressed(byte button) {
   onMatrixButtonPressed(button, 127);
 }
 
+
+//this function is used to override behaviour of a current mode, when a selector button is pressed
+bool doSelectors1(byte button) {
+  //check wether we are engaged in a selector mode
+  if (selector_a) {
+    changePerformanceLayer(button);// channels, chords, grades, notes, velocities
+    return true;
+  } else if (selector_b) {
+    if ((0x1 << button)&binaryInputActiveBitmap) {
+      binaryInputActiveBitmap &= ~(0x1 << button);
+    } else {
+      binaryInputActiveBitmap |= 0x1 << button;
+    }
+    pm_selectedNote = (byte) binaryInputActiveBitmap; //works as binary input
+    lcdPrintB("note: " + String(binaryInputActiveBitmap, DEC) + "(" + noteNameArray[binaryInputActiveBitmap % 12] + ")");
+    return true;
+  } else if (selector_c) {
+    pm_selectedChannel = button;
+    lcdPrintB("channel: " + String(button, DEC));
+    return true;
+  } else {
+    return false;
+  }
+}
+
 //actions to take once a button is pressed
 
 void onMatrixButtonPressed(byte button, int buttonPressure) {
@@ -40,22 +65,8 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
   } else {
     switch (m_mode) {
       //performer m_mode
-      case 0:
-        //check wether we are engaged in a selector mode
-        if (selector_a) {
-          changePerformanceLayer(button);// channels, chords, grades, notes, velocities
-        } else if (selector_b) {
-          if ((0x1 << button)&binaryInputActiveBitmap) {
-            binaryInputActiveBitmap &= ~(0x1 << button);
-          } else {
-            binaryInputActiveBitmap |= 0x1 << button;
-          }
-          pm_selectedNote = (byte) binaryInputActiveBitmap; //works as binary input
-          lcdPrintB("note: " + String(binaryInputActiveBitmap, DEC) + "(" + noteNameArray[binaryInputActiveBitmap % 12] + ")");
-        } else if (selector_c) {
-          pm_selectedChannel = button;
-          lcdPrintB("channel: " + String(button, DEC));
-        } else {
+      case MODE_PERF:
+        if (!doSelectors1(button)) {
           //we are not in selector mode, therefore we just perform
           //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
           switch (pm_current) {
@@ -93,21 +104,20 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
         }
         break;
       //sequencer m_mode
-      case 1:
-        if (seq_frameHasNote(button)) {
-          seq_removeNote(button,pm_selectedChannel,pm_selectedNote);
-        } else {
-          seq_addNote(button,pm_selectedChannel,pm_selectedNote,pm_selectedVelocity,1);
+      case MODE_SEQ:
+        if (!doSelectors1(button)) {
+          if (seq_frameHasNote(button, true)) {
+            seq_removeNote(button, pm_selectedChannel, pm_selectedNote);
+          } else {
+            seq_addNote(button, pm_selectedChannel, pm_selectedNote, pm_selectedVelocity, 1);
+          }
+          break;
         }
-        break;
       //jumper1 m_mode
-      case 2:
-        break;
-      //jumper2 m_mode
-      case 3:
+      case MODE_JMP1:
         break;
       //scale m_mode
-      case 4:
+      case MODE_SCALE:
         {
           int evaluator = 0x1 << button;
 
@@ -150,7 +160,7 @@ void onMatrixButtonReleased(byte button) {
 void onEncoderScroll(int absolute, int delta) {
   switch (m_mode) {
     //performer m_mode
-    case 0:
+    case MODE_PERF:
       //check wether we are engaged in a selector mode
       if (selector_a) {
         changePerformanceLayer(pm_current + delta); // channels, chords, grades, notes, velocities
@@ -168,14 +178,18 @@ void onEncoderScroll(int absolute, int delta) {
       }
       break;
     //sequencer m_mode
-    case 1:
+    case MODE_SEQ:
       //check wether we are engaged in a selector mode
       if (selector_a) {
-        lcdPrintB("config. due");
+        changePerformanceLayer(pm_current + delta); // channels, chords, grades, notes, velocities
       } else if (selector_b) {
-        lcdPrintB("vacant");
+        binaryInputActiveBitmap += delta;
+        pm_selectedNote = (byte) binaryInputActiveBitmap; //works as binary input
+        lcdPrintB("note: " + String(binaryInputActiveBitmap, DEC) + "(" + noteNameArray[binaryInputActiveBitmap % 12] + ")");
       } else if (selector_c) {
-        lcdPrintB("page sel. due");
+        pm_selectedChannel += delta;
+        pm_selectedChannel %= 16;
+        lcdPrintB("note: " + String(pm_selectedChannel, DEC));
       } else {
         //we are not in selector mode, therefore we just perform
         scrollAccordingToPm(delta);
@@ -192,7 +206,7 @@ void onEncoderScroll(int absolute, int delta) {
       break;
     //DEATH
     case 9:
-      lcdPrintB(String(absolute)+"-"+(char)absolute);
+      lcdPrintB(String(absolute) + "-" + (char)absolute);
       break;
   }
 }
@@ -200,40 +214,40 @@ void scrollAccordingToPm(int delta) {
   //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
   switch (pm_current) {
     //grades
-    case 0:
+    case POV_GRADE:
       pm_selectedChannel += delta;
       lcdUpdateStatus();
       break;
     //notes
-    case 1:
-      pm_selectedChannel += delta;
+    case POV_NOTE:
+      pm_selectedNote += delta;
       lcdUpdateStatus();
       //pm_selectedNote = button;
       break;
     //channels
-    case 2:
-      pm_selectedNote += delta;
+    case POV_CHAN:
+      pm_selectedChannel += delta;
       lcdUpdateStatus();
       //pm_selectedChannel = button;
       break;
     //CC/n
-    case 3:
+    case POV_CCN:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       break;
     //CC/ch
-    case 4:
+    case POV_CCCH:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       break;
     //note+A
-    case 5:
+    case POV_NOTEA:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       //pm_selectedNote = button;
       break;
     //note+B
-    case 6:
+    case POV_NOTEB:
       pm_selectedNote += delta;
       lcdUpdateStatus();
       //pm_selectedNote = button;
@@ -262,7 +276,22 @@ void onSelectorButtonPressed(byte button) {
     selectorName = "ENC";
   }
   switch (m_mode) {
-    case 0:
+    case MODE_PERF:
+      switch (button) {
+        case 1:
+          selectorName = "Set";
+          break;
+        case 2:
+          selectorName = "Note";
+          binaryInputActiveBitmap = pm_selectedNote;
+          break;
+        case 3:
+          selectorName = "Channel";
+          break;
+      }
+
+      break;
+    case MODE_SEQ:
       switch (button) {
         case 1:
           selectorName = "Set";

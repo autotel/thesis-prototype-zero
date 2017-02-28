@@ -23,16 +23,43 @@ void evaluateSequence() {
   }
 }
 
-bool seq_frameHasNote(byte frame) {
+bool seq_frameHasNote(byte frame, bool contextSensitive) {
+  // (active+time),(type+channel),(number),(velocity or value)
   for (byte a = 0; a < seq_enceLength; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
     //the rest 7 lsb's indicate the time.
     if ((seq_ence[a][0]) == (frame | 0x80))
-      return true;
+      if (contextSensitive) {
+        //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
+        switch (pm_current) {
+          //grades
+          case POV_GRADE:
+            if ((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_GRADE) {
+              return true;
+            }
+            break;
+          //notes
+          case POV_NOTE:
+            if (((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_NOTE) && (seq_ence[a][2]==pm_selectedNote)) {
+              return true;
+            }
+            break;
+          //channels
+          case POV_CHAN:
+            if ((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_NOTE) {
+              return true;
+            }
+            break;
+        }
+      } else {
+        return true;
+      }
   }
   return false;
   //return (seq_ence[frame][0]) != 0x0;
 }
+
+
 
 byte seq_nextEmptyFrame() {
   for (byte a = 0; a < seq_enceLength; a++) {

@@ -88,11 +88,10 @@ void updateSequenceGraph(){
     //create the graphic layer to display the sequence
     graph_sequence = 0;
     for (byte a = 0; a < 16; a++) {
-      if (seq_frameHasNote(a)) {
+      if (seq_frameHasNote(a,true)) {
         graph_sequence |= 0x1 << a;
       }
     }
-
 }
 
 

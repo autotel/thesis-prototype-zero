@@ -6,9 +6,10 @@
 #include <SoftwareSerial.h>
 
 //analog inputs that are connected to the multiplexor commons
-int analogA;
-int analogB;
 
+#define analogA A1
+#define analogB A0
+  
 //pins that are connected to the encoder A and B
 //pc4 & pc5
 #define encoder0PinA  A4
@@ -199,8 +200,7 @@ unsigned int graph_debug = 0x00;
 void setup() {
   //the perfect pulldown is 2.5K ohms
   //the analog port that will be connected to each mux A and B
-  analogA = A1;
-  analogB = A0;
+  
   pinMode(analogA, OUTPUT);
   pinMode(analogB, OUTPUT);
   digitalWrite(analogA, HIGH);
