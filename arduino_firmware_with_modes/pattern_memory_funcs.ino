@@ -24,29 +24,30 @@ void evaluateSequence() {
 }
 
 bool seq_frameHasNote(byte frame, bool contextSensitive) {
-  // (active+time),(type+channel),(number),(velocity or value)
+
   for (byte a = 0; a < seq_enceLength; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
     //the rest 7 lsb's indicate the time.
-    if ((seq_ence[a][0]) == (frame | 0x80))
+    if ((seq_ence[a][0]) == (frame | EVNT_ACTIVEFLAG))
       if (contextSensitive) {
         //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
         switch (pm_current) {
           //grades
           case POV_GRADE:
-            if ((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_GRADE) {
+            // seq_ence[frame][(active+time),(type+channel),(number),(velocity or value)]
+            if ((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_GRADE<<4) {
               return true;
             }
             break;
           //notes
           case POV_NOTE:
-            if (((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_NOTE) && (seq_ence[a][2]==pm_selectedNote)) {
+            if (((seq_ence[a][1]) == (pm_selectedChannel | (EVNTYPE_NOTE<<4))) && (seq_ence[a][2] == pm_selectedNote)) {
               return true;
             }
             break;
           //channels
           case POV_CHAN:
-            if ((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_NOTE) {
+            if ((seq_ence[a][1]) == (pm_selectedChannel | (EVNTYPE_NOTE<<4))) {
               return true;
             }
             break;
@@ -63,8 +64,8 @@ bool seq_frameHasNote(byte frame, bool contextSensitive) {
 
 byte seq_nextEmptyFrame() {
   for (byte a = 0; a < seq_enceLength; a++) {
-    //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
-    if (!(seq_ence[a][0] & 0x80))
+    //the first bit in seq_ence index 0 indicates wether this event is active, hence the EVNT_ACTIVEFLAG mask
+    if (!(seq_ence[a][0] & EVNT_ACTIVEFLAG))
       return a;
   }
   lcdPrintB(F("MEMORY OVERFLOW"));
@@ -72,16 +73,18 @@ byte seq_nextEmptyFrame() {
 }
 byte seq_findEvent(byte frame, byte head, byte number) {
   for (byte a = 0; a < seq_enceLength; a++) {
-    //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
-    if ((seq_ence[a][0] & 0x7f) == frame)
+    //the first bit in seq_ence index 0 indicates wether this event is active, hence the EVNT_TIME_MASK mask
+    if ((seq_ence[a][0] & EVNT_TIME_MASK) == frame)
       return a;
   }
   return -1;
 }
 void seq_addNote(byte frame, byte channel, byte note, byte velo, byte len) {
   byte ef = seq_nextEmptyFrame();
-  seq_ence[ef][0] = frame | 0x80;
-  seq_ence[ef][1] = 0x90 | (channel & 0xF);
+  //set the event to active
+  seq_ence[ef][0] = frame | EVNT_ACTIVEFLAG;
+  //set the event type to note
+  seq_ence[ef][1] = (channel & 0xF)| EVNTYPE_NOTE<<4;
   seq_ence[ef][2] = note;
   seq_ence[ef][3] = velo;
   seq_ence[ef][4] = len;

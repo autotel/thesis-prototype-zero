@@ -4,9 +4,10 @@
 #define COMPENSATE_R 200
 #define COMPENSATE_G 0
 #define COMPENSATE_B 0
+// seq_ence[frame][(active+time),(type+channel),(number),(velocity or value)]
 
 //PENDIENTE: reemplazar en todos los cases por estas variables:
- //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
+//"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
 #define POV_GRADE 0
 #define POV_NOTE 1
 #define POV_CHAN 2
@@ -37,8 +38,11 @@
 #define EVNTYPE_SEQ 2
 #define EVNTYPE_CHOR 3
 
+#define EVNT_ACTIVEFLAG 0X80
+#define EVNT_TIME_MASK 0x7f
 
 
 
 
- ///make sequence memory longer, but optimize finding algorhythms *after*
+
+///make sequence memory longer, but optimize finding algorhythms *after*
