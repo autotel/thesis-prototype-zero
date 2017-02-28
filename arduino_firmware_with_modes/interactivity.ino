@@ -128,7 +128,6 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
 //actions to take once a button is released
 void onMatrixButtonReleased(byte button) {
   graph_fingers &= ~(0x1 << button);
-
   //if this button has generated a note on, send a note off.
   if (MIDI_NoteOns[button][0]) {
     sendMidi(0x80 | (MIDI_NoteOns[button][0] & 0xf), MIDI_NoteOns[button][1], 0);

@@ -16,7 +16,7 @@ void loop() {
     if (midiHeader == 0xF8) {
       seq_currentStep128x12  = (seq_currentStep128x12  + 1) % (128 * 12);
       recalculateSeqSteps();
-      if (seq_currentStep128x12 % 12 == 0) {
+      if (seq_currentStep128x12 % 6 == 0) {
         evaluateSequence();
       }
     }

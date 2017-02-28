@@ -7,12 +7,18 @@
 */
 
 void evaluateSequence() {
- // lcdPrintA("EVA" + String(seq_currentStep16, DEC));
+  // lcdPrintA("EVA" + String(seq_currentStep16, DEC));
   for (byte a = 0; a < seq_enceLength; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
-    if ((seq_ence[a][0]) == (seq_currentStep16 | 0x80)) {
-      noteOn(seq_ence[a][1], seq_ence[a][2], seq_ence[a][3], 17, false);
-     // lcdPrintA("HAS"+String(seq_currentStep16,DEC));
+    if ((seq_ence[a][0]) == (seq_currentStep16x2 | 0x80)) {
+      sendMidi(0x90 | seq_ence[a][1], seq_ence[a][2], seq_ence[a][3]);
+      // lcdPrintA("HAS"+String(seq_currentStep16x2,DEC));
+    }
+    //find note off events from lengths. replace function with one more optimized
+    if (seq_ence[a][0] & 0x80) {
+      if (((seq_ence[a][0] & 0x7F) + seq_ence[a][4]) == seq_currentStep16x2)
+        sendMidi(0x80 | seq_ence[a][1], seq_ence[a][2], 0);
+      // lcdPrintA("HAS"+String(seq_currentStep16x2,DEC));
     }
   }
 }
@@ -25,7 +31,7 @@ bool seq_frameHasNote(byte frame) {
       return true;
   }
   return false;
-  //return (seq_ence[0][frame][0]) != 0x0;
+  //return (seq_ence[frame][0]) != 0x0;
 }
 
 byte seq_nextEmptyFrame() {
@@ -45,12 +51,16 @@ byte seq_findEvent(byte frame, byte head, byte number) {
   }
   return -1;
 }
-void seq_addNote(byte frame, byte channel, byte note, byte velo) {
+void seq_addNote(byte frame, byte channel, byte note, byte velo, byte len) {
   byte ef = seq_nextEmptyFrame();
   seq_ence[ef][0] = frame | 0x80;
   seq_ence[ef][1] = 0x90 | (channel & 0xF);
   seq_ence[ef][2] = note;
   seq_ence[ef][3] = velo;
+  seq_ence[ef][4] = len;
+}
+void seq_addNote(byte frame, byte channel, byte note, byte velo) {
+  seq_addNote(frame, channel, note, velo, 1);
 }
 void seq_removeNote(byte frame, byte channel, byte note) {
   byte ff = seq_findEvent(frame, 0x90 | channel, note);
@@ -117,6 +127,8 @@ byte countOnes(int i) {
 //recalculate all the modulus of currentStep128x12
 void recalculateSeqSteps() {
   seq_currentStep128 = seq_currentStep128x12 / 12;
+  seq_currentStep128x2 = seq_currentStep128x12 / 6;
   seq_currentStep16 = seq_currentStep128 % 16;
+  seq_currentStep16x2 = seq_currentStep128x2 % 16;
 }
 

@@ -75,7 +75,7 @@ long lastMillis = 0;
 unsigned int stepInterval = 200;
 void updateSequenceGraph(){
 
-    graph_pointer = 1 << seq_currentStep16;
+    graph_pointer = 1 << seq_currentStep16x2;
 
     /*
       long thisMillis = millis();

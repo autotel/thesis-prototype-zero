@@ -139,7 +139,6 @@ bool selector_c = false;
 //midi tracking
 //[0,0]=wether last thing sent was a note on (off is due)
 //[0,1]=channel...
-
 byte MIDI_NoteOns [16][2];
 
 //text to print in screens
@@ -173,7 +172,7 @@ long lastchange;
 // step 0, grade in channel 2, numbeer 64, velocity 90, length of 2
 // step 0, grade in channel 2, numbeer 67, velocity 90, length of 2
 
-#define SQLN 128
+#define SQLN 128//sequence length
 byte seq_ence [SQLN][5];
 byte seq_enceLength=SQLN;
 #undef SQLN
@@ -184,7 +183,9 @@ byte seq_lengths [8];
 //all other currentStep's are modulus of the following one:
 unsigned int seq_currentStep128x12 = 0;
 unsigned int seq_currentStep128 = 0;
+unsigned int seq_currentStep128x2 = 0;
 byte seq_currentStep16 = 0;
+byte seq_currentStep16x2 = 0;
 
 byte seq_currentSequences [16];
 byte seq_current = 0;
@@ -228,7 +229,8 @@ void setup() {
   //attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
   //Timer1.initialize(1000);//200
   //Timer1.attachInterrupt(doEncoder);
-
+  lcdUpdateMode();
+  lcdUpdateStatus();
 }
 
 

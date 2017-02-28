@@ -44,6 +44,17 @@ void loop() {
   //PORTC &= ~0b10;
   PORTD = (nibbleB << 4) | (nibbleA);
 
+  switch (currentPixel/16){
+    case 1:
+    delayMicroseconds(1);
+    break;
+    case 2:
+    delayMicroseconds(1);
+    break;
+    case 3:
+    delayMicroseconds(10);
+  }
+
   currentPixel++;
   currentPixel=currentPixel%64;
 }
