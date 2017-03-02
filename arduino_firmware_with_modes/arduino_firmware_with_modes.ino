@@ -45,6 +45,16 @@
 #define SELECTORGRAPH_POINT 0
 #define SELECTORGRAPH_BINARY 1
 #define SELECTORGRAPH_CALCULATOR 2
+#define SELECTORGRAPH_RECORD 3
+
+//keep correspondance with selectors names array
+#define SELECTOR_NONE 0
+#define SELECTOR_MODE 1
+#define SELECTOR_POV 2
+#define SELECTOR_CHANNEL 3
+#define SELECTOR_NOTE 4
+#define SELECTOR_GRADE 5
+#define SELECTOR_RECORD 6
 
 #define EVNTYPE_GRADE 0
 #define EVNTYPE_NOTE 1

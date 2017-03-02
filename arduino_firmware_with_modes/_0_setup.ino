@@ -9,7 +9,7 @@
 
 #define analogA A1
 #define analogB A0
-  
+
 //pins that are connected to the encoder A and B
 //pc4 & pc5
 #define encoder0PinA  A4
@@ -64,11 +64,29 @@ const char string_13[] PROGMEM = "CC/no";
 const char string_14[] PROGMEM = "CC/ch";
 const char string_15[] PROGMEM = "Note+A";
 const char string_16[] PROGMEM = "Note+B";
+/*
+#define SELECTOR_NONE 6
+#define SELECTOR_MODE 1
+#define SELECTOR_POV 2
+#define SELECTOR_CHANNEL 3
+#define SELECTOR_NOTE 4
+#define SELECTOR_GRADE 5
+*/
+
+//selectors names
+const char string_17[] PROGMEM = "None";
+const char string_18[] PROGMEM = "Mode";
+const char string_19[] PROGMEM = "POV";
+const char string_20[] PROGMEM = "Channel";
+const char string_21[] PROGMEM = "Note";
+const char string_22[] PROGMEM = "Grade";
+const char string_23[] PROGMEM = "Record";
 
 //build array with all strings for lookup
 const char* const string_table[] PROGMEM = {
   string_0, string_1, string_2, string_3, string_4, string_5, string_6, string_7, string_8,
-  string_9, string_10, string_11, string_12, string_13, string_14, string_15, string_16
+  string_9, string_10, string_11, string_12, string_13, string_14, string_15, string_16,
+  string_17, string_18, string_19, string_20, string_21, string_22, string_23
 };
 
 //get string of mode name
@@ -79,6 +97,12 @@ String getString_mode(byte n) {
 //get string of submode name
 String getString_POV(byte n) {
   n += 10;
+  strcpy_P(stringBuffer, (char*)pgm_read_word(&(string_table[n]))); // Necessary casts
+  return stringBuffer;
+}
+//get string of selector
+String getString_SELECTOR(byte n) {
+  n += 17;
   strcpy_P(stringBuffer, (char*)pgm_read_word(&(string_table[n]))); // Necessary casts
   return stringBuffer;
 }
@@ -131,12 +155,8 @@ int structure_scales[4][3] = {
   byte structure_chords[3] = {3, 5, 7};*/
 const String noteNameArray[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
-//modifier states
-//example boolean shift=false;
-bool selector_mode = false;
-bool selector_a = false;
-bool selector_b = false;
-bool selector_c = false;
+//selector that is currently running
+byte selector_current=SELECTOR_NONE;
 //midi tracking
 //[0,0]=wether last thing sent was a note on (off is due)
 //[0,1]=channel...
@@ -200,7 +220,7 @@ unsigned int graph_debug = 0x00;
 void setup() {
   //the perfect pulldown is 2.5K ohms
   //the analog port that will be connected to each mux A and B
-  
+
   pinMode(analogA, OUTPUT);
   pinMode(analogB, OUTPUT);
   digitalWrite(analogA, HIGH);

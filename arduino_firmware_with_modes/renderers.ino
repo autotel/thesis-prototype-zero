@@ -24,6 +24,11 @@ void modifierGraph(byte selection, unsigned int * _graph) {
       graph[1] = 0x1 << activePadInput;
       graph[2] = ~(0xFFFF << MODES_COUNT);
       break;
+    //record interface
+    case SELECTORGRAPH_RECORD:
+      graph[1] = (0x1000);
+      graph[2] = (0xF000);
+      break;
     //single point, performance layer selector
     case SELECTORGRAPH_POV:
       graph[1] = 0x1 << activePadInput;

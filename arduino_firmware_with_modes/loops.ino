@@ -78,7 +78,7 @@ void timedLoop() {
   //less frequently than matrix, because these are not performance buttons
   if (cp16 == 0) {
     //cp64/16 will be 0,1,2,3 alernatingly each time cp16 is 0
-    int cb_4 = cp64 / 0xf;
+    byte cb_4 = cp64 / 0xf;
     //see previous use of this var for more reference
     evaluator = 0x1 << cb_4;
     if (readMuxB(cb_4 + 4)) {
@@ -90,6 +90,7 @@ void timedLoop() {
         onSelectorButtonHold(cb_4);
       }
     } else {
+      //if in last lap this button was pressed but in this lap is not
       if ((evaluator & pressedSelectorButtonsBitmap) != 0) {
         pressedSelectorButtonsBitmap &= ~(0x1 << cb_4);
         onSelectorButtonReleased(cb_4);
@@ -97,29 +98,6 @@ void timedLoop() {
     }
   }
   doEncoder();
-  /* encoder needs to be connected the other way around, because muxB is pulled down
-    if (cp16 == 0) {
-    //encoder is soldered to muxB12
-    //see previous use of this var for more reference
-    evaluator = 0x1;
-    //encoder button needs internal pullup and works reverse logic
-    digitalWrite(A0,HIGH);
-    if (!readMuxB(11)) {
-      //if last lap this button was not pressed, trigger on  button pressed
-      if ((evaluator & pressedSelectorButtonsBitmap) == 0) {
-        pressedSelectorButtonsBitmap |= evaluator;
-        onSelectorButtonPressed(4);
-      } else {
-        onSelectorButtonHold(4);
-      }
-    } else {
-      if ((evaluator & pressedSelectorButtonsBitmap) != 0) {
-        pressedSelectorButtonsBitmap &= ~(0x1);
-        onSelectorButtonReleased(4);
-      }
-    }
-    }*/
-
   if (cp64 == m_mode) {
     draw();
   }
@@ -133,32 +111,8 @@ void timedLoop() {
 
 
 void draw() {
-  byte selectedGraph = 0;
-  if (selector_mode || selector_a || selector_b || selector_c) {
-    switch (m_mode) {
-      case MODE_PERF:
-        if (selector_a) {
-          selectedGraph = SELECTORGRAPH_POV;
-        } else if (selector_b) {
-          selectedGraph = SELECTORGRAPH_BINARY;
-        } else if (selector_c) {
-          selectedGraph = SELECTORGRAPH_POINT;
-        }
-        break;
-      case MODE_SEQ:
-        if (selector_a) {
-          selectedGraph = SELECTORGRAPH_POV;
-        } else if (selector_b) {
-          selectedGraph = SELECTORGRAPH_BINARY;
-        } else if (selector_c) {
-          selectedGraph = SELECTORGRAPH_POINT;
-        }
-        break;
-    }
-    if(selector_mode)
-    selectedGraph=SELECTORGRAPH_MODE;
-    modifierGraph(selectedGraph, layers);
-  } else {
+
+  if (selector_current == SELECTOR_NONE) {
     //green, blue, red
     switch (m_mode) {
       /*case 0:
@@ -195,6 +149,23 @@ void draw() {
         layers[2] |= structure_scales[se_selectedScale][2];
         break;
     }
+  } else {
+    byte selectedGraph = 0;
+    switch (selector_current) {
+      case SELECTOR_MODE:
+        selectedGraph = SELECTORGRAPH_MODE;
+        break;
+      case SELECTOR_POV:
+        selectedGraph = SELECTORGRAPH_POV;
+        break;
+      case SELECTOR_NOTE:
+        selectedGraph = SELECTORGRAPH_BINARY;
+        break;
+      case SELECTOR_CHANNEL:
+        selectedGraph = SELECTORGRAPH_POINT;
+        break;
+    }
+    modifierGraph(selectedGraph, layers);
   }
   if (screenChanged) {
     screenChanged = false;
