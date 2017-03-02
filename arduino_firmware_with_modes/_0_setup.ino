@@ -157,7 +157,7 @@ byte lastMatrixButtonPressed = 0;
 unsigned int pressedMatrixButtonsBitmap = 0x0000;
 byte pressedSelectorButtonsBitmap = 0x00;
 //the buttons that are active while engaged in binary number input (ex. note selector)
-unsigned int binaryInputActiveBitmap = 0x0000;
+unsigned int activePadInput = 0x0000;
 
 LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 

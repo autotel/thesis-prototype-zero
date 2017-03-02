@@ -155,10 +155,7 @@ void draw() {
         }
         break;
     }
-    unsigned int graph [] = {0, 0};
-    modifierGraph(selectedGraph, graph);
-    layers[1] = graph [0];
-    layers[2] = graph [1];
+    modifierGraph(selectedGraph, layers);
   } else {
     //green, blue, red
     switch (m_mode) {
