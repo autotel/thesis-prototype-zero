@@ -138,23 +138,25 @@ void draw() {
     switch (m_mode) {
       case MODE_PERF:
         if (selector_a) {
-          selectedGraph = 16;
+          selectedGraph = SELECTORGRAPH_POV;
         } else if (selector_b) {
-          selectedGraph = 1;
+          selectedGraph = SELECTORGRAPH_BINARY;
         } else if (selector_c) {
-          selectedGraph = 0;
+          selectedGraph = SELECTORGRAPH_POINT;
         }
         break;
       case MODE_SEQ:
         if (selector_a) {
-          selectedGraph = 16;
+          selectedGraph = SELECTORGRAPH_POV;
         } else if (selector_b) {
-          selectedGraph = 1;
+          selectedGraph = SELECTORGRAPH_BINARY;
         } else if (selector_c) {
-          selectedGraph = 0;
+          selectedGraph = SELECTORGRAPH_POINT;
         }
         break;
     }
+    if(selector_mode)
+    selectedGraph=SELECTORGRAPH_MODE;
     modifierGraph(selectedGraph, layers);
   } else {
     //green, blue, red

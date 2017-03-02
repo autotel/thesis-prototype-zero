@@ -3,26 +3,31 @@ void modifierGraph(byte selection, unsigned int * _graph) {
   unsigned int graph [] = {0, 0, 0};
   switch (selection) {
     //generic single point among 16 selection
-    case 0:
+    case SELECTORGRAPH_POINT:
       graph[1] = 0x1 << activePadInput;
       //graph[2] = ~graph[0];
       graph[2]=0;
       break;
     //binary number or multi point selector
-    case 1:
+    case SELECTORGRAPH_BINARY:
       graph[1] = activePadInput;
       //graph[2] = 0xFFFF;
       graph[2]=0;
       break;
     //calculator
-    case 2:
+    case SELECTORGRAPH_CALCULATOR:
       graph[1] = 0b111011101110;
       graph[2] = ~graph[0];
       break;
-    //single point, performance layer selector
-    case 16:
+    //single point, mode selector
+    case SELECTORGRAPH_MODE:
       graph[1] = 0x1 << activePadInput;
-      graph[2] = ~(0xFFFF << 8);
+      graph[2] = ~(0xFFFF << MODES_COUNT);
+      break;
+    //single point, performance layer selector
+    case SELECTORGRAPH_POV:
+      graph[1] = 0x1 << activePadInput;
+      graph[2] = ~(0xFFFF << POVS_COUNT);
       break;
   }
   graph[0]=graph[1];

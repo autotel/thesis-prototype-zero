@@ -18,6 +18,8 @@
 #define POV_ANY 254
 #define POV_NULL 255
 
+#define POVS_COUNT 7
+
 #define MODE_PERF 0
 #define MODE_SEQ 1
 #define MODE_JMP1 2
@@ -28,13 +30,21 @@
 #define MODE_MIX2 7
 #define MODE_ARP 8
 #define MODE_DEATH 9
-#define TSX1 9
-#define TSX2 10
-#define TSX3 11
-#define TSX4 12
-#define TSX5 13
-#define TSX6 14
-#define ERR_ 15
+
+#define MODE_TSX2 10
+#define MODE_TSX3 11
+#define MODE_TSX4 12
+#define MODE_TSX5 13
+#define MODE_TSX6 14
+#define MODE_ERR_ 15
+
+#define MODES_COUNT 10
+
+#define SELECTORGRAPH_MODE 15
+#define SELECTORGRAPH_POV 16
+#define SELECTORGRAPH_POINT 0
+#define SELECTORGRAPH_BINARY 1
+#define SELECTORGRAPH_CALCULATOR 2
 
 #define EVNTYPE_GRADE 0
 #define EVNTYPE_NOTE 1
