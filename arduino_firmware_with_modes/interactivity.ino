@@ -107,7 +107,7 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
       case MODE_SEQ:
         if (!doSelectors1(button)) {
           if (seq_frameHasNote(button, true)) {
-            seq_removeNote(button, pm_selectedChannel, pm_selectedNote);
+            seq_removeNote(button, pm_current);
           } else {
             seq_addNote(button, pm_selectedChannel, pm_selectedNote, pm_selectedVelocity, 1);
           }
@@ -132,6 +132,11 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
             //lcdPrintB(String(gradesInScale, DEC));
           }
         } break;
+      case MODE_DEATH:
+        for(int a=0; a<SQLN; a++){
+          seq_ence[a][0]=0;
+          }
+        break;
     }
   }
 }

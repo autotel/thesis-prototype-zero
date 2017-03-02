@@ -15,6 +15,8 @@
 #define POV_CCCH 4
 #define POV_NOTEA 5
 #define POV_NOTEB 6
+#define POV_ANY 254
+#define POV_NULL 255
 
 #define MODE_PERF 0
 #define MODE_SEQ 1
@@ -25,6 +27,7 @@
 #define MODE_MIX1 6
 #define MODE_MIX2 7
 #define MODE_ARP 8
+#define MODE_DEATH 9
 #define TSX1 9
 #define TSX2 10
 #define TSX3 11

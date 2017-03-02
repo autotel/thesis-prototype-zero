@@ -176,7 +176,7 @@ long lastchange;
 #define SQLN 128//sequence length
 byte seq_ence [SQLN][5];
 byte seq_enceLength=SQLN;
-#undef SQLN
+
 
 //at what time to loop each sequence.
 byte seq_lengths [8];
