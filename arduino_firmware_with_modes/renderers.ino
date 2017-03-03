@@ -122,9 +122,15 @@ void updateSequenceGraph() {
     }*/
   //create the graphic layer to display the sequence
   graph_sequence = 0;
+  graph_sequence2 = 0;
   for (byte a = 0; a < 16; a++) {
-    if (seq_frameHasNote(a, true)) {
+    byte results[2];
+    byte amt = seq_findEventsAtButton(a, results, 2/*, ON_ANY*/);
+    if (amt > 0) {
       graph_sequence |= 0x1 << a;
+      if (amt > 1) {
+        graph_sequence2 |= 0x1 << a;
+      }
     }
   }
 }

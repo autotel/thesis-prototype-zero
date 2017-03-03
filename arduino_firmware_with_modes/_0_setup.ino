@@ -124,7 +124,7 @@ byte se_selectedScale = 0;
 int graph_pointer = 0x00;
 int graph_fingers = 0x00;
 int graph_sequence = 0x00;
-
+int graph_sequence2 = 0x00;
 
 //structure_
 //scales are binary. The 1's are the white keys and the 0's are the black keys, starting from the lsb

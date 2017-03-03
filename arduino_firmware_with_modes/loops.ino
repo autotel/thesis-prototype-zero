@@ -129,13 +129,11 @@ void draw() {
         break;*/
       case 1:
         updateSequenceGraph();
-        layers[0] = graph_sequence;
-        layers[1] = graph_sequence ^ graph_fingers;
-
+        layers[0] = graph_sequence|graph_fingers;
+        layers[1] = graph_sequence|graph_fingers;
+        
         layers[1] |= graph_pointer;
-
-
-        layers[2] = graph_pointer;
+        layers[2] = graph_pointer|graph_fingers|graph_sequence2;
         break;
       case 4:
         layers[1] = structure_scales[se_selectedScale][2] ^ graph_fingers;

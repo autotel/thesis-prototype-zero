@@ -16,9 +16,9 @@
 #define POV_NOTEA 5
 #define POV_NOTEB 6
 #define POV_ANY 254
-#define POV_NULL 255
 
-#define POVS_COUNT 7
+#define POV_NULL 255
+#define POVS_COUNT 8
 
 #define MODE_PERF 0
 #define MODE_SEQ 1
@@ -65,9 +65,12 @@
 
 #define EVNT_ACTIVEFLAG 0X80
 #define EVNT_TIME_MASK 0x7f
+//sequence length needs to be 128, but for that we need first to be able to pan along a sequence
+#define SEQUENCE_LENGTH 16
+#define MODULUS_MIN 2
 
-
-
-
+//handy to run different search algorythm modes
+#define ON_EVERY 0;
+#define ON_ANY 1;
 
 ///make sequence memory longer, but optimize finding algorhythms *after*

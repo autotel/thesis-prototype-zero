@@ -127,14 +127,14 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
             //notes
             case POV_NOTE:
               if (m_recording)
-                seq_addNote(seq_getCurrentStepQuantized(), pm_selectedChannel, pm_selectedNote +  button, pm_selectedVelocity, 1);
+                seq_addNoteAtFrame(seq_getCurrentStepQuantized(), pm_selectedChannel, pm_selectedNote +  button, pm_selectedVelocity, 1);
               //pm_selectedNote = button;
               noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, false);
               break;
             //channels
             case POV_CHAN:
               if (m_recording)
-                seq_addNote(seq_getCurrentStepQuantized(), button, pm_selectedNote, pm_selectedVelocity, 1);
+                seq_addNoteAtFrame(seq_getCurrentStepQuantized(), button, pm_selectedNote, pm_selectedVelocity, 1);
               //pm_selectedChannel = button;
               noteOn(button, pm_selectedNote, pm_selectedVelocity, button, true);
               break;
@@ -160,10 +160,12 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
       //sequencer m_mode
       case MODE_SEQ:
         if (!doSelectors1(button)) {
-          if (seq_frameHasNote(button, true)) {
-            seq_removeNote(button, pov_current);
+          byte eventsFound [1];
+          byte nevents=seq_findEventsAtButton(button,eventsFound,1);
+          if (nevents>0) {
+            seq_removeEventNumber(eventsFound[0]);
           } else {
-            seq_addNote(button, pm_selectedChannel, pm_selectedNote, pm_selectedVelocity, 1);
+            seq_addNoteAtButton(button, pm_selectedChannel, pm_selectedNote, pm_selectedVelocity);
           }
           break;
         }
