@@ -58,8 +58,6 @@
 #define SELECTOR_RECORD 7
 #define SELECTOR_MODULUS 8
 
-
-
 #define EVNTYPE_GRADE 0
 #define EVNTYPE_NOTE 1
 #define EVNTYPE_SEQ 2

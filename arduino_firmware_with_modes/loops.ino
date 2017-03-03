@@ -3,6 +3,7 @@
 int loop128 = 0;
 void loop() {
   if (mySerial.available()) {
+    //pendant: this must be buffered and improved; there are many chances to loose information with the current method.
     byte midiHeader = mySerial.read();
     if (m_recording) {
       if ((midiHeader & 0xF0) == 0x90) {
@@ -14,7 +15,10 @@ void loop() {
     }
     //clock
     if (midiHeader == 0xF8) {
+      
       seq_currentStep128x12  = (seq_currentStep128x12  + 1) % (128 * 12);
+      
+      
       recalculateSeqSteps();
       if (seq_currentStep128x12 % 6 == 0) {
         evaluateSequence();

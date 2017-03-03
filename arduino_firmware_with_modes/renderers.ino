@@ -57,7 +57,7 @@ void lcdUpdateMode() {
   String additions = "";
   if (m_recording)
     additions = "*";
-  lcdPrintA((getString_mode(m_mode) + " /" + getString_POV(pm_current)).substring(0, 16) + additions);
+  lcdPrintA((getString_mode(m_mode) + " /" + getString_POV(pov_current)).substring(0, 16) + additions);
 }
 void lcdUpdatePOV(String is) {
   //efficiency coming some other day...
@@ -70,13 +70,13 @@ void lcdUpdateStatus() {
       #define POV_CHAN 2
       #define POV_CCN 3*/
     default:
-      switch (pm_current) {
+      switch (pov_current) {
         //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
         case POV_CCN:
-          lcdPrintB(getString_POV(pm_current) + String(pm_selectedNote));
+          lcdPrintB(getString_POV(pov_current) + String(pm_selectedNote));
           break;
         case POV_CCCH:
-          lcdPrintB(getString_POV(pm_current) + String(pm_selectedChannel));
+          lcdPrintB(getString_POV(pov_current) + String(pm_selectedChannel));
           break;
         case POV_CHAN:
           lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + (char)127 + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));

@@ -25,7 +25,7 @@ void evaluateSequence() {
 
 bool seq_frameHasNote(byte frame, bool contextSensitive) {
   if (contextSensitive) {
-    return seq_findEvent(frame, pm_current) != -1;
+    return seq_findEvent(frame, pov_current) != -1;
   } else {
     return seq_findEvent(frame, POV_ANY);
   }
@@ -36,7 +36,7 @@ bool seq_frameHasNote(byte frame, bool contextSensitive) {
       if ((seq_ence[a][0]) == (frame | EVNT_ACTIVEFLAG))
         if (contextSensitive) {
           //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
-          switch (pm_current) {
+          switch (pov_current) {
             //grades
             case POV_GRADE:
               // seq_ence[frame][(active+time),(type+channel),(number),(velocity or value)]
@@ -82,14 +82,15 @@ byte seq_findEventsUnderButton(byte button, byte * output, byte maxResults) {
   //and a maximum amount of results to find, to ensure that the array is never overflows
   //this function returns the amount of results found, and fills the output array with the
   //indexes of the events that match the search criteria. these indexes are to be used
-  //in the seq_ence. The search criteria is according to the current context (POV/MODULUS/pm_current)
+  //in the seq_ence. The search criteria is according to the current context (POV/MODULUS/pov_current)
+  byte frame=button % seq_modulus;
   byte results = 0;
   for (byte a = 0; (a < SQLN) && results < maxResults; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
     //the rest 7 lsb's indicate the time.
-    if ((seq_ence[a][0]) == ((frame % seq_modulus) | EVNT_ACTIVEFLAG))
+    if ((seq_ence[a][0]) == ((frame) | EVNT_ACTIVEFLAG))
       //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
-      switch (pov) {
+      switch (pov_current) {
         //grades
         case POV_GRADE:
           // seq_ence[frame][(active+time),(type+channel),(number),(velocity or value)]
@@ -235,9 +236,17 @@ byte countOnes(int i) {
 }
 //recalculate all the modulus of currentStep128x12
 void recalculateSeqSteps() {
+  //pendant: there should be a clearer naming system for all these steps cycles
   seq_currentStep128 = seq_currentStep128x12 / 12;
   seq_currentStep128x2 = seq_currentStep128x12 / 6;
   seq_currentStep16 = seq_currentStep128 % 16;
   seq_currentStep16x2 = seq_currentStep128x2 % 16;
+  seq_currentMicroStep12 = seq_currentStep128x12 % 12;
 }
-
+byte seq_getCurrentStepQuantized() {
+  if (seq_currentMicroStep12>6) {
+    return seq_currentStep16x2+1;
+  } else {
+    return seq_currentStep16x2;
+  }
+}

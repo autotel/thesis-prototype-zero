@@ -5,7 +5,7 @@ void onMatrixButtonHold(byte button, byte buttonPressure) {
   switch (m_mode) {
     //performer m_mode
     case 0:
-      switch (pm_current) {
+      switch (pov_current) {
         case 4:
           //only one button should ride the cc, otherwise chaos
           if (button == lastMatrixButtonPressed)
@@ -44,7 +44,7 @@ bool doSelectors1(byte button) {
         changePerformanceLayer(button);// channels, chords, grades, notes, velocities
         
         activePadInput = button%POVS_COUNT;
-        pm_current = button;
+        pov_current = button;
         
         return true;
         break;
@@ -117,7 +117,7 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
         if (!doSelectors1(button)) {
           //we are not in selector mode, therefore we just perform
           //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
-          switch (pm_current) {
+          switch (pov_current) {
             //grades
             case POV_GRADE:
               /*if(m_recording)
@@ -127,14 +127,14 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
             //notes
             case POV_NOTE:
               if (m_recording)
-                seq_addNote(seq_currentStep16x2, pm_selectedChannel, pm_selectedNote +  button, pm_selectedVelocity, 1);
+                seq_addNote(seq_getCurrentStepQuantized(), pm_selectedChannel, pm_selectedNote +  button, pm_selectedVelocity, 1);
               //pm_selectedNote = button;
               noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, false);
               break;
             //channels
             case POV_CHAN:
               if (m_recording)
-                seq_addNote(seq_currentStep16x2, button, pm_selectedNote, pm_selectedVelocity, 1);
+                seq_addNote(seq_getCurrentStepQuantized(), button, pm_selectedNote, pm_selectedVelocity, 1);
               //pm_selectedChannel = button;
               noteOn(button, pm_selectedNote, pm_selectedVelocity, button, true);
               break;
@@ -161,7 +161,7 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
       case MODE_SEQ:
         if (!doSelectors1(button)) {
           if (seq_frameHasNote(button, true)) {
-            seq_removeNote(button, pm_current);
+            seq_removeNote(button, pov_current);
           } else {
             seq_addNote(button, pm_selectedChannel, pm_selectedNote, pm_selectedVelocity, 1);
           }
@@ -207,7 +207,7 @@ void onEncoderScroll(int absolute, int delta) {
   switch (selector_current) {
     case SELECTOR_POV:
       //if (selector_a) {
-      activePadInput = pm_current + delta;
+      activePadInput = pov_current + delta;
       changePerformanceLayer(activePadInput); // channels, chords, grades, notes, velocities
       break;
     case SELECTOR_NOTE:
@@ -250,7 +250,7 @@ void onEncoderScroll(int absolute, int delta) {
 }
 void scrollAccordingToPm(int delta) {
   //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
-  switch (pm_current) {
+  switch (pov_current) {
     //grades
     case POV_GRADE:
       pm_selectedChannel += delta;
@@ -300,8 +300,8 @@ void scrollAccordingToPm(int delta) {
   }
 }
 void onEncoderPressed() {
-  pm_current++;
-  pm_current%=POVS_COUNT;
+  pov_current++;
+  pov_current%=POVS_COUNT;
   lcdUpdateStatus();
 }
 
@@ -317,10 +317,10 @@ void onSelectorButtonPressed(byte button) {
         switch (button) {
           case 2:
             selector_current = SELECTOR_POV;
-            activePadInput = pm_current;
+            activePadInput = pov_current;
             break;
           case 1:
-            switch (pm_current) {
+            switch (pov_current) {
               case POV_NOTE:
                 selector_current = SELECTOR_CHANNEL;
                 activePadInput = pm_selectedChannel;
@@ -340,11 +340,11 @@ void onSelectorButtonPressed(byte button) {
         switch (button) {
           case 2:
             selector_current = SELECTOR_POV;
-            activePadInput = pm_current;
+            activePadInput = pov_current;
             break;
 
           case 1:
-            switch (pm_current) {
+            switch (pov_current) {
               case POV_NOTE:
                 selector_current = SELECTOR_CHANNEL;
                 activePadInput = pm_selectedChannel;
@@ -386,7 +386,7 @@ void changeMode(byte to) {
 };
 void changePerformanceLayer(byte to) {
   to %= POVS_COUNT;
-  pm_current = to;
+  pov_current = to;
   lcdUpdateMode();// pm_POVList[to] + " set"
 }
 

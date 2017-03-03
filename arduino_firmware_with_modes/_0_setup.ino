@@ -52,9 +52,9 @@ char stringBuffer[8];
 
 
 //submodes of the modes
-//pm_ player modes
-byte pm_current = 2;
-/*const String pm_POVList [] = {
+//pov_ player modes
+byte pov_current = 2;
+/*const String pov_POVList [] = {
   "grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
   };*/
 const char string_10[] PROGMEM = "grade";
@@ -204,6 +204,7 @@ byte seq_modulus=16;
 unsigned int seq_currentStep128x12 = 0;
 unsigned int seq_currentStep128 = 0;
 unsigned int seq_currentStep128x2 = 0;
+byte seq_currentMicroStep12=0;
 byte seq_currentStep16 = 0;
 byte seq_currentStep16x2 = 0;
 
