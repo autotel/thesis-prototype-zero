@@ -82,12 +82,13 @@ const char string_21[] PROGMEM = "Note";
 const char string_22[] PROGMEM = "Number";
 const char string_23[] PROGMEM = "Grade";
 const char string_24[] PROGMEM = "Record";
+const char string_25[] PROGMEM = "Modulus";
 
 //build array with all strings for lookup
 const char* const string_table[] PROGMEM = {
   string_0, string_1, string_2, string_3, string_4, string_5, string_6, string_7, string_8,
   string_9, string_10, string_11, string_12, string_13, string_14, string_15, string_16,
-  string_17, string_18, string_19, string_20, string_21, string_22, string_23, string_24
+  string_17, string_18, string_19, string_20, string_21, string_22, string_23, string_24, string_25
 };
 
 //get string of mode name
@@ -197,10 +198,7 @@ long lastchange;
 #define SQLN 128//sequence length
 byte seq_ence[SQLN][5];
 //byte seq_enceLength=SQLN;
-
-
-//at what time to loop each sequence.
-byte seq_lengths [8];
+byte seq_modulus=16;
 
 //all other currentStep's are modulus of the following one:
 unsigned int seq_currentStep128x12 = 0;

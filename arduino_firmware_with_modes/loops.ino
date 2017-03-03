@@ -165,6 +165,9 @@ void draw() {
       case SELECTOR_CHANNEL:
         selectedGraph = SELECTORGRAPH_POINT;
         break;
+      case SELECTOR_MODULUS:
+        selectedGraph = SELECTORGRAPH_BINARY;
+        break;
     }
     modifierGraph(selectedGraph, layers);
   }

@@ -42,8 +42,10 @@ bool doSelectors1(byte button) {
         break;
       case SELECTOR_POV:
         changePerformanceLayer(button);// channels, chords, grades, notes, velocities
-        activePadInput = button;
+        
+        activePadInput = button%POVS_COUNT;
         pm_current = button;
+        
         return true;
         break;
       case SELECTOR_CHANNEL:
@@ -59,6 +61,7 @@ bool doSelectors1(byte button) {
           activePadInput |= 0x1 << button;
         }
         pm_selectedNote = (byte) activePadInput; //works as binary input
+        pm_selectedNote%=128;
         lcdPrintB("note: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
         return true;
         break;
@@ -69,7 +72,18 @@ bool doSelectors1(byte button) {
           activePadInput |= 0x1 << button;
         }
         pm_selectedNote = (byte) activePadInput; //works as binary input
+        pm_selectedNote%=128;
         lcdPrintB("note: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
+        return true;
+        break;
+      case SELECTOR_MODULUS:
+        if ((0x1 << button)&activePadInput) {
+          activePadInput &= ~(0x1 << button);
+        } else {
+          activePadInput |= 0x1 << button;
+        }
+        seq_modulus = (byte) activePadInput; //works as binary input
+        lcdPrintB("Modulus: " + String(activePadInput, DEC));
         return true;
         break;
       case SELECTOR_RECORD:
@@ -210,13 +224,17 @@ void onEncoderScroll(int absolute, int delta) {
       lcdPrintB("Num: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
       break;
     case SELECTOR_CHANNEL:
-      //} else if (selector_c) {
       activePadInput = pm_selectedChannel + delta;
       activePadInput %= 16;
       pm_selectedChannel = (byte)activePadInput;
       lcdPrintB("Channel: " + String(activePadInput, DEC));
       break;
-    //} else {
+    case SELECTOR_MODULUS:
+      activePadInput += delta;
+      activePadInput %= 128;
+      seq_modulus = (byte) activePadInput; //works as binary input
+      lcdPrintB("Modulus: " + String(activePadInput, DEC));
+      break;
     default:
       //we are not in selector mode. does the current mode do something special with the encoder?
       switch (m_mode) {
@@ -324,13 +342,22 @@ void onSelectorButtonPressed(byte button) {
             selector_current = SELECTOR_POV;
             activePadInput = pm_current;
             break;
-          case 0:
-            selector_current = SELECTOR_NOTE;
-            activePadInput = pm_selectedNote;
-            break;
+
           case 1:
-            selector_current = SELECTOR_CHANNEL;
-            activePadInput = pm_selectedChannel;
+            switch (pm_current) {
+              case POV_NOTE:
+                selector_current = SELECTOR_CHANNEL;
+                activePadInput = pm_selectedChannel;
+                break;
+              case POV_CHAN:
+                selector_current = SELECTOR_NOTE;
+                activePadInput = pm_selectedNote;
+                break;
+            }
+            break;
+          case 0:
+            selector_current = SELECTOR_MODULUS;
+            activePadInput = seq_modulus;
             break;
         }
         break;

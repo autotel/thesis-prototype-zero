@@ -79,10 +79,10 @@ void lcdUpdateStatus() {
           lcdPrintB(getString_POV(pm_current) + String(pm_selectedChannel));
           break;
         case POV_CHAN:
-          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC)+ (char)127 + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));
+          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + (char)127 + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));
           break;
         case POV_NOTE:
-          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC)+ (char)127);
+          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC) + (char)127);
           break;
         default:
           lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));
@@ -103,7 +103,14 @@ long lastMillis = 0;
 unsigned int stepInterval = 200;
 void updateSequenceGraph() {
 
-  graph_pointer = 1 << seq_currentStep16x2;
+  graph_pointer = 1 << (seq_currentStep16x2 % seq_modulus);
+  //if the modulus is less than 16, there should be many pointers on each screen
+  if (seq_modulus > 0) {
+    byte pointers = 16 / seq_modulus;
+    for (byte a = 0; a < pointers; a++) {
+      graph_pointer |= graph_pointer << (seq_modulus * a);
+    }
+  }
 
   /*
     long thisMillis = millis();
