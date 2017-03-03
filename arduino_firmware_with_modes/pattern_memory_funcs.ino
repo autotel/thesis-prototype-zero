@@ -76,6 +76,50 @@ byte seq_nextEmptyFrame() {
   lcdPrintB(F("MEMORY OVERFLOW"));
   return 0;
 }
+
+byte seq_findEventsUnderButton(byte button, byte * output, byte maxResults) {
+  //teh call of the function should provide with an array to fill with the results,
+  //and a maximum amount of results to find, to ensure that the array is never overflows
+  //this function returns the amount of results found, and fills the output array with the
+  //indexes of the events that match the search criteria. these indexes are to be used
+  //in the seq_ence. The search criteria is according to the current context (POV/MODULUS/pm_current)
+  byte results = 0;
+  for (byte a = 0; (a < SQLN) && results < maxResults; a++) {
+    //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
+    //the rest 7 lsb's indicate the time.
+    if ((seq_ence[a][0]) == ((frame % seq_modulus) | EVNT_ACTIVEFLAG))
+      //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
+      switch (pov) {
+        //grades
+        case POV_GRADE:
+          // seq_ence[frame][(active+time),(type+channel),(number),(velocity or value)]
+          if ((seq_ence[a][1]) == pm_selectedChannel | EVNTYPE_GRADE << 4) {
+            *(output + results) = a;
+            results++;
+          }
+          break;
+        //notes
+        case POV_NOTE:
+          if (((seq_ence[a][1]) == (pm_selectedChannel | (EVNTYPE_NOTE << 4))) && (seq_ence[a][2] == pm_selectedNote)) {
+            *(output + results) = a;
+            results++;
+          }
+          break;
+        //channels
+        case POV_CHAN:
+          if ((seq_ence[a][1]) == (pm_selectedChannel | (EVNTYPE_NOTE << 4))) {
+            *(output + results) = a;
+            results++;
+          }
+          break;
+        case POV_ANY:
+          *(output + results) = a;
+          results++;
+          break;
+      }
+  }
+  return results;
+}
 int seq_findEvent(byte frame, byte pov) {
   for (byte a = 0; a < SQLN; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
