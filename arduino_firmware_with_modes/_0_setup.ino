@@ -2,7 +2,7 @@
 
 
 #include <LiquidCrystal.h>
-//#include <TimerOne.h>
+#include <TimerOne.h>
 #include <SoftwareSerial.h>
 
 //analog inputs that are connected to the multiplexor commons
@@ -79,14 +79,15 @@ const char string_18[] PROGMEM = "Mode";
 const char string_19[] PROGMEM = "POV";
 const char string_20[] PROGMEM = "Channel";
 const char string_21[] PROGMEM = "Note";
-const char string_22[] PROGMEM = "Grade";
-const char string_23[] PROGMEM = "Record";
+const char string_22[] PROGMEM = "Number";
+const char string_23[] PROGMEM = "Grade";
+const char string_24[] PROGMEM = "Record";
 
 //build array with all strings for lookup
 const char* const string_table[] PROGMEM = {
   string_0, string_1, string_2, string_3, string_4, string_5, string_6, string_7, string_8,
   string_9, string_10, string_11, string_12, string_13, string_14, string_15, string_16,
-  string_17, string_18, string_19, string_20, string_21, string_22, string_23
+  string_17, string_18, string_19, string_20, string_21, string_22, string_23, string_24
 };
 
 //get string of mode name
@@ -194,8 +195,8 @@ long lastchange;
 // step 0, grade in channel 2, numbeer 67, velocity 90, length of 2
 
 #define SQLN 128//sequence length
-byte seq_ence [SQLN][5];
-byte seq_enceLength=SQLN;
+byte seq_ence[SQLN][5];
+//byte seq_enceLength=SQLN;
 
 
 //at what time to loop each sequence.
@@ -227,8 +228,10 @@ void setup() {
   digitalWrite(analogB, LOW);
   //set all pins from 0 to 7 to output
   DDRD = 0xFF;
-  //Timer1.initialize(9000);//200
-  //Timer1.attachInterrupt(timedLoop);
+  
+  /*Timer1.initialize(500);//200
+  Timer1.attachInterrupt(timedLoop);*/
+  
   //sequence[2][0] = 0x90;
 
   mySerial.begin(31250);

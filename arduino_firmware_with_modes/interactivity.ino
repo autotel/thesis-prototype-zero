@@ -62,6 +62,25 @@ bool doSelectors1(byte button) {
         lcdPrintB("note: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
         return true;
         break;
+      case SELECTOR_NUMBER:
+        if ((0x1 << button)&activePadInput) {
+          activePadInput &= ~(0x1 << button);
+        } else {
+          activePadInput |= 0x1 << button;
+        }
+        pm_selectedNote = (byte) activePadInput; //works as binary input
+        lcdPrintB("note: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
+        return true;
+        break;
+      case SELECTOR_RECORD:
+        if (button == 0) {
+          m_recording = true;
+        } else {
+          m_recording = false;
+        }
+        lcdUpdateMode();
+        return true;
+        break;
       case SELECTOR_GRADE:
         break;
     }
@@ -87,15 +106,21 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
           switch (pm_current) {
             //grades
             case POV_GRADE:
+              /*if(m_recording)
+                seq_addGrade(currentStep16, pm_selectedChannel, button, pm_selectedVelocity, 1)*/
               noteOn(pm_selectedChannel, getNoteFromScale(se_selectedScale, button, 4), pm_selectedVelocity, button, false);
               break;
             //notes
             case POV_NOTE:
+              if (m_recording)
+                seq_addNote(seq_currentStep16x2, pm_selectedChannel, pm_selectedNote +  button, pm_selectedVelocity, 1);
               //pm_selectedNote = button;
               noteOn(pm_selectedChannel, pm_selectedNote + button, pm_selectedVelocity, button, false);
               break;
             //channels
             case POV_CHAN:
+              if (m_recording)
+                seq_addNote(seq_currentStep16x2, button, pm_selectedNote, pm_selectedVelocity, 1);
               //pm_selectedChannel = button;
               noteOn(button, pm_selectedNote, pm_selectedVelocity, button, true);
               break;
@@ -174,15 +199,22 @@ void onEncoderScroll(int absolute, int delta) {
     case SELECTOR_NOTE:
       //} else if (selector_b) {
       activePadInput += delta;
+      activePadInput %= 128;
       pm_selectedNote = (byte) activePadInput; //works as binary input
-      lcdPrintB("note: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
+      lcdPrintB("Note: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
+      break;
+    case SELECTOR_NUMBER:
+      //} else if (selector_b) {
+      activePadInput += delta;
+      pm_selectedNote = (byte) activePadInput; //works as binary input
+      lcdPrintB("Num: " + String(activePadInput, DEC) + "(" + noteNameArray[activePadInput % 12] + ")");
       break;
     case SELECTOR_CHANNEL:
       //} else if (selector_c) {
       activePadInput = pm_selectedChannel + delta;
       activePadInput %= 16;
       pm_selectedChannel = (byte)activePadInput;
-      lcdPrintB("note: " + String(activePadInput, DEC));
+      lcdPrintB("Channel: " + String(activePadInput, DEC));
       break;
     //} else {
     default:
@@ -249,7 +281,11 @@ void scrollAccordingToPm(int delta) {
       break;
   }
 }
-void onEncoderPressed() {}
+void onEncoderPressed() {
+  pm_current++;
+  pm_current%=POVS_COUNT;
+  lcdUpdateStatus();
+}
 
 //
 void onSelectorButtonPressed(byte button) {
@@ -273,7 +309,7 @@ void onSelectorButtonPressed(byte button) {
                 break;
               case POV_CHAN:
                 selector_current = SELECTOR_NOTE;
-                activePadInput = pm_selectedChannel;
+                activePadInput = pm_selectedNote;
                 break;
             }
             break;

@@ -26,6 +26,7 @@ void loop() {
       recalculateSeqSteps();
     }
   }
+  
   if (loop128 % 4 == 0) {
 
     timedLoop();

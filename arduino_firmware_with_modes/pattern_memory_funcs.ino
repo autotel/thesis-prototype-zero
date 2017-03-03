@@ -8,7 +8,7 @@
 
 void evaluateSequence() {
   // lcdPrintA("EVA" + String(seq_currentStep16, DEC));
-  for (byte a = 0; a < seq_enceLength; a++) {
+  for (byte a = 0; a < SQLN; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
     if ((seq_ence[a][0]) == (seq_currentStep16x2 | 0x80)) {
       sendMidi(0x90 | seq_ence[a][1], seq_ence[a][2], seq_ence[a][3]);
@@ -30,7 +30,7 @@ bool seq_frameHasNote(byte frame, bool contextSensitive) {
     return seq_findEvent(frame, POV_ANY);
   }
   /*
-    for (byte a = 0; a < seq_enceLength; a++) {
+    for (byte a = 0; a < SQLN; a++) {
       //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
       //the rest 7 lsb's indicate the time.
       if ((seq_ence[a][0]) == (frame | EVNT_ACTIVEFLAG))
@@ -68,7 +68,7 @@ bool seq_frameHasNote(byte frame, bool contextSensitive) {
 
 
 byte seq_nextEmptyFrame() {
-  for (byte a = 0; a < seq_enceLength; a++) {
+  for (byte a = 0; a < SQLN; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the EVNT_ACTIVEFLAG mask
     if (!(seq_ence[a][0] & EVNT_ACTIVEFLAG))
       return a;
@@ -77,7 +77,7 @@ byte seq_nextEmptyFrame() {
   return 0;
 }
 int seq_findEvent(byte frame, byte pov) {
-  for (byte a = 0; a < seq_enceLength; a++) {
+  for (byte a = 0; a < SQLN; a++) {
     //the first bit in seq_ence index 0 indicates wether this event is active, hence the 0x80 mask
     //the rest 7 lsb's indicate the time.
     if ((seq_ence[a][0]) == (frame | EVNT_ACTIVEFLAG))

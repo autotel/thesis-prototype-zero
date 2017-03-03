@@ -6,13 +6,13 @@ void modifierGraph(byte selection, unsigned int * _graph) {
     case SELECTORGRAPH_POINT:
       graph[1] = 0x1 << activePadInput;
       //graph[2] = ~graph[0];
-      graph[2]=0;
+      graph[2] = 0;
       break;
     //binary number or multi point selector
     case SELECTORGRAPH_BINARY:
       graph[1] = activePadInput;
       //graph[2] = 0xFFFF;
-      graph[2]=0;
+      graph[2] = 0;
       break;
     //calculator
     case SELECTORGRAPH_CALCULATOR:
@@ -26,8 +26,8 @@ void modifierGraph(byte selection, unsigned int * _graph) {
       break;
     //record interface
     case SELECTORGRAPH_RECORD:
-      graph[1] = (0x1000);
-      graph[2] = (0xF000);
+      graph[1] = (0x1);
+      graph[2] = (0xFF);
       break;
     //single point, performance layer selector
     case SELECTORGRAPH_POV:
@@ -35,8 +35,8 @@ void modifierGraph(byte selection, unsigned int * _graph) {
       graph[2] = ~(0xFFFF << POVS_COUNT);
       break;
   }
-  graph[0]=graph[1];
-  
+  graph[0] = graph[1];
+
   *_graph = graph[0];
   *(_graph + 1) = graph[1];
   *(_graph + 2) = graph[2];
@@ -54,7 +54,10 @@ void lcdPrintB(String what) {
 
 void lcdUpdateMode() {
   //concatenate both text of the first row of the lcd. one from left to right, other from roght to left
-  lcdPrintA((getString_mode(m_mode) + "/" + getString_POV(pm_current)).substring(0, 16));
+  String additions = "";
+  if (m_recording)
+    additions = "*";
+  lcdPrintA((getString_mode(m_mode) + " /" + getString_POV(pm_current)).substring(0, 16) + additions);
 }
 void lcdUpdatePOV(String is) {
   //efficiency coming some other day...
@@ -62,17 +65,27 @@ void lcdUpdatePOV(String is) {
 }
 void lcdUpdateStatus() {
   switch (m_mode) {
+    /*#define POV_GRADE 0
+      #define POV_NOTE 1
+      #define POV_CHAN 2
+      #define POV_CCN 3*/
     default:
       switch (pm_current) {
         //"grade", "note", "channel", "CC/n", "CC/ch", "Note+A", "Note+B"
-        case 3:
+        case POV_CCN:
           lcdPrintB(getString_POV(pm_current) + String(pm_selectedNote));
           break;
-        case 4:
+        case POV_CCCH:
           lcdPrintB(getString_POV(pm_current) + String(pm_selectedChannel));
           break;
+        case POV_CHAN:
+          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC)+ (char)127 + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));
+          break;
+        case POV_NOTE:
+          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC)+ (char)127);
+          break;
         default:
-          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(", note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));
+          lcdPrintB(String(F("ch")) + String(pm_selectedChannel, DEC) + String(F(" note")) + noteNameArray[pm_selectedNote % 12] + String(pm_selectedNote / 12, DEC));
           break;
       }
   }
