@@ -15,10 +15,10 @@ void loop() {
     }
     //clock
     if (midiHeader == 0xF8) {
-      
+
       seq_currentStep128x12  = (seq_currentStep128x12  + 1) % (128 * 12);
-      
-      
+
+
       recalculateSeqSteps();
       if (seq_currentStep128x12 % 6 == 0) {
         evaluateSequence();
@@ -30,7 +30,7 @@ void loop() {
       recalculateSeqSteps();
     }
   }
-  
+
   if (loop128 % 4 == 0) {
 
     timedLoop();
@@ -45,14 +45,16 @@ void loop() {
 
 
 
-
+byte cp128 = 0;
 byte cp64 = 0;
 byte cp48 = 0;
 byte cp49 = 0;
+byte cp16 = 0;
 void timedLoop() {
   //evaluate matrix buttons
-  cp64 = cp64 % 64;
-  byte cp16 = cp64 % 16;
+  cp128 = cp128 % 128;
+  cp64 = cp128 % 64;
+  cp16 = cp64 % 16;
   byte cp32 = cp64 % 32;
   cp48 = cp48 % 48;
   cp49 = cp49 % 49;
@@ -103,11 +105,11 @@ void timedLoop() {
     }
   }
   doEncoder();
-  if (cp64 == m_mode) {
+  if (cp128 == m_mode) {
     draw();
   }
 
-  cp64++;
+  cp128++;
 
   cp48++;
   cp49++;
@@ -128,12 +130,13 @@ void draw() {
         layers[1] |= structure_scales[se_selectedScale][2] << 12;
         break;*/
       case 1:
+
         updateSequenceGraph();
-        layers[0] = graph_sequence|graph_fingers;
-        layers[1] = graph_sequence|graph_fingers;
-        
+        layers[0] = graph_sequence | graph_fingers;
+        layers[1] = graph_sequence | graph_fingers;
+
         layers[1] |= graph_pointer;
-        layers[2] = graph_pointer|graph_fingers|graph_sequence2;
+        layers[2] = graph_pointer | graph_fingers | graph_sequence2;
         break;
       case 4:
         layers[1] = structure_scales[se_selectedScale][2] ^ graph_fingers;

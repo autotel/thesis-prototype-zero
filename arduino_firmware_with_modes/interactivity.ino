@@ -160,10 +160,13 @@ void onMatrixButtonPressed(byte button, int buttonPressure) {
       //sequencer m_mode
       case MODE_SEQ:
         if (!doSelectors1(button)) {
-          byte eventsFound [1];
-          byte nevents=seq_findEventsAtButton(button,eventsFound,1);
+          byte eventsFound [16];
+          byte nevents=seq_findEventsAtButton(button,eventsFound,16);
           if (nevents>0) {
-            seq_removeEventNumber(eventsFound[0]);
+            for(byte r=0; r<nevents; r++){
+              seq_removeEventNumber(eventsFound[r]);
+            }
+            
           } else {
             seq_addNoteAtButton(button, pm_selectedChannel, pm_selectedNote, pm_selectedVelocity);
           }
