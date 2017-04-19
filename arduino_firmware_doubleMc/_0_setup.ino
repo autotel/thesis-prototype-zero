@@ -5,6 +5,7 @@
 #include <TimerOne.h>
 #include <SoftwareSerial.h>
 
+
 //analog inputs that are connected to the multiplexor commons
 
 #define analogA A1
@@ -17,9 +18,9 @@
 volatile unsigned int encoder0Pos = 0;
 
 //pins that are connected to the midi plugs as software serial
-int midiIn = A3;
-int midiOut = A2;
-SoftwareSerial mySerial(midiIn, midiOut); // RX, TX
+int serialIn = A2;
+int serialOut = A3;
+SoftwareSerial mySerial(serialIn, serialOut); // RX, TX
 
 
 //current mode
@@ -236,7 +237,8 @@ void setup() {
   
   //sequence[2][0] = 0x90;
 
-  mySerial.begin(31250);
+//pendant: probably can be faster
+  mySerial.begin(4800);
 
 
   //lcd screen initial write
@@ -262,20 +264,20 @@ void setup() {
 
 //send a midi event to the midi output
 void sendMidi(byte a, byte b, byte c) {
-  mySerial.write(a);
+ /* mySerial.write(a);
   mySerial.write(b);
-  mySerial.write(c);
+  mySerial.write(c);*/
 }
 void sendMidi(byte a, byte b, byte c, bool debug) {
-  sendMidi(a, b, c);
+  /*sendMidi(a, b, c);
 
   if (debug)
-    lcdPrintB(String( a, HEX) + "," + String( b, HEX) + "(" + noteNameArray[b % 12] + ")," + String( c, HEX) + "");
+    lcdPrintB(String( a, HEX) + "," + String( b, HEX) + "(" + noteNameArray[b % 12] + ")," + String( c, HEX) + "");*/
 }
 void noteOn(byte channel, byte b, byte c, byte button, bool debug) {
-  byte a = (0x0f & channel) | 0x90;
+  /*byte a = (0x0f & channel) | 0x90;
   MIDI_NoteOns[button][0] = channel;
   MIDI_NoteOns[button][1] = b;//note
   //  MIDI_NoteOns[button][3] = c;
-  sendMidi(a, b, c, debug);
+  sendMidi(a, b, c, debug);*/
 }
