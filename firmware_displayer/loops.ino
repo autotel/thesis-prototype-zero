@@ -2,23 +2,22 @@
 
 int loop128 = 0;
 void loop() {
-  if (mySerial.available()) {
-    mySerial.write((char)mySerial.read()+1);
+  char serialIn=' ';
+  bool thereWas = false;
+  while (mySerial.available()) {
+    serialIn = (char)mySerial.read();
+    mySerial.write(serialIn + 1);
+    thereWas = true;
   }
-
+  if (thereWas)
+    lcdPrintA("<"+serialIn);
   if (loop128 % 4 == 0) {
-
     timedLoop();
-
   }
 
   loop128++;
   loop128 %= 128;
 }
-
-
-
-
 
 byte cp128 = 0;
 byte cp64 = 0;
@@ -49,12 +48,7 @@ void timedLoop() {
       onMatrixButtonReleased(cp16);
     }
   }
-  /*layers[0]=readMatrixButton(3);
-    layers[1]=readMatrixButton(1);
-    layers[2]=readMatrixButton(2);*/
-
   updatePixel(cp49);
-
 
   //evaluate Selector buttons (the tact buttons on top of the matrix)
   //less frequently than matrix, because these are not performance buttons
@@ -80,12 +74,10 @@ void timedLoop() {
     }
   }
   doEncoder();
-  if (cp128 == m_mode) {
+  if (cp128 == 2) {
     draw();
   }
-
   cp128++;
-
   cp48++;
   cp49++;
 }
@@ -93,58 +85,6 @@ void timedLoop() {
 
 
 void draw() {
-
-  if (selector_current == SELECTOR_NONE) {
-    //green, blue, red
-    switch (m_mode) {
- 
-      case 1:
-
-        updateSequenceGraph();
-        layers[0] = graph_sequence | graph_fingers;
-        layers[1] = graph_sequence | graph_fingers;
-
-        layers[1] |= graph_pointer;
-        layers[2] = graph_pointer | graph_fingers | graph_sequence2;
-        break;
-      case 4:
-        layers[1] = structure_scales[se_selectedScale][2] ^ graph_fingers;
-        layers[0] = structure_scales[se_selectedScale][2];
-        layers[2] = structure_scales[se_selectedScale][2];
-        //this because is just nice to see how the scale patterns up
-        layers[1] |= layers[2] << 12;
-        layers[0] |= layers[1] << 12;
-
-
-        break;
-      default:
-        layers[1] = 0xFFFF ^ graph_fingers;
-        layers[0] = 0xFFFF;
-        // layers[1]|=graph_debug;
-        layers[2] |= structure_scales[se_selectedScale][2];
-        break;
-    }
-  } else {
-    byte selectedGraph = 0;
-    switch (selector_current) {
-      case SELECTOR_MODE:
-        selectedGraph = SELECTORGRAPH_MODE;
-        break;
-      case SELECTOR_POV:
-        selectedGraph = SELECTORGRAPH_POV;
-        break;
-      case SELECTOR_NOTE:
-        selectedGraph = SELECTORGRAPH_BINARY;
-        break;
-      case SELECTOR_CHANNEL:
-        selectedGraph = SELECTORGRAPH_POINT;
-        break;
-      case SELECTOR_MODULUS:
-        selectedGraph = SELECTORGRAPH_BINARY;
-        break;
-    }
-    modifierGraph(selectedGraph, layers);
-  }
   if (screenChanged) {
     screenChanged = false;
     if (lastScreenA != screenA) {
