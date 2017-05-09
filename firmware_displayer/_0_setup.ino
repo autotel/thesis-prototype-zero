@@ -18,9 +18,9 @@
 volatile unsigned int encoder0Pos = 0;
 
 //pins that are connected to the midi plugs as software serial
-int serialIn = A2;
-int serialOut = A3;
-SoftwareSerial mySerial(serialIn, serialOut); // RX, TX
+#define sIn A2
+#define sOut A3
+SoftwareSerial mySerial(sIn, sOut); // RX, TX
 
 //names for the m_mode possible values
 /*instead of making usual arrays, to save space for local vars, I'm writing constant strings to progmem.*/
@@ -144,7 +144,7 @@ void setup() {
 
 //pendant: probably can be faster
   mySerial.begin(4800);
-
+  mySerial.print("hi");
 
   //lcd screen initial write
   lcd.begin(16, 2);
