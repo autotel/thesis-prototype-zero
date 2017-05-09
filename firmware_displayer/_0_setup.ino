@@ -143,7 +143,7 @@ void setup() {
   //sequence[2][0] = 0x90;
 
 //pendant: probably can be faster
-  mySerial.begin(4800);
+  mySerial.begin(38400);
   mySerial.print("hi");
 
   //lcd screen initial write

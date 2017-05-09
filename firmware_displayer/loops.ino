@@ -2,27 +2,26 @@
 int serialIn[serialInLength];
 int loop128 = 0;
 void loop() {
-  bool thereWas = false;
   int bnum=0;
   while (mySerial.available()&&bnum<serialInLength) {
     serialIn[bnum] = mySerial.read();
     bnum++;
   }
   if(bnum){
-    mySerial.println(String(bnum,DEC));
+    mySerial.write(bnum);
   }
   if(bnum>2){
-    
     layers[0]=serialIn[0]|(serialIn[1]<<8);
     layers[1]=serialIn[2]|(serialIn[3]<<8);
     layers[2]=serialIn[4]|(serialIn[5]<<8);
   }
   String screenString="";
   for(int a=6; a<bnum; a++){
-    screenString+=serialIn[a];
+    screenString+=(char)serialIn[a];
   }
   if(bnum>3)
     lcdPrintA("<"+screenString+"-"+String(bnum,DEC));
+    lcdPrintB(String(layers[0],HEX));
   if (loop128 % 4 == 0) {
     timedLoop();
   }
