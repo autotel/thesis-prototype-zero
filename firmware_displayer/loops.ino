@@ -2,31 +2,32 @@
 int serialIn[serialInLength];
 int loop128 = 0;
 void loop() {
-  int bnum=0;
-  while (mySerial.available()&&bnum<serialInLength) {
-    serialIn[bnum] = mySerial.read();
-    bnum++;
+  if (loop128 % 2 == 1) {
+    checkMessages();
   }
-  if(bnum>0){
-    layers[0]=serialIn[0]|(serialIn[1]<<8);
-    layers[1]=serialIn[2]|(serialIn[3]<<8);
-    layers[2]=serialIn[4]|(serialIn[5]<<8);
-    layers[3]=layers[0];
-  }
-  String screenString="";
-  for(int a=6; a<bnum; a++){
-    screenString+=(char)serialIn[a];
-  }
-  if(bnum>3){
-    lcdPrintA("<"+screenString+"-"+String(bnum,DEC));
-    lcdPrintB(String(layers[0],HEX));
-  }
+
   if (loop128 % 2 == 0) {
     timedLoop();
   }
-  
+
   loop128++;
   loop128 %= 128;
+}
+
+void checkMessages(){
+  int bnum = 0;
+  byte inHeader = 0;
+  while (mySerial.available() && bnum < serialInLength) {
+    if (bnum == 0) {
+      inHeader = mySerial.read();
+    } else {
+      serialIn[bnum - 1] = mySerial.read();
+    }
+    bnum++;
+    //pendant: message ending shouldn't be marked by a pause in time, rather by a special char.
+    delayMicroseconds(100);
+  }
+  messageReceived(inHeader, serialIn, bnum);
 }
 
 byte cp128 = 0;

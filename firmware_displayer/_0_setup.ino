@@ -17,6 +17,10 @@
 #define encoder0PinB  A5
 volatile unsigned int encoder0Pos = 0;
 
+//serial is separated by pauses, sadly.
+//perhaps I should define a better protocol than this somehow.
+#define serialSeparationTime 200
+long lastSerial=0;
 //pins that are connected to the midi plugs as software serial
 #define sIn A2
 #define sOut A3
@@ -144,7 +148,7 @@ void setup() {
 
 //pendant: probably can be faster
   mySerial.begin(9600);
-  mySerial.print("hi");
+  mySerial.write(TH_hello);
 
   //lcd screen initial write
   lcd.begin(16, 2);

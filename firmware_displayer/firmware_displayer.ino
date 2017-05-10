@@ -1,3 +1,15 @@
+//headers to communicate with the 'brain' controller
+#define RH_hello 0x1
+#define RH_ledMatrix 0x2
+#define RH_screenA 0x3
+#define RH_screenB 0x4
+
+#define TH_hello 0x1
+#define TH_buttonMatrix 0x2
+#define TH_selectorButton 0x3
+#define TH_encoderScroll 0x4
+#define TH_encoderButton 0x5
+
 /*encoder is conected to a muxb addr*/
 /*may be able to reduce dynamic memory by using https://www.arduino.cc/en/Reference/PROGMEM progmem */
 

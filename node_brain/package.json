@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "prompt": "^1.0.0",
-    "serialport": "^4.0.7"
+    "raspi-serial": "^3.1.0"
   }
 }
