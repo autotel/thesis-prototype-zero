@@ -7,22 +7,21 @@ void loop() {
     serialIn[bnum] = mySerial.read();
     bnum++;
   }
-  if(bnum){
-    mySerial.write(bnum);
-  }
-  if(bnum>2){
+  if(bnum>0){
     layers[0]=serialIn[0]|(serialIn[1]<<8);
     layers[1]=serialIn[2]|(serialIn[3]<<8);
     layers[2]=serialIn[4]|(serialIn[5]<<8);
+    layers[3]=layers[0];
   }
   String screenString="";
   for(int a=6; a<bnum; a++){
     screenString+=(char)serialIn[a];
   }
-  if(bnum>3)
+  if(bnum>3){
     lcdPrintA("<"+screenString+"-"+String(bnum,DEC));
     lcdPrintB(String(layers[0],HEX));
-  if (loop128 % 4 == 0) {
+  }
+  if (loop128 % 2 == 0) {
     timedLoop();
   }
   
@@ -63,7 +62,7 @@ void timedLoop() {
 
   //evaluate Selector buttons (the tact buttons on top of the matrix)
   //less frequently than matrix, because these are not performance buttons
-  if (cp16 == 0) {
+  if (cp49 == 0) {
     //cp64/16 will be 0,1,2,3 alernatingly each time cp16 is 0
     byte cb_4 = cp64 / 0xf;
     //see previous use of this var for more reference

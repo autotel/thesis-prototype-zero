@@ -11,11 +11,13 @@ void onMatrixButtonPressed(byte button) {
 //actions to take once a button is pressed
 
 void onMatrixButtonPressed(byte button, int buttonPressure) {
+  mySerial.write(button);
 }
 //actions to take once a button is released
 void onMatrixButtonReleased(byte button) {
 }
 void onEncoderScroll(int absolute, int delta) {
+  mySerial.write(absolute);
 }
 
 void onEncoderPressed() {
