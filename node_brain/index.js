@@ -4,29 +4,6 @@ const midi=require('./components/midi');
 // const readline = require('readline');
 
 
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout
-// });
-// function q(){
-//   rl.question('js:', (answer) => {
-//     // console.log(answer);
-//     if(answer=="x"){
-//       process.exit();
-//     }
-//     console.log("eval:");
-//     try{
-//       console.log(eval(answer));
-//     }catch(e){
-//       console.log("error:");
-//       console.log(e);
-//     }
-//     // rl.close();
-//     q();
-//   });
-// };
-
-
 var currentStep=0;
 setInterval(function(){
   currentStep++;
