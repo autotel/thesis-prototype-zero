@@ -1,23 +1,28 @@
 #define serialInLength 16
-int serialIn[serialInLength];
-void checkMessages(){
+byte serialIn[serialInLength];
+boolean serialInLocked=false;
+void checkMessages() {
+  
   int bnum = 0;
   byte inHeader = 0;
-  while (mySerial.available() && bnum < serialInLength) {
-    if (bnum == 0) {
-      inHeader = mySerial.read();
-    } else {
-      serialIn[bnum - 1] = mySerial.read();
-    }
+  if(!serialInLocked)
+  while (mySerial.available() && (bnum < serialInLength)) {
+    //if (bnum == 0) {
+    //inHeader = mySerial.read();
+    //} else {
+    serialIn[bnum] = mySerial.read();
+    //}
     bnum++;
     //pendant: split message based on declared message lengths instead of the shitty delay
     delayMicroseconds(100);
   }
-  messageReceived(inHeader, serialIn, bnum);
+  if (bnum)
+    messageReceived( serialIn, bnum);
+    
 }
 
 
-void sendToBrain(char header, char datarray [], int len) {
+void sendToBrain(byte header, byte datarray [], int len) {
   //wait until lastserial-millis>serialSeparationTime,
   //but hopefuilly not pausing the program
 
@@ -28,27 +33,54 @@ void sendToBrain(char header, char datarray [], int len) {
 
   lastSerial = millis();
 }
-
-void messageReceived(char header, int datarray [], int len) {
-  switch (header) {
-    case RH_hello:
-      lcdPrintA("connected");
-      break;
-    case RH_ledMatrix:
-      layers[0] = datarray[0] | (datarray[1] << 8);
-      layers[1] = datarray[2] | (datarray[3] << 8);
-      layers[2] = datarray[4] | (datarray[5] << 8);
-      break;
-    case RH_screenA:
-      lcdPrintA(arrToString(datarray, len));
-      break;
-    case RH_screenB:
-      lcdPrintB(arrToString(datarray, len));
-      break;
+//react and split messages
+void messageReceived(byte datarray [], int len) {
+  serialInLocked=true;
+  int a = 0;
+  //lcdPrintB(String(len));
+  while (a < len) {
+    byte currentHeader = datarray[a];
+    a++;
+    switch (currentHeader) {
+      case RH_hello: {
+          lcdPrintA("rcv hello");
+          break;
+        }
+      case RH_ledMatrix: {
+          layers[0] = datarray[a + 0] | (datarray[a + 1] << 8);
+          layers[1] = datarray[a + 2] | (datarray[a + 3] << 8);
+          layers[2] = datarray[a + 4] | (datarray[a + 5] << 8);
+          a += RH_ledMatrix_len;
+          break;
+        }/*
+      case RH_screenA: {
+          int b=0;
+          while ((datarray[a] != EOMessage) && b<16) {
+            screenA [a]= (byte)datarray[a];
+            b++;
+            a++;
+          }
+          screenChanged = true;
+          break;
+        }
+      case RH_screenB: {
+          int b=0;
+          while ((datarray[a] != EOMessage) && b<16) {
+            screenB [a]= (byte)datarray[a];
+            b++;
+            a++;
+          }
+          screenChanged = true;
+          break;
+        }*/
+      default:
+        a++;
+    }
   }
+  serialInLocked=false;
 }
 
-String arrToString(int arr[], int len) {
+String arrToString(byte arr[], int len) {
   String ret = ">";
   for (int a; a < len; a++) {
     ret += arr[a];

@@ -6,9 +6,10 @@ var c=0;
 
 var jsOutput={
   tHeaders:{},
+  tLengths:[],
   rHeaders:{},
   rHNames:[],
-  rLengths:{},
+  rLengths:[],
   baudRate:constants.baudRate,
   eoString:constants.eoString,
 };
@@ -23,6 +24,7 @@ for(var a in constants.messagesToArduino){
   var message=constants.messagesToArduino[a];
   message.identifier=c;
   jsOutput.tHeaders[a]=c;
+  jsOutput.tLengths[c]=message.payload;
   cOutput+="#define RH_"+a+" 0x"+c.toString(16)+"\n";
   if(message.payload=="unknown"){
     cOutput+="#define RH_"+a+"_len -1\n";

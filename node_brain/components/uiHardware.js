@@ -1,9 +1,11 @@
+'use strict';
 const raspi = require('raspi');
 const Serial = require('raspi-serial').Serial;
 const listens=require('onhandlers');
 const comConsts=require('./constants.js');
 
 var tHeaders=comConsts.tHeaders;
+var tLengths=comConsts.tLengths;
 var rHeaders=comConsts.rHeaders;
 var rHNames=comConsts.rHNames;
 var rLengths=comConsts.rLengths;
@@ -44,22 +46,22 @@ module.exports=new (function(){
   raspi.init(() => {
     var serial = new Serial({baudRate:baudRate});
     serial.open(() => {
-      tHardware.handle('serialopened');
-      var hardware=new(function(){
-        var tHardware=this;
-        this.log=function(theString){
-          theString=JSON.stringify(theString);
-          theString=theString.substring(0,15);
-          tHardware.sendx8(tHeaders.screenA,theString);
-          tHardware.sendx8(tHeaders.screenB,theString);
-        };
+      (function(){
+
+        // this.log=function(theString){
+        //   theString=JSON.stringify(theString);
+        //   theString=theString.substring(0,15);
+        //   tHardware.sendx8(tHeaders.screenA,theString);
+        //   tHardware.sendx8(tHeaders.screenB,theString);
+        // };
         this.sendx8=function(header,dataArray){
           if(dataArray.constructor !== Array)
             dataArray=Array.from(dataArray);
           dataArray.unshift(header&0xff);
           var buf1 = Buffer.from(dataArray);
           serial.write(buf1);
-          // console.log("sent",buf1);
+
+          console.log("sent",buf1);
         }
         this.sendx8_16=function(header,dataArray){
           var arr8=[];
@@ -72,20 +74,48 @@ module.exports=new (function(){
           arr8.unshift(header&0xff);
           var buf1 = Buffer.from(arr8);
           serial.write(buf1);
-          // console.log("sent",buf1);
+
+          console.log("sent",buf1);
+        }
+        this.sendScreenA=function(str){
+          sendString(tHeaders.screenA,str);
+        }
+        this.sendScreenB=function(str){
+          sendString(tHeaders.screenB,str);
+        }
+        var sendString=function(header,string){
+          console.log(header,string);
+          if(tLengths[header]!=="unknown"){
+            console.warn("warning: this header is not specified for unknown lengths");
+          }
+          var arr8=[];
+          for(var a in string){
+            arr8.push(string.charCodeAt(a));
+          }
+          arr8.unshift(header&0xff);
+          arr8.push(eoString);
+          var buf1 = Buffer.from(arr8);
+          // console.log("send str len"+buf1.length);
+          serial.write(buf1);
+          console.log("sent",buf1);
         }
 
-        return this;
-      })();
+        tHardware.handle('serialopened');
+      }).call(tHardware);
 
-      console.log("serial connected-");
+      // console.log("serial connected-");
       serial.write(tHeaders.hello);
-      tHardware.updateLeds=function(bitmaps){
-        // hardware.sendx8(tHeaders.ledMatrix,[0xff,0xff,0xff,0xff,0xff,0xff]);
+      console.log("wrote hello");
 
-        hardware.sendx8_16(tHeaders.ledMatrix,bitmaps);
+
+
+      tHardware.updateLeds=function(bitmaps){
+        // tHardware.sendx8_16(tHeaders.ledMatrix,[0xff,0xff,1,1,0xff,0xff]);
+
+        tHardware.sendx8_16(tHeaders.ledMatrix,bitmaps);
       }
       serial.on('data', (data) => {
+        console.log("recv",data);
         var chd=getChoppedData(data);
         for(var event of chd){
           tHardware.handle('interaction',event);

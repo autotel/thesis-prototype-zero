@@ -1,3 +1,4 @@
+'use strict';
 // var prompt = require('prompt');
 const hardware=require('./components/uiHardware');
 const midi=require('./components/midi');
@@ -5,16 +6,12 @@ const midi=require('./components/midi');
 
 
 var currentStep=0;
-setInterval(function(){
-  currentStep++;
-  currentStep%=16;
-  //pendant: hardware may have not yet initialized this function
-  updateSequencerLeds();
-},200);
+
 
 var updateSequencerLeds=function(){
   var seqB=pattern.getBitmapx16();
   hardware.updateLeds([seqB^0x0001<<currentStep,seqB,0x0001<<currentStep]);
+  
 }
 
 var testmode="sequence";
@@ -32,8 +29,28 @@ var rEventHandlers={
       data[1]=127;
       midi.note(data[0],52,data[1]);
     }
+  },
+  selectorButtonPressed:function(data){
+    // hardware.sendScreenA("zzz"+data[0]);
+    // hardware.sendScreenB("zzz"+data[0]);
+  },
+  encoderScroll:function(data){
+    // hardware.sendScreenA("zzz"+data[0]);
+    // hardware.sendScreenB("zzz"+data[0]);
   }
 }
+hardware.on('serialopened',function(){
+  console.log("serial opened");
+
+  setInterval(function(){
+    currentStep++;
+    currentStep%=16;
+    //pendant: hardware may have not yet initialized this function
+    updateSequencerLeds();
+  },400);
+
+  // hardware.sendScreenB("nande");
+});
 hardware.on('interaction',function(event){
   console.log(event.type);
   if(event.data){
@@ -47,7 +64,7 @@ hardware.on('interaction',function(event){
 });
 //pattern should store messages, that were defined in other part of this project.
 var pattern=new(function(){
-  tPattern=this;
+  var tPattern=this;
   var patData={};
   this.store=function(place,data){
     patData[place]=data;
