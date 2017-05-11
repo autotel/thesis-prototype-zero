@@ -1,30 +1,30 @@
 // var prompt = require('prompt');
 const raspi = require('raspi');
 const Serial = require('raspi-serial').Serial;
-const readline = require('readline');
+// const readline = require('readline');
 const baudRate=115200;
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-function q(){
-  rl.question('js:', (answer) => {
-    // console.log(answer);
-    if(answer=="x"){
-      process.exit();
-    }
-    console.log("eval:");
-    try{
-      console.log(eval(answer));
-    }catch(e){
-      console.log("error:");
-      console.log(e);
-    }
-    // rl.close();
-    q();
-  });
-};
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout
+// });
+// function q(){
+//   rl.question('js:', (answer) => {
+//     // console.log(answer);
+//     if(answer=="x"){
+//       process.exit();
+//     }
+//     console.log("eval:");
+//     try{
+//       console.log(eval(answer));
+//     }catch(e){
+//       console.log("error:");
+//       console.log(e);
+//     }
+//     // rl.close();
+//     q();
+//   });
+// };
 
 
 //headers for output
@@ -81,7 +81,7 @@ setInterval(function(){
   currentStep++;
   currentStep%=16;
   updateScreen();
-},100);
+},200);
 function getChoppedData(from){
   var ret=[];
   //never use short iterator for arrayBuffers!
@@ -213,17 +213,18 @@ var output = new midi.output();
 console.log(output.getPortCount());
 
 // Get the name of a specified output port.
-console.log(output.getPortName(0));
+for(var a=0; a<output.getPortCount(); a++){
+  console.log("port["+a+"]="+output.getPortName(a));
+}
 
-// Open the first available output port.
-console.log(output.openPort(0));
+output.openPort(1);
 setInterval(function(){
   // Send a MIDI message.
   output.sendMessage([176,22,1]);
 },100);
-
-// Close the port when done.
-output.closePort();
-
+function closeMidi(){
+  // Close the port when done.
+  output.closePort();
+}
 
 // q();
