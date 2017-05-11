@@ -10,7 +10,7 @@ void checkMessages(){
       serialIn[bnum - 1] = mySerial.read();
     }
     bnum++;
-    //pendant: message ending shouldn't be marked by a pause in time, rather by a special char.
+    //pendant: split message based on declared message lengths instead of the shitty delay
     delayMicroseconds(100);
   }
   messageReceived(inHeader, serialIn, bnum);

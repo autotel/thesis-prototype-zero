@@ -34,7 +34,7 @@ void timedLoop() {
     //if last lap this button was not pressed, trigger on  button pressed
     if ((evaluator & pressedMatrixButtonsBitmap) == 0) {
       pressedMatrixButtonsBitmap |= evaluator;
-      onMatrixButtonPressed(cp16, buttonPressure);
+      onMatrixButtonPressed(cp16);
     } else {
       onMatrixButtonHold(cp16, buttonPressure);
     }

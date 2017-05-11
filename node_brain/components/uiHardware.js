@@ -1,43 +1,15 @@
 const raspi = require('raspi');
 const Serial = require('raspi-serial').Serial;
 const listens=require('onhandlers');
+const comConsts=require('./constants.js');
 
-const baudRate=115200;
-//headers for output
-var tHeaders={
-  hello:0x1,
-  ledMatrix:0x2,
-  screenA:0x3,
-  screenB:0x4,
-}
-//headers for input
-var rHeaders={
-  hello:0x1,
-  buttonMatrix:0x2,
-  selectorButton:0x3,
-  encoderScroll:0x4,
-  encoderButton:0x5,
-}
-//inverse array for instant lookup
-var rHNames=[];
-for(var a in rHeaders){
-  rHNames[rHeaders[a]]=a;
-}
-console.log(rHNames);
-//lookup on how to chop the incoming buffer
-var rLengths={
-  int:2,
-  char:1,
-  string:false,//if false, waits for a line ending or something
-  float:4,
-  hello:0,
-  buttonMatrix:4,
-  selectorButton:2,
-  encoderScroll:2,
-  encoderButton:1,
-}
-
-
+var tHeaders=comConsts.tHeaders;
+var rHeaders=comConsts.rHeaders;
+var rHNames=comConsts.rHNames;
+var rLengths=comConsts.rLengths;
+var baudRate=comConsts.baudRate;
+var eoString=comConsts.eoString;
+console.log(comConsts);
 
 function getChoppedData(from){
   var ret=[];
@@ -47,7 +19,7 @@ function getChoppedData(from){
     // console.log(from[a]+":");
     //get message header and it's expected message length
     var currentHeader=rHNames[from[a]];
-    var currentLen=rLengths[currentHeader];
+    var currentLen=rLengths[from[a]];
     a++;
     //false currentLen indicates that a end character indicates the end of buffer
     if(currentLen===false){

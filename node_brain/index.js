@@ -20,7 +20,7 @@ var updateSequencerLeds=function(){
 var testmode="sequence";
 
 var rEventHandlers={
-  buttonMatrix:function(data){
+  buttonMatrixPressed:function(data){
     if(testmode=="sequence"){
     // console.log("buttonMatric event"+data[0]);
       if(data[1]!=0){
@@ -35,6 +35,7 @@ var rEventHandlers={
   }
 }
 hardware.on('interaction',function(event){
+  console.log(event.type);
   if(event.data){
     // console.log(event.type,event.data[0]);
     if( typeof rEventHandlers[event.type] ==='function' ){
