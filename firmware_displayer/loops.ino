@@ -1,5 +1,4 @@
-#define serialInLength 16
-int serialIn[serialInLength];
+
 int loop128 = 0;
 void loop() {
   if (loop128 % 2 == 1) {
@@ -14,21 +13,7 @@ void loop() {
   loop128 %= 128;
 }
 
-void checkMessages(){
-  int bnum = 0;
-  byte inHeader = 0;
-  while (mySerial.available() && bnum < serialInLength) {
-    if (bnum == 0) {
-      inHeader = mySerial.read();
-    } else {
-      serialIn[bnum - 1] = mySerial.read();
-    }
-    bnum++;
-    //pendant: message ending shouldn't be marked by a pause in time, rather by a special char.
-    delayMicroseconds(100);
-  }
-  messageReceived(inHeader, serialIn, bnum);
-}
+
 
 byte cp128 = 0;
 byte cp64 = 0;

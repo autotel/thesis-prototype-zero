@@ -1,5 +1,23 @@
+#define serialInLength 16
+int serialIn[serialInLength];
+void checkMessages(){
+  int bnum = 0;
+  byte inHeader = 0;
+  while (mySerial.available() && bnum < serialInLength) {
+    if (bnum == 0) {
+      inHeader = mySerial.read();
+    } else {
+      serialIn[bnum - 1] = mySerial.read();
+    }
+    bnum++;
+    //pendant: message ending shouldn't be marked by a pause in time, rather by a special char.
+    delayMicroseconds(100);
+  }
+  messageReceived(inHeader, serialIn, bnum);
+}
 
-void sendToBrain(char header, int datarray [], int len) {
+
+void sendToBrain(char header, char datarray [], int len) {
   //wait until lastserial-millis>serialSeparationTime,
   //but hopefuilly not pausing the program
 

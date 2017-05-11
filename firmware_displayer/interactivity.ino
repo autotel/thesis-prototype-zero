@@ -7,40 +7,40 @@ void onMatrixButtonHold(byte button, byte buttonPressure) {
 }
 //actions to take while a button is pressed
 void onMatrixButtonPressed(byte button) {
-  int sData[]={button,pressedMatrixButtonsBitmap};
-  sendToBrain(TH_buttonMatrix,sData,2);
+  char sData[]={button,1,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
+  sendToBrain(TH_buttonMatrix,sData,4);
 }
 
 
 //actions to take once a button is pressed
 
 void onMatrixButtonPressed(byte button, int buttonPressure) {
-  int sData[]={button,buttonPressure,pressedMatrixButtonsBitmap};
-  sendToBrain(TH_buttonMatrix,sData,3);
+  char sData[]={button,(char) buttonPressure,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
+  sendToBrain(TH_buttonMatrix,sData,4);
 }
 //actions to take once a button is released
 void onMatrixButtonReleased(byte button) {
-  int sData[]={button,0,pressedMatrixButtonsBitmap};
-  sendToBrain(TH_buttonMatrix,sData,3);
+  char sData[]={button,0,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
+  sendToBrain(TH_buttonMatrix,sData,4);
 }
 void onEncoderScroll(int absolute, int delta) {
-  int sData[]={absolute,delta};
+  char sData[]={(char)absolute,(char)delta};
   sendToBrain(TH_encoderScroll,sData,2);
 }
 
 void onEncoderPressed() {
-  int sData[]={1};
+  char sData[]={1};
   sendToBrain(TH_encoderButton,sData,1);
 }
 
 //
 void onSelectorButtonPressed(byte button) {
-  int sData[]={button,1};
+  char sData[]={button,1};
   sendToBrain(TH_selectorButton,sData,2);
 }
 //
 void onSelectorButtonReleased(byte button) {
-  int sData[]={button,0};
+  char sData[]={button,0};
   sendToBrain(TH_selectorButton,sData,2);
 }
 void onSelectorButtonHold(byte button) {}
