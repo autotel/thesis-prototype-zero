@@ -1,4 +1,4 @@
-#define serialInLength 32
+#define serialInLength 16
 byte serialIn[serialInLength];
 boolean serialInLocked=false;
 void checkMessages() {
@@ -54,27 +54,12 @@ void messageReceived(byte datarray [], int len) {
           layers[2] = datarray[a + 4] | (datarray[a + 5] << 8);
           a += RH_ledMatrix_len;
           break;
-        }/*
-      case RH_screenA: {
-          int b=0;
-          while ((datarray[a] != EOMessage) && b<16) {
-            screenA [a]= (byte)datarray[a];
-            b++;
-            a++;
-          }
-          screenChanged = true;
-          break;
         }
-      case RH_screenB: {
-          int b=0;
-          while ((datarray[a] != EOMessage) && b<16) {
-            screenB [a]= (byte)datarray[a];
-            b++;
-            a++;
-          }
-          screenChanged = true;
-          break;
-        }*/
+      case RH_comTester: {
+        lcdPrintA("com test");
+        lcdPrintB(String(datarray[1],HEX));
+        break;
+      }
       default:
         a++;
     }

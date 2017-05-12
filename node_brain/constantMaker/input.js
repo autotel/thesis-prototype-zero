@@ -1,5 +1,5 @@
 
-module.exports.baudRate=230400;//230400;//9600;//
+module.exports.baudRate=19200;//230400;//9600;//
 module.exports.eoString=0x3;
 module.exports.messagesToArduino={
   null:{
@@ -25,6 +25,9 @@ module.exports.messagesToArduino={
   },
   currentStep:{
     payload:2,
+  },
+  comTester:{
+    payload:1,
   }
 };
 module.exports.messagesFromArduino={
@@ -60,5 +63,8 @@ module.exports.messagesFromArduino={
   },
   encoderReleased:{
     payload:1
+  },
+  comTester:{
+    payload:1,
   }
 }

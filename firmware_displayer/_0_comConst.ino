@@ -1,5 +1,5 @@
 //these constants are shared between brain and this, and thus should be updated with the update app
-#define SOFT_BAUDRATE 230400
+#define SOFT_BAUDRATE 19200
 #define EOMessage 3
 #define unknown -1
 
@@ -18,6 +18,8 @@
 #define RH_setInteractionMode_len 0x4
 #define RH_currentStep 0x6
 #define RH_currentStep_len 0x2
+#define RH_comTester 0x7
+#define RH_comTester_len 0x1
 
 //transmit headers 
 #define TH_null 0x0
@@ -42,3 +44,5 @@
 #define TH_encoderPressed_len 0x1
 #define TH_encoderReleased 0xa
 #define TH_encoderReleased_len 0x1
+#define TH_comTester 0xb
+#define TH_comTester_len 0x1

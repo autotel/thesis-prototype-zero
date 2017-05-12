@@ -74,12 +74,15 @@ raspi.init(() => {
     serial.on('data', (data) => {
       console.log("recv:",data);
       var chd=getChoppedData(data);
+
+
+      sendx8_16(tHeaders.ledMatrix,[0x1<<count,0x1<<count,0x1<<count]);
+
+
     });
     setInterval(function(){
-      sendx8(tHeaders.currentStep,[count,count]);
-      // setTimeout(function(){
-      //   sendx8_16(tHeaders.ledMatrix,[0x1<<count,0x1<<count,0x1<<count]);
-      // },100);
+      sendx8(tHeaders.comTester,[count]);
+
       count++;
       count%=0xf;
     },500);
