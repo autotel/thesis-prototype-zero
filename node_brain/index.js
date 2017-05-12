@@ -13,6 +13,8 @@ var environment=new(function(){
       currentStep++;
       currentStep%=16;
       tMetro.handle('step',{step:currentStep});
+
+
     },100);
   })();
   return this;
@@ -23,17 +25,17 @@ environment.hardware=hardware;
 const midi=require('./components/midi')(environment);
 const interaction=require('./components/interactionManager')(environment);
 // const readline = require('readline');
-
-
+environment.on('serialopened',function(){
+  environment.metronome.on('step',function(e){
+    var currentStep=e.step;
+    hardware.draw([0x1<<currentStep,0x0,0x1<<currentStep]);
+  });
+});
 
 var currentStep=0;
 
-var updateSequencerLeds=function(){
-  var seqB=pattern.getBitmapx16();
-  hardware.updateLeds([seqB^0x0001<<currentStep,seqB,0x0001<<currentStep]);
-}
 
-var testmode="seque-nce";
+var testmode="sequence";
 
 
 

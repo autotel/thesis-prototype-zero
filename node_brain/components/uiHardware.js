@@ -72,9 +72,8 @@ module.exports=function(environment){return new (function(){
         dataArray.unshift(header&0xff);
         var buf1 = Buffer.from(dataArray);
         serial.write(buf1);
-
-        // console.log("sent",buf1);
       }
+
       var sendx8_16=function(header,dataArray){
         var arr8=[];
         for(var a of dataArray){
