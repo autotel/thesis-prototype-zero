@@ -25,12 +25,12 @@ environment.hardware=hardware;
 const midi=require('./components/midi')(environment);
 const interaction=require('./components/interactionManager')(environment);
 // const readline = require('readline');
-environment.on('serialopened',function(){
-  environment.metronome.on('step',function(e){
-    var currentStep=e.step;
-    hardware.draw([0x1<<currentStep,0x0,0x1<<currentStep]);
-  });
-});
+// environment.on('serialopened',function(){
+//   environment.metronome.on('step',function(e){
+//     var currentStep=e.step;
+//     hardware.draw([0x1<<currentStep,0x0,0x1<<currentStep]);
+//   });
+// });
 
 var currentStep=0;
 

@@ -8,7 +8,7 @@ module.exports=function(environment){return new(function(){
   base.call(this);
   this.engage=function(){
     // console.log("engage mode selector");
-    environment.hardware.draw([0,0,!(0xffff<<modes.length)]);
+    environment.hardware.draw([0,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
   }
   this.eventResponses.hello=function(evt){
     console.log("miau",evt);
