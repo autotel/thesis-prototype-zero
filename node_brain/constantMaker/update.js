@@ -52,7 +52,7 @@ for(var a in constants.messagesFromArduino){
 }
 
 //write javascript format constants
-fs.writeFile ('constants.js', "module.exports="+JSON.stringify(jsOutput), function(err) {
+fs.writeFile ('../components/constants.js', "module.exports="+JSON.stringify(jsOutput), function(err) {
   if (err) throw err;
   console.log('complete');
 });

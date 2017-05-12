@@ -1,5 +1,5 @@
 
-module.exports.baudRate=9600;//115200;
+module.exports.baudRate=115200;//230400;//9600;//
 module.exports.eoString=0x3;
 module.exports.messagesToArduino={
   null:{
@@ -22,6 +22,9 @@ module.exports.messagesToArduino={
   },
   setInteractionMode:{
     payload:4,
+  },
+  currentStep:{
+    payload:2,
   }
 };
 module.exports.messagesFromArduino={

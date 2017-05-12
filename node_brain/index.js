@@ -11,10 +11,10 @@ var currentStep=0;
 var updateSequencerLeds=function(){
   var seqB=pattern.getBitmapx16();
   hardware.updateLeds([seqB^0x0001<<currentStep,seqB,0x0001<<currentStep]);
-  
+
 }
 
-var testmode="sequence";
+var testmode="sequence-";
 
 var rEventHandlers={
   buttonMatrixPressed:function(data){
@@ -25,9 +25,19 @@ var rEventHandlers={
       }
       updateSequencerLeds();
     }else{
-      if(data[1]>0)
       data[1]=127;
       midi.note(data[0],52,data[1]);
+    }
+  },
+  buttonMatrixReleased:function(data){
+    if(testmode=="sequence"){
+    // console.log("buttonMatric event"+data[0]);
+      if(data[1]!=0){
+        pattern.store(data[0],!pattern.getBoolean(data[0]));
+      }
+      updateSequencerLeds();
+    }else{
+      midi.note(data[0],52,0);
     }
   },
   selectorButtonPressed:function(data){

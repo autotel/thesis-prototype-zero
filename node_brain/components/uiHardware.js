@@ -3,6 +3,11 @@ const raspi = require('raspi');
 const Serial = require('raspi-serial').Serial;
 const listens=require('onhandlers');
 const comConsts=require('./constants.js');
+//fastest is hardware GPIO UART. by the way this is the default of the lubrary
+// var serialPort="/dev/ttyAMA0"
+//But if you happened to fry the GPIO UART, you can use a USB port
+var serialPort="/dev/ttyUSB0";
+
 
 var tHeaders=comConsts.tHeaders;
 var tLengths=comConsts.tLengths;
@@ -44,7 +49,7 @@ module.exports=new (function(){
   var tHardware=this;
   listens.call(this);
   raspi.init(() => {
-    var serial = new Serial({baudRate:baudRate});
+    var serial = new Serial({baudRate:baudRate,portId:serialPort});
     serial.open(() => {
       (function(){
 
@@ -61,7 +66,7 @@ module.exports=new (function(){
           var buf1 = Buffer.from(dataArray);
           serial.write(buf1);
 
-          console.log("sent",buf1);
+          // console.log("sent",buf1);
         }
         this.sendx8_16=function(header,dataArray){
           var arr8=[];
@@ -75,7 +80,7 @@ module.exports=new (function(){
           var buf1 = Buffer.from(arr8);
           serial.write(buf1);
 
-          console.log("sent",buf1);
+          // console.log("sent",buf1);
         }
         this.sendScreenA=function(str){
           sendString(tHeaders.screenA,str);
@@ -84,7 +89,7 @@ module.exports=new (function(){
           sendString(tHeaders.screenB,str);
         }
         var sendString=function(header,string){
-          console.log(header,string);
+          // console.log(header,string);
           if(tLengths[header]!=="unknown"){
             console.warn("warning: this header is not specified for unknown lengths");
           }
@@ -97,7 +102,7 @@ module.exports=new (function(){
           var buf1 = Buffer.from(arr8);
           // console.log("send str len"+buf1.length);
           serial.write(buf1);
-          console.log("sent",buf1);
+          // console.log("sent",buf1);
         }
 
         tHardware.handle('serialopened');
@@ -115,7 +120,7 @@ module.exports=new (function(){
         tHardware.sendx8_16(tHeaders.ledMatrix,bitmaps);
       }
       serial.on('data', (data) => {
-        console.log("recv",data);
+        // console.log("recv",data);
         var chd=getChoppedData(data);
         for(var event of chd){
           tHardware.handle('interaction',event);
