@@ -1,5 +1,5 @@
 //these constants are shared between brain and this, and thus should be updated with the update app
-#define SOFT_BAUDRATE 115200
+#define SOFT_BAUDRATE 230400
 #define EOMessage 3
 #define unknown -1
 
@@ -42,4 +42,3 @@
 #define TH_encoderPressed_len 0x1
 #define TH_encoderReleased 0xa
 #define TH_encoderReleased_len 0x1
-

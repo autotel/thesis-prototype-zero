@@ -3,7 +3,7 @@ var midi = require('midi');
 
 // Set up a new output.
 var output = new midi.output();
-module.exports=new (function(){
+module.exports=function(environment){return new (function(){
   console.log("midi setup:");
   // Count the available output ports.
   console.log(output.getPortCount());
@@ -32,4 +32,4 @@ module.exports=new (function(){
     output.closePort();
   }
   return this;
-})();
+})()};

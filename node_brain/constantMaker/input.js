@@ -1,5 +1,5 @@
 
-module.exports.baudRate=115200;//230400;//9600;//
+module.exports.baudRate=230400;//230400;//9600;//
 module.exports.eoString=0x3;
 module.exports.messagesToArduino={
   null:{
