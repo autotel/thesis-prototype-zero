@@ -14,7 +14,7 @@ var updateSequencerLeds=function(){
 
 }
 
-var testmode="sequence-";
+var testmode="sequence";
 
 var rEventHandlers={
   buttonMatrixPressed:function(data){
