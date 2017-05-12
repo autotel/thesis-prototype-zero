@@ -1,40 +1,35 @@
-
 int loop128 = 0;
 void loop() {
   if (loop128 % 2 == 1) {
     checkMessages();
   }
-
-  if (loop128 % 2 == 0) {
+  if (loop128 % 8 == 0) {
     timedLoop();
   }
-
   loop128++;
   loop128 %= 128;
 }
 
-
-
-byte cp128 = 0;
-byte cp64 = 0;
-byte cp48 = 0;
-byte cp49 = 0;
-byte cp16 = 0;
+unsigned char cp128 = 0;
+unsigned char cp64 = 0;
+unsigned char cp48 = 0;
+unsigned char cp49 = 0;
+unsigned char cp16 = 0;
 void timedLoop() {
   //evaluate matrix buttons
   cp128 = cp128 % 128;
   cp64 = cp128 % 64;
   cp16 = cp64 % 16;
-  byte cp32 = cp64 % 32;
+  unsigned char cp32 = cp64 % 32;
   cp48 = cp48 % 48;
   cp49 = cp49 % 49;
-  byte buttonPressure = (byte)(readMatrixButton(cp16) / 2);
+  unsigned char buttonPressure = (unsigned char)(readMatrixButton(cp16) / 2);
   int evaluator = 0x1 << cp16;
   if (buttonPressure > 1) {
     //if last lap this button was not pressed, trigger on  button pressed
     if ((evaluator & pressedMatrixButtonsBitmap) == 0) {
       pressedMatrixButtonsBitmap |= evaluator;
-      onMatrixButtonPressed(cp16);
+      onMatrixButtonPressed(cp16, buttonPressure);
     } else {
       onMatrixButtonHold(cp16, buttonPressure);
     }
@@ -50,7 +45,7 @@ void timedLoop() {
   //less frequently than matrix, because these are not performance buttons
   if (cp49 == 0) {
     //cp64/16 will be 0,1,2,3 alernatingly each time cp16 is 0
-    byte cb_4 = cp64 / 0xf;
+    unsigned char cb_4 = cp64 / 0xf;
     //see previous use of this var for more reference
     evaluator = 0x1 << cb_4;
     if (readMuxB(cb_4 + 4)) {
@@ -90,7 +85,7 @@ void draw() {
       lcd.setCursor(0, 0);
       lcd.print(screenA);
 
-      for (byte strl = 16 - screenA.length(); strl > 0; strl--) {
+      for (unsigned char strl = 16 - screenA.length(); strl > 0; strl--) {
         lcd.write(' ');
       }
     }
@@ -102,7 +97,7 @@ void draw() {
       lcd.setCursor(0, 1);
       lcd.print(screenB);
 
-      for (byte strl = 16 - screenB.length(); strl > 0; strl--) {
+      for (unsigned char strl = 16 - screenB.length(); strl > 0; strl--) {
         lcd.write(' ');
       }
     }

@@ -1,92 +1,65 @@
-#define serialInLength 32
-byte serialIn[serialInLength];
-boolean serialInLocked=false;
-void checkMessages() {
-
-  int bnum = 0;
-  byte inHeader = 0;
-  if(!serialInLocked)
-  while (mySerial.available() && (bnum < serialInLength)) {
-    //if (bnum == 0) {
-    //inHeader = mySerial.read();
-    //} else {
-    serialIn[bnum] = mySerial.read();
-    //}
+#define serialInLength 16
+int serialIn[serialInLength];
+void checkMessages(){
+  unsigned int bnum = 0;
+  int inHeader = 0;
+  //idea: bnum<currentLength :)
+  while (mySerial.available() && bnum < serialInLength) {
+    if (bnum == 0) {
+      inHeader =  mySerial.read();
+    } else {
+      serialIn[bnum - 1] = mySerial.read();
+    }
     bnum++;
-    //pendant: split message based on declared message lengths instead of the shitty delay
+    //pendant: message ending shouldn't be marked by a pause in time, rather by a special char.
     delayMicroseconds(100);
   }
-  if (bnum)
-    messageReceived( serialIn, bnum);
-
+  if(bnum)
+    messageReceived(inHeader, serialIn, bnum);
 }
 
-
-void sendToBrain(byte header, byte datarray [], int len) {
-  //wait until lastserial-millis>serialSeparationTime,
-  //but hopefuilly not pausing the program
-
-  mySerial.write(header);
-  for (int a = 0; a < len; a++) {
-    mySerial.write(datarray[a]);
+void messageReceived(int header, int datarray [], unsigned int len) {
+  lcdPrintB(String(header,HEX));
+  switch (header) {
+    case RH_hello:
+      lcdPrintA("connected");
+      break;
+    case RH_ledMatrix:
+      layers[0] = datarray[0] | (datarray[1] << 8);
+      layers[1] = datarray[2] | (datarray[3] << 8);
+      layers[2] = datarray[4] | (datarray[5] << 8);
+      break;
+    case RH_screenA:
+      // lcdPrintA(arrToString(datarray, len));
+      break;
+    case RH_screenB:
+      // lcdPrintB(arrToString(datarray, len));
+      break;
+    case RH_currentStep:
+      layers[0] = datarray[0] | (datarray[1] << 8);
+      lcdPrintB(String(header,HEX)+"-"+String(datarray[0],HEX));
+      break;
+    case 7:
+      // layers[0] = datarray[0] | (datarray[1] << 8);
+      lcdPrintB(String(header,HEX)+"-"+String(datarray[0],HEX));
+      break;
   }
-
-  lastSerial = millis();
-}
-//react and split messages
-void messageReceived(byte datarray [], int len) {
-  lcdPrintB(String(datarray[0],HEX));
-  serialInLocked=true;
-  int a = 0;
-  //lcdPrintB(String(len));
-  while (a < len) {
-    byte currentHeader = datarray[a];
-    a++;
-    switch (currentHeader) {
-      case RH_hello: {
-          lcdPrintA("rcv hello");
-          break;
-        }
-      case RH_ledMatrix: {
-        lcdPrintA("rcv ledmatrix");
-          layers[0] = datarray[a + 0] | (datarray[a + 1] << 8);
-          layers[1] = datarray[a + 2] | (datarray[a + 3] << 8);
-          layers[2] = datarray[a + 4] | (datarray[a + 5] << 8);
-          a += RH_ledMatrix_len;
-          break;
-        }/*
-      case RH_screenA: {
-          int b=0;
-          while ((datarray[a] != EOMessage) && b<16) {
-            screenA [a]= (byte)datarray[a];
-            b++;
-            a++;
-          }
-          screenChanged = true;
-          break;
-        }
-      case RH_screenB: {
-          int b=0;
-          while ((datarray[a] != EOMessage) && b<16) {
-            screenB [a]= (byte)datarray[a];
-            b++;
-            a++;
-          }
-          screenChanged = true;
-          break;
-        }*/
-      default:
-        a++;
-    }
-  }
-  serialInLocked=false;
 }
 
-String arrToString(byte arr[], int len) {
+String arrToString(int arr[], int len) {
   String ret = ">";
   for (int a; a < len; a++) {
     ret += arr[a];
   }
   return ret;
+}
+
+void sendToBrain(unsigned char header, unsigned char datarray [], int len) {
+  //wait until lastserial-millis>serialSeparationTime,
+  //but hopefuilly not pausing the program
+  mySerial.write(header);
+  for (int a = 0; a < len; a++) {
+    mySerial.write(datarray[a]);
+  }
 }
 

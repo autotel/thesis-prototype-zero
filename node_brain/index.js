@@ -27,11 +27,14 @@ const interaction=require('./components/interactionManager')(environment);
 
 
 var currentStep=0;
-
-var updateSequencerLeds=function(){
-  var seqB=pattern.getBitmapx16();
-  hardware.updateLeds([seqB^0x0001<<currentStep,seqB,0x0001<<currentStep]);
-}
+environment.on('serialopened',function(){
+  environment.metronome.on('step',function(ev){
+      var seqB=0xcaca;
+      var step=ev.step%16;
+      // console.log(step);
+      hardware.draw([seqB^0x0001<<step,seqB,0x0001<<step]);
+  });
+});
 
 var testmode="seque-nce";
 
