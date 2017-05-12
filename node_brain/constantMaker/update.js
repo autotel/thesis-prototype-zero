@@ -13,6 +13,9 @@ var jsOutput={
   baudRate:constants.baudRate,
   eoString:constants.eoString,
 };
+
+var switchOutput=constants.receptionStatemetStart;
+
 var cOutput="//these constants are shared between brain and this, and thus should be updated with the update app\n";
 cOutput+="#define SOFT_BAUDRATE "+constants.baudRate+"\n";
 cOutput+="#define EOMessage "+constants.eoString+"\n";
@@ -31,6 +34,13 @@ for(var a in constants.messagesToArduino){
   }else{
     cOutput+="#define RH_"+a+"_len 0x"+message.payload.toString(16)+"\n";
   }
+
+  switchOutput+="case RH_"+a+": {\n";
+  if(message.reception)
+    switchOutput+=message.reception+"\n";
+  if((message.payload>0)&&(message.payload!="unknown"))
+    switchOutput+="a += RH_"+a+"_len;\n";
+  switchOutput+="break;\n}\n";
   c++;
 }
 cOutput+="\n//transmit headers \n";
@@ -51,13 +61,25 @@ for(var a in constants.messagesFromArduino){
   c++;
 }
 
+switchOutput+="default:\
+        a++;\
+    }\
+  }\
+}";
+
 //write javascript format constants
 fs.writeFile ('../components/constants.js', "module.exports="+JSON.stringify(jsOutput), function(err) {
   if (err) throw err;
   console.log('complete');
 });
 //write c format constants
-fs.writeFile ('_0_comConst.ino', cOutput, function(err) {
+fs.writeFile ('../../firmware_displayer/_0_comConst.ino', cOutput, function(err) {
   if (err) throw err;
   console.log('complete');
 });
+//write arduino switch statemet for the receive function
+fs.writeFile ('../../firmware_displayer/com_void_messageReceived.ino', switchOutput, function(err) {
+  if (err) throw err;
+  console.log('complete');
+});
+

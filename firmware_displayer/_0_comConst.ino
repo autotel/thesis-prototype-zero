@@ -14,10 +14,18 @@
 #define RH_screenA_len -1
 #define RH_screenB 0x4
 #define RH_screenB_len -1
-#define RH_setInteractionMode 0x5
-#define RH_setInteractionMode_len 0x4
-#define RH_currentStep 0x6
+#define RH_mode_none 0x5
+#define RH_mode_none_len 0x0
+#define RH_mode_perform 0x6
+#define RH_mode_perform_len 0x2
+#define RH_mode_sequencer 0x7
+#define RH_mode_sequencer_len 0x2
+#define RH_mode_scale 0x8
+#define RH_mode_scale_len 0x2
+#define RH_currentStep 0x9
 #define RH_currentStep_len 0x2
+#define RH_interfaceMap 0xa
+#define RH_interfaceMap_len 0x3
 
 //transmit headers 
 #define TH_null 0x0
@@ -42,4 +50,3 @@
 #define TH_encoderPressed_len 0x1
 #define TH_encoderReleased 0xa
 #define TH_encoderReleased_len 0x1
-

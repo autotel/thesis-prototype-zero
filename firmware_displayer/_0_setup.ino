@@ -104,7 +104,7 @@ byte selector_current=SELECTOR_NONE;
 //midi tracking
 //[0,0]=wether last thing sent was a note on (off is due)
 //[0,1]=channel...
-byte MIDI_NoteOns [16][2];
+// byte MIDI_NoteOns [16][2];
 
 //text to print in screens
 String screenA = "";
@@ -120,15 +120,23 @@ byte lastMatrixButtonPressed = 0;
 //buttons that were pressed on last evaluation;
 unsigned int pressedMatrixButtonsBitmap = 0x0000;
 byte pressedSelectorButtonsBitmap = 0x00;
-//the buttons that are active while engaged in binary number input (ex. note selector)
-unsigned int activePadInput = 0x0000;
+// //the buttons that are active while engaged in binary number input (ex. note selector)
+// unsigned int activePadInput = 0x0000;
 
 LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 
 long lastchange;
 
-unsigned int layers [] = {0xffff, 0xffff, 0x0};
+unsigned int currentStep=0;
 
+#define face_none 0
+#define face_performer 1
+#define face_sequencer 2
+#define face_scale 3
+
+unsigned int layers [] = {0xffff, 0xffff, 0x0};
+byte currentInterface=0;
+unsigned int currentInterfaceMap[] = {0x0,0x0,0x0,0x0};
 
 void setup() {
   //the perfect pulldown is 2.5K ohms
@@ -140,10 +148,10 @@ void setup() {
   digitalWrite(analogB, LOW);
   //set all pins from 0 to 7 to output
   DDRD = 0xFF;
-  
+
   /*Timer1.initialize(500);//200
   Timer1.attachInterrupt(timedLoop);*/
-  
+
   //sequence[2][0] = 0x90;
 
 //pendant: probably can be faster

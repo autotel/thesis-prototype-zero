@@ -107,4 +107,10 @@ void draw() {
       }
     }
   }
+  switch (currentInterface){
+    case face_performer: render_interface_performer(); break;
+    case face_sequencer: render_interface_sequencer(); break;
+    case face_scale: render_interface_scale(); break;
+    default: render_interface_none();
+  }
 }

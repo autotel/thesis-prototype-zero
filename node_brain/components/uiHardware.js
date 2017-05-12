@@ -52,6 +52,9 @@ module.exports=new (function(){
     var serial = new Serial({baudRate:baudRate,portId:serialPort});
     serial.open(() => {
       (function(){
+        // console.log("serial connected-");
+        serial.write(tHeaders.hello);
+        console.log("wrote hello");
 
         // this.log=function(theString){
         //   theString=JSON.stringify(theString);
@@ -104,21 +107,27 @@ module.exports=new (function(){
           serial.write(buf1);
           // console.log("sent",buf1);
         }
+        this.updateLeds=function(bitmaps){
+          // tHardware.sendx8_16(tHeaders.ledMatrix,[0xff,0xff,1,1,0xff,0xff]);
+          tHardware.sendx8_16(tHeaders.ledMatrix,bitmaps);
+        }
+        this.setMode=function(to,modeManager){
+          if((typeof modeManager.getBitmapx16==="function")&&(typeof modeManager.changed==="function")){
+            var bm=modeManager.getBitmapx16();
+            tHardware.sendx8_16(tHeaders["mode_"+to],[bm[0],bm[1]]);
+            modeManager.changed=function(){
+              console.log("change");
+              var bm=modeManager.getBitmapx16();
+              tHardware.sendx8_16(tHeaders.interfaceMap,[bm[0],bm[1],bm[2]]);
+            }
+          }else{
+            console.log("setMode modemanager must have getBitmapx16 & changed functions" );
+          }
+        };
+        this.setCurrentStep=function(){};
 
         tHardware.handle('serialopened');
       }).call(tHardware);
-
-      // console.log("serial connected-");
-      serial.write(tHeaders.hello);
-      console.log("wrote hello");
-
-
-
-      tHardware.updateLeds=function(bitmaps){
-        // tHardware.sendx8_16(tHeaders.ledMatrix,[0xff,0xff,1,1,0xff,0xff]);
-
-        tHardware.sendx8_16(tHeaders.ledMatrix,bitmaps);
-      }
       serial.on('data', (data) => {
         // console.log("recv",data);
         var chd=getChoppedData(data);
