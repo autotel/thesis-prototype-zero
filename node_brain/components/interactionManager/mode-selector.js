@@ -1,8 +1,15 @@
 'use strict';
 var base=require('./interactionModeBase');
-
-module.exports=new(function(){
+var modes=[
+  "sequencer",
+  "performer",
+]
+module.exports=function(environment){return new(function(){
   base.call(this);
+  this.engage=function(){
+    // console.log("engage mode selector");
+    environment.hardware.draw([0,0,!(0xffff<<modes.length)]);
+  }
   this.eventResponses.hello=function(evt){
     console.log("miau",evt);
   }
@@ -34,4 +41,4 @@ module.exports=new(function(){
     console.log("plum",evt);
   }
   return this;
-})();
+})()};

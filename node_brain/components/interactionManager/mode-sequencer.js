@@ -1,7 +1,7 @@
 'use strict';
 var base=require('./interactionModeBase');
 
-module.exports=new(function(){
+module.exports=function(environment){return new(function(){
   base.call(this);
 
   var tPattern=this;
@@ -22,4 +22,4 @@ module.exports=new(function(){
     return ret;
   }
   return this;
-})();
+})()};

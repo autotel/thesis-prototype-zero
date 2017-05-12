@@ -19,6 +19,7 @@ var environment=new(function(){
 })();
 
 const hardware=require('./components/uiHardware')(environment);
+environment.hardware=hardware;
 const midi=require('./components/midi')(environment);
 const interaction=require('./components/interactionManager')(environment);
 // const readline = require('readline');

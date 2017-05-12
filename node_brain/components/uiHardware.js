@@ -81,6 +81,7 @@ module.exports=function(environment){return new (function(){
           arr8.push(a&0xff);
           arr8.push((a>>8)&0xff);
         }
+        // console.log("aa");
         if(dataArray.constructor !== Array)
           dataArray=Array.from(dataArray);
         arr8.unshift(header&0xff);

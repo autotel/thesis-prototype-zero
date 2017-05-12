@@ -1,8 +1,8 @@
-#define serialInLength 16
+#define serialInLength 32
 byte serialIn[serialInLength];
 boolean serialInLocked=false;
 void checkMessages() {
-  
+
   int bnum = 0;
   byte inHeader = 0;
   if(!serialInLocked)
@@ -18,7 +18,7 @@ void checkMessages() {
   }
   if (bnum)
     messageReceived( serialIn, bnum);
-    
+
 }
 
 
@@ -35,6 +35,7 @@ void sendToBrain(byte header, byte datarray [], int len) {
 }
 //react and split messages
 void messageReceived(byte datarray [], int len) {
+  lcdPrintB(String(datarray[0],HEX));
   serialInLocked=true;
   int a = 0;
   //lcdPrintB(String(len));
@@ -47,6 +48,7 @@ void messageReceived(byte datarray [], int len) {
           break;
         }
       case RH_ledMatrix: {
+        lcdPrintA("rcv ledmatrix");
           layers[0] = datarray[a + 0] | (datarray[a + 1] << 8);
           layers[1] = datarray[a + 2] | (datarray[a + 3] << 8);
           layers[2] = datarray[a + 4] | (datarray[a + 5] << 8);
