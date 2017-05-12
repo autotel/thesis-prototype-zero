@@ -3,7 +3,7 @@
 #define EOMessage 3
 #define unknown -1
 
-//recieve headers
+//recieve headers 
 #define RH_null 0x0
 #define RH_null_len 0x0
 #define RH_hello 0x1
@@ -19,7 +19,7 @@
 #define RH_currentStep 0x6
 #define RH_currentStep_len 0x2
 
-//transmit headers
+//transmit headers 
 #define TH_null 0x0
 #define TH_null_len 0x0
 #define TH_hello 0x1
