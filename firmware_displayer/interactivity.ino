@@ -8,6 +8,12 @@ void onMatrixButtonHold(byte button, byte buttonPressure) {
 //actions to take while a button is pressed
 void onMatrixButtonPressed(byte button) {
   byte sData[]={button,1,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
+
+  
+//  lcdPrintA(String(button,HEX));
+  layers[0]=layers[1]=layers[2]=0x1<<button;
+  sendToBrain(TH_buttonMatrixVelocity,sData,TH_buttonMatrixVelocity_len);
+  
   sendToBrain(TH_buttonMatrixPressed,sData,TH_buttonMatrixPressed_len);
 }
 
@@ -16,7 +22,7 @@ void onMatrixButtonPressed(byte button) {
 
 void onMatrixButtonPressed(byte button, int buttonPressure) {
   byte sData[]={button,(byte) buttonPressure,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
-  sendToBrain(TH_buttonMatrixVelocity,sData,TH_buttonMatrixVelocity_len);
+  
 }
 //actions to take once a button is released
 void onMatrixButtonReleased(byte button) {

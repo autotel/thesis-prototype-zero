@@ -8,8 +8,21 @@ int readMatrixButton(byte currentButton) {
   //(currentPixel>>2)&12 is the same than doing floor(currentPixel/16)*4. try it  in codechef
   nibbleA &= (currentButton % 4);
   nibbleB &= (currentButton / 4) % 4; //~0x10 << ((currentPixel / 4) % 4); //0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3, will happen 4 times within 64 loop
-  //PORTD is connected to both muxes address inputs
-  PORTD = (nibbleB << 4) | (nibbleA);
+  
+  
+  //set the mux to the button address; row and col
+  char ADDRMAP = (nibbleB << 4) | (nibbleA);
+  //test irresponsible write (not masking)
+  PORTD = ADDRMAP;
+
+  //turn A2 & A3 to outputs
+#define CSHIFT 2
+  char CMASK = 0x3 << CSHIFT;
+  DDRC |= CMASK;
+  PORTC &= ~CMASK;
+  PORTC |= (ADDRMAP << CSHIFT)&CMASK;
+
+
   pinMode(analogB, INPUT);
   digitalWrite(analogA, HIGH);
   //PORTC |= 0b10;
