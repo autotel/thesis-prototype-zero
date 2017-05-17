@@ -18,7 +18,7 @@ var baudRate=comConsts.baudRate;
 var eoString=comConsts.eoString;
 
 
-var lastSent={
+var lastSentBitmap={
   bitmap:[0,0,0],
   screenA:"",
   screenB:""
@@ -26,33 +26,51 @@ var lastSent={
 
 console.log(comConsts);
 
-function getChoppedData(from){
-  var ret=[];
-  //never use short iterator for arrayBuffers!
-  var a=0;
-  while(a<from.length){
-    // console.log(from[a]+":");
-    //get message header and it's expected message length
-    var currentHeader=rHNames[from[a]];
-    var currentLen=rLengths[from[a]];
-    a++;
-    //false currentLen indicates that a end character indicates the end of buffer
-    if(currentLen===false){
-      console.log("using untested undefined length stream");
-      currentLen=(from.indexOf(0x3)||from.length)-a;
+var dataChopper=new(function(){
+  var inBuff;
+  var expectedLength;
+  var byteNumber=0;
+  var recordingBuffer=false;
+  this.incom= function(data){
+    for(var a=0; a<data.length; a++){
+      if(!recordingBuffer){
+        //we are expecting a message header, so we check what header current byte is
+        //if is successfull, we start gathering or recording a new data packet.
+
+        //byte  is in our header list?
+        recordingBuffer=rLengths.length>=data[a];
+
+        if(recordingBuffer){
+          // console.log(rLengths[data[a]]);
+          expectedLength=rLengths[data[a]]+1;
+          inBuff=new Buffer(expectedLength);
+          byteNumber=0;
+        }
+      }
+
+      if(recordingBuffer){
+        if(byteNumber<expectedLength-1){
+          //a new byte arrived and is added to the current packet
+          inBuff[byteNumber]=data[a];
+          byteNumber++;
+        }else{
+          //a whole expected packet arrived
+          inBuff[byteNumber]=data[a];
+          recordingBuffer=false;
+          // console.log(inBuff);
+          byteNumber=0;
+          return inBuff;
+        }
+      }else{
+        //a byte arrived, but there is no packet gathering bytes
+        console.log("invalid: ",data[a]);
+      }
     }
-    if(currentLen){
-      // ret.push(currentHeader+":"+currentLen+"="+a);
-      ret.push({type:currentHeader,data:from.slice(a,a+currentLen)});
-      // console.log(" ->"+currentHeader+", "+rLengths[currentHeader]);
-      a+=currentLen;
-    }else{
-      ret.push({type:currentHeader,data:[false]});
-    }
+    return false;
   }
-  // console.log(ret);
-  return ret;
-}
+  return this;
+})();
+
 module.exports=function(environment){return new (function(){
   if(typeof environment.on!=="function"){
     console.error("uiHardware provided environment must have event listeners");
@@ -97,7 +115,7 @@ module.exports=function(environment){return new (function(){
       }
       var updateLeds=function(bitmaps){
         // tHardware.sendx8_16(tHeaders.ledMatrix,[0xff,0xff,1,1,0xff,0xff]);
-        lastSent.bitmap=bitmaps;
+        lastSentBitmap.bitmap=bitmaps;
         sendx8_16(tHeaders.ledMatrix,bitmaps);
       }
       var sendString=function(header,string){
@@ -121,7 +139,7 @@ module.exports=function(environment){return new (function(){
       //pendant: make a function that takes shorter to communicate
       tHardware.updateLayer=function(n,to){
         if(n<3){
-          lastSent[n]=to&0xffff;
+          lastSentBitmap[n]=to&0xffff;
           updateLeds(bitmaps);
         }else{
           console.error("tried to update layer "+n+" which doesnt exist");
@@ -130,9 +148,14 @@ module.exports=function(environment){return new (function(){
       environment.handle('serialopened');
 
       serial.on('data', (data) => {
-        // console.log("recv",data);
-        var chd=getChoppedData(data);
-        for(var event of chd){
+        var chd=dataChopper.incom(data);
+        if(chd){
+          var event={
+            type:rHNames[chd[0]],
+            data:chd.slice(1),
+            originalMessage:chd
+          }
+          console.log("recv",chd);
           environment.handle('interaction',event);
           environment.handle(event.type,event);
         }

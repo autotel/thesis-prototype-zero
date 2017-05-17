@@ -19,16 +19,15 @@ module.exports=function(environment){
   });
   environment.on('interaction',function(event){
     //the selector button 0 engages modeselector temporarily
-    console.log(event.data);
+    // console.log(event.data);
     if(event.type=="selectorButtonPressed"&&event.data[0]==0){
       changeToMode=modeBeingTweaked;
       modeBeingTweaked="modeSelector";
-      activeModes[modeBeingTweaked].engage();
+      activeModes[modeBeingTweaked].engage(changeToMode);
       console.log("<"+modeBeingTweaked+">");
     }else if(event.type=="selectorButtonReleased"&&event.data[0]==0){
       modeBeingTweaked="modeSelector";
       modeBeingTweaked=changeToMode;
-
       activeModes[modeBeingTweaked].engage();
       console.log("<"+modeBeingTweaked+">");
     }
