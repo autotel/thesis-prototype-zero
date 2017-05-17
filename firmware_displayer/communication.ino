@@ -23,15 +23,12 @@ void checkMessages() {
 
 
 void sendToBrain(byte header, byte datarray [], int len) {
-  //wait until lastserial-millis>serialSeparationTime,
-  //but hopefuilly not pausing the program
-
+  serialInLocked=true;
   mySerial.write(header);
   for (int a = 0; a < len; a++) {
     mySerial.write(datarray[a]);
   }
-
-  lastSerial = millis();
+  serialInLocked=false;
 }
 //react and split messages
 void messageReceived(byte datarray [], int len) {

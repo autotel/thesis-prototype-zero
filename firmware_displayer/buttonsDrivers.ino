@@ -70,6 +70,6 @@ void doEncoder() {
     enc_last = enc_read;
     //lcdPrintB(String(enc_read, HEX)+"-"+String(encoder0Pos, HEX)+"-"+String(enc_inc, HEX));
   }
-  
+
 }
 

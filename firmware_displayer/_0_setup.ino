@@ -22,8 +22,8 @@ volatile unsigned int encoder0Pos = 0;
 #define serialSeparationTime 200
 long lastSerial=0;
 //pins that are connected to the midi plugs as software serial
-#define sIn A2
-#define sOut A3
+#define sIn 0
+#define sOut 1
 SoftwareSerial mySerial(sIn, sOut); // RX, TX
 
 //names for the m_mode possible values
@@ -127,7 +127,7 @@ LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 
 long lastchange;
 
-unsigned int layers [] = {0xffff, 0xffff, 0x0};
+unsigned int layers [] = {0xffff, 0xffff, 0xffff};
 
 
 void setup() {
@@ -140,10 +140,10 @@ void setup() {
   digitalWrite(analogB, LOW);
   //set all pins from 0 to 7 to output
   DDRD = 0xFF;
-  
+
   /*Timer1.initialize(500);//200
   Timer1.attachInterrupt(timedLoop);*/
-  
+
   //sequence[2][0] = 0x90;
 
 //pendant: probably can be faster

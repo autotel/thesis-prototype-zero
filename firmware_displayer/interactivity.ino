@@ -25,6 +25,8 @@ void onMatrixButtonReleased(byte button) {
 }
 void onEncoderScroll(int absolute, int delta) {
   byte sData[]={(char)absolute,(char)delta};
+  //lcdPrintA(String(absolute,HEX));
+
   sendToBrain(TH_encoderScroll,sData,TH_encoderScroll_len);
 }
 
