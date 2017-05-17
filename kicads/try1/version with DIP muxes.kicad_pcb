@@ -3,9 +3,9 @@
   (general
     (links 253)
     (no_connects 0)
-    (area 59.233299 40.8 278.835716 158.15)
+    (area 27.435717 30.300001 278.835716 164.700001)
     (thickness 1.6)
-    (drawings 50)
+    (drawings 51)
     (tracks 837)
     (zones 0)
     (modules 52)
@@ -62,7 +62,7 @@
     (pad_drill 0.6)
     (pad_to_mask_clearance 0)
     (aux_axis_origin 0 0)
-    (visible_elements 7FFFFFFF)
+    (visible_elements 7FFFEFFF)
     (pcbplotparams
       (layerselection 0x010f0_80000001)
       (usegerberextensions true)
@@ -4170,6 +4170,9 @@
       (net 21 /VCC))
   )
 
+  (gr_text "free serial ports, you dumb" (at 205 115) (layer Dwgs.User) (tstamp 591A5560)
+    (effects (font (size 1.5 1.5) (thickness 0.3)))
+  )
   (dimension 8.5 (width 0.3) (layer Dwgs.User)
     (gr_text "8,500 mm" (at 235.35 147.25 270) (layer Dwgs.User)
       (effects (font (size 1.5 1.5) (thickness 0.3)))
