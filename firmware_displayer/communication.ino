@@ -1,5 +1,5 @@
 #define serialInLength 16
-byte serialIn[serialInLength];
+unsigned int serialIn[serialInLength];
 boolean serialInLocked=false;
 void checkMessages() {
 
@@ -30,12 +30,14 @@ void sendToBrain(byte header, byte datarray [], int len) {
   }
   serialInLocked=false;
 }
+
+
 //react and split messages
-void messageReceived(byte datarray [], int len) {
+void messageReceived(unsigned int datarray [], int len) {
   lcdPrintB(String(datarray[0],HEX));
   serialInLocked=true;
-  int a = 0;
-  //lcdPrintB(String(len));
+  unsigned int a = 0;
+  lcdPrintB("L"+String(len)+"[1]"+String(datarray[1]));
   while (a < len) {
     byte currentHeader = datarray[a];
     a++;
@@ -50,6 +52,7 @@ void messageReceived(byte datarray [], int len) {
           layers[1] = datarray[a + 2] | (datarray[a + 3] << 8);
           layers[2] = datarray[a + 4] | (datarray[a + 5] << 8);
           a += RH_ledMatrix_len;
+          lcdPrintB("B"+String(layers[0],HEX));
           break;
         }
       case RH_comTester: {

@@ -9,6 +9,7 @@ module.exports=function(environment){return new(function(){
   base.call(this);
   function updateHardware(){
     environment.hardware.draw([0x1<<currentlySeleectedMode,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
+    console.log(0x1<<currentlySeleectedMode);
   }
   this.engage=function(){
     // console.log("engage mode selector");

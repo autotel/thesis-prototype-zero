@@ -19,19 +19,19 @@ module.exports=function(environment){return new(function(){
         ret|=0x1<<a;
       }
     }
+    console.log(">"+ret.toString(16));
     return ret;
   }
 
   function updateHardware(){
-    environment.hardware.draw([getBitmapx16,getBitmapx16,getBitmapx16]);
+    environment.hardware.draw([getBitmapx16(),0,0]);
   }
   this.engage=function(){
-    // console.log("engage mode selector");
     updateHardware();
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
     console.log("bmatr",evt);
-    store(evt.data[0],true);
+    store(evt.data[0],!getBoolean(evt.data[0]));
     updateHardware();
   }
 

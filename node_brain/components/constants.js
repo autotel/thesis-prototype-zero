@@ -13,8 +13,8 @@ module.exports = {
     "rHeaders": {
         "null": 0,
         "hello": 1,
-        "buttonMatrixPressed": 4,
-        "buttonMatrixReleased": 4,
+        "buttonMatrixPressed": 2,
+        "buttonMatrixReleased": 3,
         "buttonMatrixHold": 4,
         "buttonMatrixVelocity": 5,
         "selectorButtonPressed": 6,
@@ -26,6 +26,6 @@ module.exports = {
     },
     "rHNames": ["null", "hello", "buttonMatrixPressed", "buttonMatrixReleased", "buttonMatrixHold", "buttonMatrixVelocity", "selectorButtonPressed", "selectorButtonReleased", "encoderScroll", "encoderPressed", "encoderReleased", "comTester"],
     "rLengths": [0, 0, 4, 4, 4, 4, 2, 2, 2, 1, 1, 1],
-    "baudRate": 19200,
+    "baudRate": 230400,
     "eoString": 3
 }
