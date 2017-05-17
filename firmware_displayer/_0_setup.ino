@@ -24,7 +24,7 @@ long lastSerial=0;
 //pins that are connected to the midi plugs as software serial
 #define sIn 0
 #define sOut 1
-SoftwareSerial mySerial(sIn, sOut); // RX, TX
+//SoftwareSerial Serial(sIn, sOut); // RX, TX
 
 //names for the m_mode possible values
 /*instead of making usual arrays, to save space for local vars, I'm writing constant strings to progmem.*/
@@ -147,8 +147,8 @@ void setup() {
   //sequence[2][0] = 0x90;
 
 //pendant: probably can be faster
-  mySerial.begin(SOFT_BAUDRATE);
-  mySerial.write(TH_hello);
+  Serial.begin(SOFT_BAUDRATE);
+  Serial.write(TH_hello);
 
   //lcd screen initial write
   lcd.begin(16, 2);

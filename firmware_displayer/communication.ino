@@ -6,11 +6,11 @@ void checkMessages() {
   int bnum = 0;
   byte inHeader = 0;
   if(!serialInLocked)
-  while (mySerial.available() && (bnum < serialInLength)) {
+  while (Serial.available() && (bnum < serialInLength)) {
     //if (bnum == 0) {
-    //inHeader = mySerial.read();
+    //inHeader = Serial.read();
     //} else {
-    serialIn[bnum] = mySerial.read();
+    serialIn[bnum] = Serial.read();
     //}
     bnum++;
     //pendant: split message based on declared message lengths instead of the shitty delay
@@ -24,9 +24,9 @@ void checkMessages() {
 
 void sendToBrain(byte header, byte datarray [], int len) {
   serialInLocked=true;
-  mySerial.write(header);
+  Serial.write(header);
   for (int a = 0; a < len; a++) {
-    mySerial.write(datarray[a]);
+    Serial.write(datarray[a]);
   }
   serialInLocked=false;
 }
