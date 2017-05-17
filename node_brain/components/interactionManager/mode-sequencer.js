@@ -6,13 +6,13 @@ module.exports=function(environment){return new(function(){
 
   var tPattern=this;
   var patData={};
-  this.store=function(place,data){
+  var store=function(place,data){
     patData[place]=data;
   }
-  this.getBoolean=function(place){
+  var getBoolean=function(place){
     return patData[place]||false;
   };
-  this.getBitmapx16=function(){
+  var getBitmapx16=function(){
     var ret=0x0000;
     for(var a=0; a<16;a++){
       if(patData[a]){
@@ -21,5 +21,19 @@ module.exports=function(environment){return new(function(){
     }
     return ret;
   }
+
+  function updateHardware(){
+    environment.hardware.draw([getBitmapx16,getBitmapx16,getBitmapx16]);
+  }
+  this.engage=function(){
+    // console.log("engage mode selector");
+    updateHardware();
+  }
+  this.eventResponses.buttonMatrixPressed=function(evt){
+    console.log("bmatr",evt);
+    store(evt.data[0],true);
+    updateHardware();
+  }
+
   return this;
 })()};

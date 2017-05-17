@@ -10,13 +10,11 @@ module.exports=function(environment){return new(function(){
   function updateHardware(){
     environment.hardware.draw([0x1<<currentlySeleectedMode,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
   }
-  this.engage=function(csm){
-    currentlySeleectedMode=csm;
+  this.engage=function(){
     // console.log("engage mode selector");
     updateHardware();
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    currentlySeleectedMode=evt.data[1];
     updateHardware();
   }
   this.eventResponses.encoderScroll=function(evt){
