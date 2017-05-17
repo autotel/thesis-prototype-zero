@@ -32,18 +32,12 @@ int readMatrixButton(byte currentButton) {
 }
 
 bool readMuxB(byte address) {
-   //set the mux to the button address; row and col
-  char ADDRMAP = (nibbleB << 4) | (nibbleA);
-  //test irresponsible write (not masking)
-  PORTD = ADDRMAP;
-
-  //turn A2 & A3 to outputs
-#define CSHIFT 2
-  char CMASK = 0x3 << CSHIFT;
-  DDRC |= CMASK;
-  PORTC &= ~CMASK;
-  PORTC |= (ADDRMAP << CSHIFT)&CMASK;
-  
+  //nibbleA in this case is only to avoid writing to muxA
+  byte nibbleA = PORTD & 0xF;
+  //nibbleB will contain the address for the mux B
+  byte nibbleB = address & 0xF;
+  //PORTD is connected to both muxes address inputs
+  PORTD = (nibbleB << 4) | (nibbleA);
   //now that we are connected to the mux, read the input
   pinMode(analogB, INPUT);
   bool ret = digitalRead(analogB);

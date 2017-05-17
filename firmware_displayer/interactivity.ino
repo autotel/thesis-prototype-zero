@@ -11,7 +11,7 @@ void onMatrixButtonPressed(byte button) {
 
   
 //  lcdPrintA(String(button,HEX));
-  layers[0]=layers[1]=layers[2]=0x1<<button;
+ // layers[0]=layers[1]=layers[2]=0x1<<button;
   sendToBrain(TH_buttonMatrixVelocity,sData,TH_buttonMatrixVelocity_len);
   
   sendToBrain(TH_buttonMatrixPressed,sData,TH_buttonMatrixPressed_len);
