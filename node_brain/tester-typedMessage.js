@@ -20,17 +20,29 @@ var count=0;
 port.on('open', function() {
   console.log("serial opened");
 
-  var inBuff=new Buffer(3);
-  var expectedHeader=0x8;
-  var expectedLength=3;
+  var inBuff;
+  var expectedLength;
+
   var byteNumber=0;
   var recordingBuffer=false;
 
   //would be nice that this part was handled by a DLL file ot something like that. Js is too high level
   port.on('data', function (data) {
     for(var a=0; a<data.length; a++){
-      if(!recordingBuffer)
-        recordingBuffer=data[a]==expectedHeader;
+      if(!recordingBuffer){
+        //we are expecting a message header, so we check what header current byte is
+        //if is successfull, we start gathering or recording a new data packet.
+
+        //byte  is in our header list?
+        recordingBuffer=rLengths.length>=data[a];
+
+        if(recordingBuffer){
+          // console.log(rLengths[data[a]]);
+          expectedLength=rLengths[data[a]]+1;
+          inBuff=new Buffer(expectedLength);
+          byteNumber=0;
+        }
+      }
 
       if(recordingBuffer){
         if(byteNumber<expectedLength-1){
@@ -43,6 +55,7 @@ port.on('open', function() {
           recordingBuffer=false;
           console.log(inBuff);
           byteNumber=0;
+
         }
       }else{
         //a byte arrived, but there is no packet gathering bytes
