@@ -24,16 +24,29 @@ module.exports=function(environment){return new(function(){
   }
 
   function updateHardware(){
-    environment.hardware.draw([getBitmapx16(),0,0]);
+    environment.hardware.draw([getBitmapx16(),getBitmapx16(),getBitmapx16()]);
   }
   this.engage=function(){
-    updateHardware();
+
+    // environment.hardware.draw([0x9096,0,0]);
+    // updateHardware();
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
     console.log("bmatr",evt);
     store(evt.data[0],!getBoolean(evt.data[0]));
+    // environment.hardware.testByte(evt.data[2]);
     updateHardware();
   }
-
+  this.eventResponses.buttonMatrixReleased=function(evt){
+    console.log("bmatr",evt);
+    // store(evt.data[0],!getBoolean(evt.data[0]));
+    // environment.hardware.testByte(evt.data[2]);
+    updateHardware();
+  }
+  this.eventResponses.encoderScroll=function(evt){
+    console.log(evt.data[0]);
+    environment.hardware.testByte(evt.data[0]);
+    // environment.hardware.draw([evt.data[0],0,0]);
+  }
   return this;
 })()};

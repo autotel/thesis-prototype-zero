@@ -1,5 +1,5 @@
 var SerialPort = require('serialport');
-var port = new SerialPort('COM17',{ baudRate: 19200 });//
+var port = new SerialPort('COM21',{ baudRate: 230400 });//
 var question=require('./components/interactive-console.js');
 var count=0;
 port.on('open', function() {
@@ -13,11 +13,11 @@ port.on('open', function() {
     console.log('in: ',data);
   });
 
-  setInterval(function(){
-    port.write(count);
-    // console.log("out:"+'hi there'+count);
-    count++;
-  },800);
+  // setInterval(function(){
+  //   port.write(count);
+  //   // console.log("out:"+'hi there'+count);
+  //   count++;
+  // },800);
 
   // function ask(){
   //   question('>>:',function(a){

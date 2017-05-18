@@ -12,7 +12,7 @@ var rLengths=comConsts.rLengths;
 var baudRate=comConsts.baudRate;
 var eoString=comConsts.eoString;
 
-var port = new SerialPort('/dev/ttyUSB0',{ baudRate: baudRate });//
+var port = new SerialPort('/dev/ttyUSB0',{ baudRate: baudRate });/////dev/ttyUSB0 //COM21
 
 
 
@@ -64,11 +64,13 @@ port.on('open', function() {
     }
   });
 
-  // setInterval(function(){
-  //   port.write(count);
-  //   // console.log("out:"+'hi there'+count);
-  //   count++;
-  // },800);
+  setInterval(function(){
+    console.log("sent com test "+count);
+    port.write("hi, test "+count);
+    // port.write(Buffer.from([tHeaders.comTester,0xff&count]));
+    // console.log("out:"+'hi there'+count);
+    count++;
+  },800);
 
   // function ask(){
   //   question('>>:',function(a){

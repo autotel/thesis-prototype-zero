@@ -115,8 +115,9 @@ module.exports=function(environment){return new (function(){
       }
       var updateLeds=function(bitmaps){
         // tHardware.sendx8_16(tHeaders.ledMatrix,[0xff,0xff,1,1,0xff,0xff]);
-        lastSentBitmap.bitmap=bitmaps;
         sendx8_16(tHeaders.ledMatrix,bitmaps);
+        lastSentBitmap.bitmap=bitmaps;
+        // sendx8(tHeaders.ledMatrix,bitmaps);
       }
       var sendString=function(header,string){
         // console.log(header,string);
@@ -134,7 +135,9 @@ module.exports=function(environment){return new (function(){
         serial.write(buf1);
         // console.log("sent",buf1);
       }
-
+      tHardware.testByte=function(byte){
+        sendx8(tHeaders.comTester,[byte]);
+      }
       tHardware.draw=updateLeds;
       //pendant: make a function that takes shorter to communicate
       tHardware.updateLayer=function(n,to){
