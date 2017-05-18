@@ -27,6 +27,7 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
     currentlySeleectedMode=evt.data[0];
+    environment.hardware.sendScreenB(">"+modes[currentlySeleectedMode]);
     updateHardware();
   }
   this.eventResponses.encoderScroll=function(evt){

@@ -58,7 +58,8 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.encoderScroll=function(evt){
     console.log(evt.data[0]);
-    environment.hardware.testByte(evt.data[0]);
+    environment.hardware.sendScreenB(String.fromCharCode(evt.data[0])+"-"+evt.data[0]);
+    // environment.hardware.testByte(evt.data[0]);
     // environment.hardware.draw([evt.data[0],0,0]);
   }
   return this;
