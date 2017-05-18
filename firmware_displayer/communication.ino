@@ -20,49 +20,41 @@ void checkMessages() {
       switch (data_a) {
         case RH_null:
           lcdPrintA("H_null");
-          currentHeader=data_a;
           recordingBuffer=true;
           expectedLength=RH_null_len+1;
           break;
         case RH_hello:
           lcdPrintA("H_hello");
-          currentHeader=data_a;
           recordingBuffer=true;
           expectedLength=RH_hello_len+1;
           break;
         case RH_ledMatrix:
           lcdPrintA("dMatrix");
-          currentHeader=data_a;
           recordingBuffer=true;
           expectedLength=RH_ledMatrix_len+1;
           break;
         case RH_screenA:
           lcdPrintA("screenA");
-          currentHeader=data_a;
           recordingBuffer=true;
           expectedLength=RH_screenA_len+1;
           break;
         case RH_screenB:
           lcdPrintA("screenB");
-          currentHeader=data_a;
           recordingBuffer=true;
           expectedLength=RH_screenB_len+1;
           break;
         case RH_setInteractionMode:
           lcdPrintA("ionMode");
           currentHeader=data_a;
-          recordingBuffer=true;
           expectedLength=RH_setInteractionMode_len+1;
           break;
         case RH_currentStep:
           lcdPrintA("entStep");
-          currentHeader=data_a;
           recordingBuffer=true;
           expectedLength=RH_currentStep_len+1;
           break;
         case RH_comTester:
           lcdPrintA("mTester");
-          currentHeader=data_a;
           recordingBuffer=true;
           expectedLength=RH_comTester_len+1;
           break;
@@ -79,9 +71,8 @@ void checkMessages() {
         inBuff[byteNumber]=data_a;
         recordingBuffer=false;
         lcdPrintB("L:"+String(byteNumber)+"ex"+(expectedLength-1));
-        messageReceived(currentHeader,inBuff,byteNumber);
+        messageReceived(inBuff,byteNumber);
         byteNumber=0;
-        currentHeader=0;
       }
     }else{
       //a byte arrived, but there is no packet gathering bytes
@@ -106,8 +97,11 @@ void sendToBrain(byte header, byte datarray [], int len) {
 
 
 //react and split messages
-void messageReceived(unsigned char header,unsigned char datarray [], int len) {
-  int a = 1;
+void messageReceived(unsigned char datarray [], int len) {
+
+  int a = 0;
+  unsigned char header=datarray[a];
+  a++;
   switch (header) {
     while (a < len) {
       case RH_hello: {
