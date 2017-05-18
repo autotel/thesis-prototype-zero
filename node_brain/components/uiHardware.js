@@ -47,7 +47,6 @@ var dataChopper=new(function(){
           byteNumber=0;
         }
       }
-
       if(recordingBuffer){
         if(byteNumber<expectedLength-1){
           //a new byte arrived and is added to the current packet

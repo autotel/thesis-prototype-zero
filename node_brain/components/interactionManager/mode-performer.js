@@ -1,34 +1,32 @@
 'use strict';
 var base=require('./interactionModeBase');
-var currentlySeleectedMode=0;
-var modes=[
-  "sequencer",
-  "performer",
-]
+var fingerMap=0x0000;
+
 module.exports=function(environment){return new(function(){
   base.call(this);
   function updateHardware(){
-    environment.hardware.draw([0x1<<currentlySeleectedMode,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
-    // console.log(0x1<<currentlySeleectedMode);
+    environment.hardware.draw([fingerMap,fingerMap,fingerMap]);
   }
   this.engage=function(){
     // console.log("engage mode selector");
     updateHardware();
   }
-  this.disengage=function(){
-    return modes[currentlySeleectedMode];
-  }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    currentlySeleectedMode=evt.data[0];
+    fingerMap|=0x1<<evt.data[0];
+    updateHardware();
+  }
+  this.eventResponses.buttonMatrixReleased=function(evt){
+    fingerMap&=~(0x1<<evt.data[0]);
     updateHardware();
   }
   this.eventResponses.encoderScroll=function(evt){
-    currentlySeleectedMode++;
-    updateHardware();
+
   }
   this.eventResponses.encoderPressed=function(evt){
+
   }
   this.eventResponses.encoderReleased=function(evt){
+
   }
   return this;
 })()};

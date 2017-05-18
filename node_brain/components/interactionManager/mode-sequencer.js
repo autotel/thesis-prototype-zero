@@ -3,9 +3,14 @@ var base=require('./interactionModeBase');
 
 module.exports=function(environment){return new(function(){
   base.call(this);
-
   var tPattern=this;
   var patData={};
+  var currentStep=0;
+  var engaged=false;
+
+  this.init=function(){
+    environment.metronome.on('step',step);
+  }
   var store=function(place,data){
     patData[place]=data;
   }
@@ -22,14 +27,21 @@ module.exports=function(environment){return new(function(){
     console.log(">"+ret.toString(16));
     return ret;
   }
-
+  //some events run regardless of engagement. in these cases, the screen refresh is conditional
+  function step(evt){
+    currentStep=evt.step;
+    if(engaged)
+    updateHardware();
+  }
   function updateHardware(){
-    environment.hardware.draw([getBitmapx16(),getBitmapx16(),getBitmapx16()]);
+    environment.hardware.draw([getBitmapx16(),0x1<<currentStep^getBitmapx16(),0x1<<currentStep|getBitmapx16()]);
   }
   this.engage=function(){
-
-    // environment.hardware.draw([0x9096,0,0]);
+    engaged=true;
     updateHardware();
+  }
+  this.disengage=function(){
+    engaged=false;
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
     console.log("bmatr",evt);

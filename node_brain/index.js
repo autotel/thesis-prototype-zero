@@ -10,12 +10,10 @@ var environment=new(function(){
     var tMetro=this;
     onhandlers.call(this);
     setInterval(function(){
+      tMetro.handle('step',{step:currentStep});
       currentStep++;
       currentStep%=16;
-      tMetro.handle('step',{step:currentStep});
-
-
-    },100);
+    },148);
   })();
   return this;
 })();

@@ -1,7 +1,9 @@
 'use strict';
 module.exports=function(){
   this.eventResponses={};
+  this.init=function(){}
   this.engage=function(){}
+  this.disengage=function(){}
   this.eventResponses.hello=function(){}
   this.eventResponses.buttonMatrixPressed=function(){}
   this.eventResponses.buttonMatrixReleased=function(){}
