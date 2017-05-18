@@ -112,6 +112,8 @@ module.exports=function(environment){return new (function(){
       var sendScreenB=function(str){
         sendString(tHeaders.screenB,str);
       }
+      this.sendScreenA=sendScreenA;
+      this.sendScreenB=sendScreenB;
       var updateLeds=function(bitmaps){
         // tHardware.sendx8_16(tHeaders.ledMatrix,[0xff,0xff,1,1,0xff,0xff]);
         sendx8_16(tHeaders.ledMatrix,bitmaps);
@@ -126,10 +128,16 @@ module.exports=function(environment){return new (function(){
         var arr8=[];
         for(var a in string){
           arr8.push(string.charCodeAt(a));
+          // console.log(string.charCodeAt(a));
         }
+        arr8.push('\0');
+        arr8.unshift(0xff&arr8.length);
         arr8.unshift(header&0xff);
-        arr8.push(eoString);
+        console.log(arr8.length);
+        // arr8.push(eoString);
         var buf1 = Buffer.from(arr8);
+        console.log(buf1);
+        console.log("string of "+buf1.length);
         // console.log("send str len"+buf1.length);
         serial.write(buf1);
         // console.log("sent",buf1);

@@ -37,6 +37,7 @@ module.exports=function(environment){return new(function(){
     environment.hardware.draw([getBitmapx16(),0x1<<currentStep^getBitmapx16(),0x1<<currentStep|getBitmapx16()]);
   }
   this.engage=function(){
+    environment.hardware.sendScreenA("Sequencer mode");
     engaged=true;
     updateHardware();
   }

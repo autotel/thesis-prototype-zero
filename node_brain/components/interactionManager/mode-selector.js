@@ -2,17 +2,24 @@
 var base=require('./interactionModeBase');
 var currentlySeleectedMode=0;
 var modes=[
-  "sequencer",
-  "performer",
 ]
+
 module.exports=function(environment){return new(function(){
+  var thisMode=this;
+  this.isModeSelector=true;
   base.call(this);
   function updateHardware(){
     environment.hardware.draw([0x1<<currentlySeleectedMode,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
     // console.log(0x1<<currentlySeleectedMode);
   }
+  this.setModeList=function(list){
+    for(var a in list){
+      modes.push(a);
+    }
+  }
   this.engage=function(){
     // console.log("engage mode selector");
+    environment.hardware.sendScreenA("mode selecta!");
     updateHardware();
   }
   this.disengage=function(){

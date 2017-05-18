@@ -4,9 +4,9 @@ var activeModes={};
 var modeBeingTweaked="sequencer";
 var changeToMode=modeBeingTweaked;
 
-activeModes.modeSelector=require('./mode-selector');
 activeModes.sequencer=require('./mode-sequencer');
 activeModes.performer=require('./mode-performer');
+activeModes.modeSelector=require('./mode-selector');
 
 module.exports=function(environment){
   //transform function declarations into new objects providing the environment
@@ -14,6 +14,7 @@ module.exports=function(environment){
     activeModes[a]=activeModes[a](environment);
   }
 
+  activeModes.modeSelector.setModeList(activeModes);
 
   environment.on('serialopened',function(){
     console.log("serial opened");

@@ -19,50 +19,67 @@ void checkMessages() {
       //byte  is in our header list?
       switch (data_a) {
         case RH_null:
-          lcdPrintA("H_null");
+          // lcdPrintA("H_null");
           recordingBuffer=true;
-          expectedLength=RH_null_len+1;
+          expectedLength=RH_null_len;
           break;
         case RH_hello:
-          lcdPrintA("H_hello");
+          // lcdPrintA("H_hello");
           recordingBuffer=true;
-          expectedLength=RH_hello_len+1;
+          expectedLength=RH_hello_len;
           break;
         case RH_ledMatrix:
-          lcdPrintA("dMatrix");
+          // lcdPrintA("dMatrix");
           recordingBuffer=true;
-          expectedLength=RH_ledMatrix_len+1;
+          expectedLength=RH_ledMatrix_len;
           break;
         case RH_screenA:
-          lcdPrintA("screenA");
+          // lcdPrintA("screenA");
           recordingBuffer=true;
-          expectedLength=RH_screenA_len+1;
+          expectedLength=RH_screenA_len;
           break;
         case RH_screenB:
-          lcdPrintA("screenB");
+          // lcdPrintA("screenB");
           recordingBuffer=true;
-          expectedLength=RH_screenB_len+1;
+          expectedLength=RH_screenB_len;
           break;
         case RH_setInteractionMode:
-          lcdPrintA("ionMode");
+          // lcdPrintA("ionMode");
           currentHeader=data_a;
-          expectedLength=RH_setInteractionMode_len+1;
+          expectedLength=RH_setInteractionMode_len;
           break;
         case RH_currentStep:
-          lcdPrintA("entStep");
+          // lcdPrintA("entStep");
           recordingBuffer=true;
-          expectedLength=RH_currentStep_len+1;
+          expectedLength=RH_currentStep_len;
           break;
         case RH_comTester:
-          lcdPrintA("mTester");
+          // lcdPrintA("mTester");
           recordingBuffer=true;
-          expectedLength=RH_comTester_len+1;
+          expectedLength=RH_comTester_len;
           break;
       }
     }
 
     if(recordingBuffer){
-      if(byteNumber<expectedLength-1){
+      if(expectedLength==unknown){
+        if(byteNumber==0){
+          //get header and +1
+          inBuff[byteNumber]=data_a;
+          byteNumber++;
+        }else if(byteNumber==1){
+          //undetermined length so byte 2 must be length
+          inBuff[byteNumber]=data_a;
+          expectedLength=data_a+1;
+          byteNumber++;
+        }
+
+        // inBuff[byteNumber]=data_a;
+        // byteNumber++;
+        // if(data_a=='\0'){
+        //   expectedLength=byteNumber;
+        // }
+      }else if(byteNumber<expectedLength){
         //a new byte arrived and is added to the current packet
         inBuff[byteNumber] =  data_a;
         byteNumber++;
@@ -70,14 +87,13 @@ void checkMessages() {
         //a whole expected packet arrived
         inBuff[byteNumber]=data_a;
         recordingBuffer=false;
-        lcdPrintB("L:"+String(byteNumber)+"ex"+(expectedLength-1));
         messageReceived(inBuff,byteNumber);
         byteNumber=0;
       }
     }else{
       //a byte arrived, but there is no packet gathering bytes
-      lcdPrintA("inv");
-      lcdPrintB(String(data_a)+"ex"+expectedLength+"len:"+byteNumber);
+      // lcdPrintA("inv");
+      lcdPrintB("i"+String(data_a,HEX)+"ex"+expectedLength+"len:"+byteNumber);
     }
     // byteNumber++;
   }
@@ -105,11 +121,11 @@ void messageReceived(unsigned char datarray [], int len) {
   switch (header) {
     while (a < len) {
       case RH_hello: {
-          lcdPrintA("rcv hello");
+          // lcdPrintA("rcv hello");
           break;
         }
       case RH_ledMatrix: {
-        lcdPrintA("rcv ledmatrix");
+        // lcdPrintA("rcv ledmatrix");
           //layers[0]=layers[1]=layers[2]=datarray[a];
           layers[0] = datarray[a + 0] | (datarray[a + 1] << 8);
           layers[1] = datarray[a + 2] | (datarray[a + 3] << 8);
@@ -121,6 +137,25 @@ void messageReceived(unsigned char datarray [], int len) {
       case RH_comTester: {
         lcdPrintA("com test");
         lcdPrintB(String(datarray[a],HEX));
+        break;
+      }
+      case RH_screenA:{
+        a++;//skip length byte
+        String ns="";
+        for(int k=a; k<len; k++){
+          ns += String((char)datarray[k]);
+        }
+        lcdPrintA(ns);
+        break;
+      }
+      case RH_screenB:{
+        a++;//skip length byte
+        String ns="";
+        for(int k=a; k<len; k++){
+          ns += String((char)datarray[k]);
+        }
+        lcdPrintB(ns);
+        a+=len;
         break;
       }
       default:
