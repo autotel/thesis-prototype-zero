@@ -29,7 +29,7 @@ module.exports=function(environment){return new(function(){
   this.engage=function(){
 
     // environment.hardware.draw([0x9096,0,0]);
-    // updateHardware();
+    updateHardware();
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
     console.log("bmatr",evt);
