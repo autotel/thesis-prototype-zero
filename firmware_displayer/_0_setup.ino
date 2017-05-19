@@ -72,7 +72,7 @@ void setup() {
 
 //pendant: probably can be faster
   Serial.begin(SOFT_BAUDRATE);
-  Serial.write(TH_hello);
+  // Serial.write(TH_hello);
 
   //lcd screen initial write
   lcd.begin(16, 2);

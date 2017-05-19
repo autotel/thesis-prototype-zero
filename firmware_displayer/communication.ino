@@ -103,11 +103,13 @@ void checkMessages() {
 
 }
 
+//available queue for outgoing messages
+byte sendToBrainData []={0,0,0,0,0};
 
-void sendToBrain(byte header, byte datarray [], int len) {
+void sendToBrain(byte header, int len) {
   Serial.write(header);
   for (int a = 0; a < len; a++) {
-    Serial.write(datarray[a]);
+    Serial.write(sendToBrainData[a]);
   }
 }
 

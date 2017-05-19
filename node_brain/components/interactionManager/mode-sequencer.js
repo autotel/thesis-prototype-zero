@@ -80,6 +80,7 @@ module.exports=function(environment){return new(function(){
     }
   }
   this.eventResponses.encoderScroll=function(evt){
+    if(selectors[lastsubSelectorEngaged])
     selectors[lastsubSelectorEngaged].eventResponses.encoderScroll(evt);
     // if(subSelectorEngaged===false){
     //   environment.hardware.sendScreenB(String.fromCharCode(evt.data[0])+"-"+evt.data[0]);

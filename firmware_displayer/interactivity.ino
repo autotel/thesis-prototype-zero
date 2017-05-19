@@ -2,55 +2,66 @@
 
 //actions to take while a button is held, taking the pressure into account
 void onMatrixButtonHold(byte button, byte buttonPressure) {
-  //int sData[]={button,buttonPressure,pressedMatrixButtonsBitmap};
-  //sendToBrain(TH_buttonMatrixHold,sData,3);
+  //int sendToBrainData[]={button,buttonPressure,pressedMatrixButtonsBitmap};
+  //sendToBrain(TH_buttonMatrixHold,sendToBrainData,3);
 }
 //actions to take while a button is pressed
 void onMatrixButtonPressed(byte button) {
-  byte sData[]={button,1,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
+  sendToBrainData[0]=button;
+  sendToBrainData[1]=1;
+  sendToBrainData[2]=(byte)pressedMatrixButtonsBitmap;
+  sendToBrainData[3]=(byte)(pressedMatrixButtonsBitmap>>8);
 
-  
 //  lcdPrintA(String(button,HEX));
  // layers[0]=layers[1]=layers[2]=0x1<<button;
-  //sendToBrain(TH_buttonMatrixVelocity,sData,TH_buttonMatrixVelocity_len);
-  
-  sendToBrain(TH_buttonMatrixPressed,sData,TH_buttonMatrixPressed_len);
+  //sendToBrain(TH_buttonMatrixVelocity,sendToBrainData,TH_buttonMatrixVelocity_len);
+
+  sendToBrain(TH_buttonMatrixPressed,TH_buttonMatrixPressed_len);
 }
 
 
 //actions to take once a button is pressed
 
 void onMatrixButtonPressed(byte button, int buttonPressure) {
-  byte sData[]={button,(byte) buttonPressure,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
-  
-  sendToBrain(TH_buttonMatrixPressed,sData,TH_buttonMatrixPressed_len);
+  sendToBrainData[0]=button;
+  sendToBrainData[1]=buttonPressure;
+  sendToBrainData[2]=(byte)pressedMatrixButtonsBitmap;
+  sendToBrainData[3]=(byte)(pressedMatrixButtonsBitmap>>8);
+
+  sendToBrain(TH_buttonMatrixPressed,TH_buttonMatrixPressed_len);
 }
 //actions to take once a button is released
 void onMatrixButtonReleased(byte button) {
-  byte sData[]={button,0,(byte)pressedMatrixButtonsBitmap,(byte)(pressedMatrixButtonsBitmap>>8)};
-  sendToBrain(TH_buttonMatrixReleased,sData,TH_buttonMatrixReleased_len);
+  sendToBrainData[0]=button;
+  sendToBrainData[1]=0;
+  sendToBrainData[2]=(byte)pressedMatrixButtonsBitmap;
+  sendToBrainData[3]=(byte)(pressedMatrixButtonsBitmap>>8);
+
+  sendToBrain(TH_buttonMatrixReleased,TH_buttonMatrixReleased_len);
 }
 void onEncoderScroll(int absolute, int delta) {
-  byte sData[]={(char)absolute,(char)delta};
-  //lcdPrintA(String(absolute,HEX));
-  //layers[0]=1<<absolute;
-  sendToBrain(TH_encoderScroll,sData,TH_encoderScroll_len);
+  sendToBrainData[0]=(char)absolute;
+  sendToBrainData[1]=(char)delta;
+
+  sendToBrain(TH_encoderScroll,TH_encoderScroll_len);
 }
 
 void onEncoderPressed() {
-  byte sData[]={1};
-  sendToBrain(TH_encoderPressed,sData,TH_encoderPressed_len);
+  sendToBrainData[0]=1;
+  sendToBrain(TH_encoderPressed,TH_encoderPressed_len);
 }
 
 //
 void onSelectorButtonPressed(byte button) {
-  byte sData[]={button,1};
-  sendToBrain(TH_selectorButtonPressed,sData,TH_selectorButtonPressed_len);
+  sendToBrainData[0]=button;
+  sendToBrainData[1]=1;
+  sendToBrain(TH_selectorButtonPressed,TH_selectorButtonPressed_len);
 }
 //
 void onSelectorButtonReleased(byte button) {
-  byte sData[]={button,0};
-  sendToBrain(TH_selectorButtonReleased,sData,TH_selectorButtonReleased_len);
+  sendToBrainData[0]=button;
+  sendToBrainData[1]=0;
+  sendToBrain(TH_selectorButtonReleased,TH_selectorButtonReleased_len);
 }
 void onSelectorButtonHold(byte button) {}
 
