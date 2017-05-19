@@ -30,7 +30,7 @@ void timedLoop() {
   cp49 = cp49 % 49;
   byte buttonPressure = (byte)(readMatrixButton(cp16) / 2);
   int evaluator = 0x1 << cp16;
-  if (buttonPressure > 1) {
+  if (buttonPressure > BUTTONTRESH) {
     //if last lap this button was not pressed, trigger on  button pressed
     if ((evaluator & pressedMatrixButtonsBitmap) == 0) {
       pressedMatrixButtonsBitmap |= evaluator;

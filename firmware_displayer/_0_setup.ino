@@ -12,7 +12,8 @@
 #define COMPENSATE_G 0
 #define COMPENSATE_B 0
 // seq_ence[frame][(active+time),(type+channel),(number),(velocity or value)]
-
+//how much conductivity is needed for a button to be detected as pressed?
+#define BUTTONTRESH 10
 //analog inputs that are connected to the multiplexor commons
 
 #define analogA A1
