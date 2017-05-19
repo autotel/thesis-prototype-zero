@@ -11,6 +11,9 @@ module.exports=function(environment){return new(function(){
   var currentStep=0;
   var engaged=false;
 
+  var currentModulus=16;
+
+
   console.log(selectors);
   for(var a in selectors){
     console.log("init subs "+a);
@@ -57,6 +60,12 @@ module.exports=function(environment){return new(function(){
     if(engaged)
     if(subSelectorEngaged===false)
     updateLeds();
+
+    if(getBoolean(currentStep)){
+      if(patData[currentStep].destination=="midi")
+      var val=patData[currentStep].value;
+      environment.midi.note(val[0],val[1],val[2]);
+    }
   }
   function updateLeds(){
     var mostImportant=getBitmapx16(selectors.dimension.getFilter());
@@ -80,8 +89,8 @@ module.exports=function(environment){return new(function(){
         store(evt.data[0],false);
       }else{
         // console.log(selectors.dimension);
-        console.log(selectors.dimension.getSeqEvent());
-        store(evt.data[0],selectors.dimension.getSeqEvent());
+        // console.log(selectors.dimension.getSeqEvent());
+        store(evt.data[0],/*currentModulus,*/selectors.dimension.getSeqEvent());
       }
     }else{
       selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);

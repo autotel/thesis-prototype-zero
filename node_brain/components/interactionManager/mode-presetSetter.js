@@ -8,7 +8,7 @@ module.exports=function(environment){return new(function(){
     environment.hardware.draw([fingerMap,fingerMap,fingerMap]);
   }
   this.engage=function(){
-    environment.hardware.sendScreenA("set scale");
+    environment.hardware.sendScreenA("preset set");
     // console.log("engage mode selector");
     updateHardware();
   }
