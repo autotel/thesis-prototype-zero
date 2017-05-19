@@ -1,12 +1,29 @@
 'use strict';
 var base=require('./interactionModeBase');
+var selectors={};
+selectors.dimension=require('./submode-dimensionSelector');
 
 module.exports=function(environment){return new(function(){
+
   base.call(this);
   var tPattern=this;
   var patData={};
   var currentStep=0;
   var engaged=false;
+
+  console.log(selectors);
+  for(var a in selectors){
+    console.log("init subs "+a);
+    selectors[a]=selectors[a](environment);
+  }
+
+  var lastsubSelectorEngaged=0;
+  var subSelectorEngaged=false;
+
+  var currentDimension=0;
+
+  // var selectors=['dimension','value','modulus'];
+  var currentSelector=0;
 
   this.init=function(){
     environment.metronome.on('step',step);
@@ -31,36 +48,54 @@ module.exports=function(environment){return new(function(){
   function step(evt){
     currentStep=evt.step;
     if(engaged)
-    updateHardware();
+    if(subSelectorEngaged===false)
+    updateLeds();
   }
-  function updateHardware(){
+  function updateLeds(){
     environment.hardware.draw([getBitmapx16(),0x1<<currentStep^getBitmapx16(),0x1<<currentStep|getBitmapx16()]);
   }
+
   this.engage=function(){
     environment.hardware.sendScreenA("Sequencer mode");
     engaged=true;
-    updateHardware();
+    updateLeds();
   }
   this.disengage=function(){
     engaged=false;
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
     console.log("bmatr",evt);
-    store(evt.data[0],!getBoolean(evt.data[0]));
-    // environment.hardware.testByte(evt.data[2]);
-    updateHardware();
+    if(subSelectorEngaged===false){
+      store(evt.data[0],!getBoolean(evt.data[0]));
+    }else{
+      selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
+    }
+    updateLeds();
   }
   this.eventResponses.buttonMatrixReleased=function(evt){
-    console.log("bmatr",evt);
-    // store(evt.data[0],!getBoolean(evt.data[0]));
-    // environment.hardware.testByte(evt.data[2]);
-    updateHardware();
+    if(subSelectorEngaged===false){
+      updateLeds();
+    }else{
+      selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
+    }
   }
   this.eventResponses.encoderScroll=function(evt){
-    console.log(evt.data[0]);
-    environment.hardware.sendScreenB(String.fromCharCode(evt.data[0])+"-"+evt.data[0]);
-    // environment.hardware.testByte(evt.data[0]);
-    // environment.hardware.draw([evt.data[0],0,0]);
+    selectors[lastsubSelectorEngaged].eventResponses.encoderScroll(evt);
+    // if(subSelectorEngaged===false){
+    //   environment.hardware.sendScreenB(String.fromCharCode(evt.data[0])+"-"+evt.data[0]);
+    // }else{
+    // }
+  }
+  this.eventResponses.selectorButtonPressed=function(evt){
+    if(evt.data[0]==1){
+      subSelectorEngaged='dimension';
+      lastsubSelectorEngaged='dimension';
+      selectors.dimension.engage();
+    }
+  }
+  this.eventResponses.selectorButtonReleased=function(evt){
+    subSelectorEngaged=false;
+    selectors.dimension.disengage();
   }
   return this;
 })()};

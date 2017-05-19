@@ -17,6 +17,19 @@ var rLengths=comConsts.rLengths;
 var baudRate=comConsts.baudRate;
 var eoString=comConsts.eoString;
 
+var lazyStack=new (function(){
+  var stack=[];
+  var interval=1;
+  this.enq=function(cb){
+    stack.push(cb);
+  }
+  setInterval(function(){
+    if(stack.length>0){
+      stack[0]();
+      stack.splice(0,1);
+    }
+  },interval);
+})();
 
 var lastSentBitmap={
   bitmap:[0,0,0],
@@ -84,27 +97,55 @@ module.exports=function(environment){return new (function(){
       console.log("wrote hello");
 
       var sendx8=function(header,dataArray){
-        if(dataArray.constructor !== Array)
-          dataArray=Array.from(dataArray);
-        dataArray.unshift(header&0xff);
-        var buf1 = Buffer.from(dataArray);
-        serial.write(buf1);
+        lazyStack.enq(function(){
+          if(dataArray.constructor !== Array)
+            dataArray=Array.from(dataArray);
+          dataArray.unshift(header&0xff);
+          var buf1 = Buffer.from(dataArray);
+          serial.write(buf1);
+        });
       }
 
       var sendx8_16=function(header,dataArray){
-        var arr8=[];
-        for(var a of dataArray){
-          arr8.push(a&0xff);
-          arr8.push((a>>8)&0xff);
-        }
-        // console.log("aa");
-        if(dataArray.constructor !== Array)
-          dataArray=Array.from(dataArray);
-        arr8.unshift(header&0xff);
-        var buf1 = Buffer.from(arr8);
-        serial.write(buf1);
+        lazyStack.enq(function(){
+          var arr8=[];
+          for(var a of dataArray){
+            arr8.push(a&0xff);
+            arr8.push((a>>8)&0xff);
+          }
+          // console.log("aa");
+          if(dataArray.constructor !== Array)
+            dataArray=Array.from(dataArray);
+          arr8.unshift(header&0xff);
+          var buf1 = Buffer.from(arr8);
+          serial.write(buf1);
 
-        // console.log("sent",buf1);
+          // console.log("sent",buf1);
+        });
+      }
+      var sendString=function(header,string){
+        lazyStack.enq(function(){
+          // console.log(header,string);
+          if(tLengths[header]!=="unknown"){
+            console.warn("warning: this header is not specified for unknown lengths");
+          }
+          var arr8=[];
+          for(var a in string){
+            arr8.push(string.charCodeAt(a));
+            // console.log(string.charCodeAt(a));
+          }
+          arr8.push('\0');
+          arr8.unshift(0xff&arr8.length);
+          arr8.unshift(header&0xff);
+          console.log(arr8.length);
+          // arr8.push(eoString);
+          var buf1 = Buffer.from(arr8);
+          console.log(buf1);
+          console.log("string of "+buf1.length);
+          // console.log("send str len"+buf1.length);
+          serial.write(buf1);
+          // console.log("sent",buf1);
+        });
       }
       var sendScreenA=function(str){
         sendString(tHeaders.screenA,str);
@@ -119,28 +160,6 @@ module.exports=function(environment){return new (function(){
         sendx8_16(tHeaders.ledMatrix,bitmaps);
         lastSentBitmap.bitmap=bitmaps;
         // sendx8(tHeaders.ledMatrix,bitmaps);
-      }
-      var sendString=function(header,string){
-        // console.log(header,string);
-        if(tLengths[header]!=="unknown"){
-          console.warn("warning: this header is not specified for unknown lengths");
-        }
-        var arr8=[];
-        for(var a in string){
-          arr8.push(string.charCodeAt(a));
-          // console.log(string.charCodeAt(a));
-        }
-        arr8.push('\0');
-        arr8.unshift(0xff&arr8.length);
-        arr8.unshift(header&0xff);
-        console.log(arr8.length);
-        // arr8.push(eoString);
-        var buf1 = Buffer.from(arr8);
-        console.log(buf1);
-        console.log("string of "+buf1.length);
-        // console.log("send str len"+buf1.length);
-        serial.write(buf1);
-        // console.log("sent",buf1);
       }
       tHardware.testByte=function(byte){
         sendx8(tHeaders.comTester,[byte]);

@@ -13,11 +13,11 @@ module.exports=function(environment){return new(function(){
     updateHardware();
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    fingerMap|=0x1<<evt.data[0];
+    fingerMap=evt.data[2]|(evt.data[3]<<8);
     updateHardware();
   }
   this.eventResponses.buttonMatrixReleased=function(evt){
-    fingerMap&=~(0x1<<evt.data[0]);
+    fingerMap=evt.data[2]|(evt.data[3]<<8);
     updateHardware();
   }
   this.eventResponses.encoderScroll=function(evt){

@@ -1,6 +1,6 @@
 'use strict';
 var base=require('./interactionModeBase');
-var currentlySeleectedMode=0;
+var currentlySelectedMode=0;
 var modes=[
 ]
 
@@ -9,8 +9,8 @@ module.exports=function(environment){return new(function(){
   this.isModeSelector=true;
   base.call(this);
   function updateHardware(){
-    environment.hardware.draw([0x1<<currentlySeleectedMode,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
-    // console.log(0x1<<currentlySeleectedMode);
+    environment.hardware.draw([0x1<<currentlySelectedMode,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
+    // console.log(0x1<<currentlySelectedMode);
   }
   this.setModeList=function(list){
     for(var a in list){
@@ -23,15 +23,15 @@ module.exports=function(environment){return new(function(){
     updateHardware();
   }
   this.disengage=function(){
-    return modes[currentlySeleectedMode];
+    return modes[currentlySelectedMode];
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    currentlySeleectedMode=evt.data[0];
-    environment.hardware.sendScreenB(">"+modes[currentlySeleectedMode]);
+    currentlySelectedMode=evt.data[0];
+    environment.hardware.sendScreenB(">"+modes[currentlySelectedMode]);
     updateHardware();
   }
   this.eventResponses.encoderScroll=function(evt){
-    currentlySeleectedMode++;
+    currentlySelectedMode++;
     updateHardware();
   }
   this.eventResponses.encoderPressed=function(evt){
