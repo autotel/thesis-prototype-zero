@@ -164,11 +164,3 @@ void messageReceived(unsigned char datarray [], int len) {
   }
 }
 
-String arrToString(byte arr[], int len) {
-  String ret = ">";
-  for (int a; a < len; a++) {
-    ret += arr[a];
-  }
-  return ret;
-}
-
