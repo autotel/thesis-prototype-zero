@@ -5,6 +5,7 @@ var modeBeingTweaked="sequencer";
 var changeToMode=modeBeingTweaked;
 
 activeModes.scaleSetter=require('./mode-scaleSetter');
+activeModes.presetSetter=require('./mode-presetSetter');
 activeModes.sequencer=require('./mode-sequencer');
 activeModes.performer=require('./mode-performer');
 activeModes.modeSelector=require('./mode-selector');

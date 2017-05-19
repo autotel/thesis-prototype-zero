@@ -34,14 +34,21 @@ module.exports=function(environment){return new(function(){
   var getBoolean=function(place){
     return patData[place]||false;
   };
-  var getBitmapx16=function(){
+  var getBitmapx16=function(filter){
     var ret=0x0000;
-    for(var a=0; a<16;a++){
-      if(patData[a]){
-        ret|=0x1<<a;
-      }
+    if(filter){
+      for(var a=0; a<16;a++)
+        if(patData[a])
+          if(filter(patData[a])){
+            ret|=0x1<<a;
+          }
+    }else{
+      for(var a=0; a<16;a++)
+        if(patData[a]){
+          ret|=0x1<<a;
+        }
     }
-    console.log(">"+ret.toString(16));
+    // console.log(">"+ret.toString(16));
     return ret;
   }
   //some events run regardless of engagement. in these cases, the screen refresh is conditional
@@ -52,7 +59,10 @@ module.exports=function(environment){return new(function(){
     updateLeds();
   }
   function updateLeds(){
-    environment.hardware.draw([getBitmapx16(),0x1<<currentStep^getBitmapx16(),0x1<<currentStep|getBitmapx16()]);
+    var mostImportant=getBitmapx16(selectors.dimension.getFilter());
+    var leastImportant=getBitmapx16();
+    var playHeadBmp=0x1<<currentStep;
+    environment.hardware.draw([leastImportant,playHeadBmp^mostImportant,playHeadBmp|mostImportant]);
   }
 
   this.engage=function(){
@@ -64,9 +74,15 @@ module.exports=function(environment){return new(function(){
     engaged=false;
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    console.log("bmatr",evt);
+    // console.log("bmatr",evt);
     if(subSelectorEngaged===false){
-      store(evt.data[0],!getBoolean(evt.data[0]));
+      if(getBoolean(evt.data[0])){
+        store(evt.data[0],false);
+      }else{
+        // console.log(selectors.dimension);
+        console.log(selectors.dimension.getSeqEvent());
+        store(evt.data[0],selectors.dimension.getSeqEvent());
+      }
     }else{
       selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
     }
