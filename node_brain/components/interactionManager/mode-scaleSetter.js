@@ -1,14 +1,18 @@
 'use strict';
 var base=require('./interactionModeBase');
+var controlledDestination=require('../destinations/grade.js');
 var fingerMap=0x0000;
-var scaleMap=0xAB5;//major scale :)
+var scaleMap=0xAB5;//major
 module.exports=function(environment){return new(function(){
+  controlledDestination=controlledDestination(environment);
+  controlledDestination.newScaleMap(scaleMap);
   base.call(this);
   function updateHardware(){
     var displayScaleMap=scaleMap|scaleMap<<12;
     var displayFingerMap=fingerMap|fingerMap<<12;
     environment.hardware.draw([displayFingerMap|displayScaleMap,displayFingerMap^displayScaleMap,displayScaleMap]);
   }
+
   this.engage=function(){
     environment.hardware.sendScreenA("set scale");
     // console.log("engage mode selector");
@@ -19,6 +23,7 @@ module.exports=function(environment){return new(function(){
     //wrap around chromatic 12, as we are using our occidental logic
     fingerMap|=fingerMap>>12;
     scaleMap^=fingerMap;
+    controlledDestination.newScaleMap(scaleMap);
     updateHardware();
   }
   this.eventResponses.buttonMatrixReleased=function(evt){

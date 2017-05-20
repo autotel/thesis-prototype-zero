@@ -8,36 +8,42 @@ module.exports=function(environment){return new(function(){
   var currentDimension=0;
   var options=[{
     name:'midi notes',
+    destination:"midi",
     currentValue:45,
     valueNames:function(value){
       return value;
     }
   },{
     name:'midi channels',
+    destination:"midi",
     currentValue:0,
     valueNames:function(value){
       return value;
     }
   },{
     name:'patch grade',
+    destination:"grade",
     currentValue:0,
     valueNames:function(value){
       return value;
     }
   },{
     name:'patch preset',
+    destination:"preset",
     currentValue:0,
     valueNames:function(value){
       return value;
     }
   },{
     name:'patch alterator',
+    destination:"alterator",
     currentValue:0,
     valueNames:function(value){
       return value;
     }
   },{
     name:'patch seqs',
+    destination:"sequencer",
     currentValue:0,
     valueNames:function(value){
       return value;
@@ -56,16 +62,19 @@ module.exports=function(environment){return new(function(){
   this.getFilter=function(){
     if(currentDimension==0){
       return function(a){
+        // if(a)
         if(a.value[0]==options[1].currentValue&&a.value[1]==options[0].currentValue) return true
         return false
       }
     }else if(currentDimension==1){
       return function(a){
+        // if(a)
         if(a.value[0]==options[1].currentValue) return true
         return false
       }
     }else if(currentDimension<6){
       return function(a){
+        // if(a)
         if(a.value==options[currentDimension].currentValue) return true
         return false
       }
@@ -73,9 +82,9 @@ module.exports=function(environment){return new(function(){
   }
   this.getSeqEvent=function(){
     if(currentDimension<2){
-      return({type:'patch',destination:"midi",value:[options[1].currentValue,options[0].currentValue,97]});
+      return({type:'patch',destination:options[currentDimension].destination,value:[options[1].currentValue,options[0].currentValue,97]});
     }else if(currentDimension<6){
-      return({type:'patch',destination:options[currentDimension].name,value:options[currentDimension].currentValue});
+      return({type:'patch',destination:options[currentDimension].destination,value:options[currentDimension].currentValue});
     }
   }
   this.engage=function(){

@@ -17,6 +17,9 @@ module.exports=function(environment){return new (function(){
   //   // Send a MIDI message.
   //   output.sendMessage([176,22,1]);
   // },100);
+  this.receive=function(evt){
+    this.note(evt.data[0],evt.data[1],evt.data[2]);
+  }
   this.note=function(chan,num,velo){
     var b=0x00;
     if(velo==0){

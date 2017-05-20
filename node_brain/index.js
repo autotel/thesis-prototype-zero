@@ -18,11 +18,32 @@ var environment=new(function(){
   return this;
 })();
 
-const hardware=require('./components/uiHardware')(environment);
-environment.hardware=hardware;
 const midi=require('./components/midi')(environment);
 environment.midi=midi;
+const hardware=require('./components/uiHardware')(environment);
+environment.hardware=hardware;
 const interaction=require('./components/interactionManager')(environment);
+
+environment.patcher=new(function(){
+  var thisPatcher=this;
+  this.destinations={
+    midi:environment.midi,
+  };
+  this.receiveEvent=function(evt){
+    if(evt.destination){
+      thisPatcher.destinations[evt.destination].receive(evt);
+    }else{
+      console.warn("event didn't have destination", evt);
+    }
+    console.log("reve",evt);
+    if(evt.destination=="midi"){
+      var val=evt.value;
+      environment.midi.note(val[0],val[1],val[2]);
+    }
+  }
+})();
+
+
 // const readline = require('readline');
 // environment.on('serialopened',function(){
 //   environment.metronome.on('step',function(e){

@@ -2,6 +2,9 @@
 var base=require('./interactionModeBase');
 var selectors={};
 selectors.dimension=require('./submode-dimensionSelector');
+//pendant: the sequencer functionality should be in the destinations folder,
+//as to separate the functionality (which can receive events) from the interaction
+var sequencer=require('../destinations/sequencer');
 
 module.exports=function(environment){return new(function(){
 
@@ -31,25 +34,72 @@ module.exports=function(environment){return new(function(){
   this.init=function(){
     environment.metronome.on('step',step);
   }
-  var store=function(place,data){
-    patData[place]=data;
+  environment.destinations.sequencer=this;
+  this.receiveEvent=function(){
+    console.log("not implemented yet");
   }
-  var getBoolean=function(place){
-    return patData[place]||false;
+  var store=function(step,data){
+    if(!patData[step]) patData[step]=[];
+    if(data){
+      patData[step].push(data);
+    }
+  }
+  var clearStepNewest=function(step){
+    patData[step].pop();
+  }
+  var clearStepOldest=function(step){
+    patData[step].shift();
+  }
+  var clearStep=function(step){
+    delete patData[step];
+  }
+  var clearStepByFilter=function(step,filterFunction){
+    if(patData[step])
+      if(typeof filterFunction==="function"){
+        for(var sEvt in patData[step]){
+          if(filterFunction(patData[step][sEvt])){
+            patData[step].splice(sEvt,1);
+            return true;
+          }
+        }
+        return false;
+      }
+    return false;
+  }
+  var getBoolean=function(step,filterFunction){
+    if(patData[step])
+      if(typeof filterFunction==="function"){
+        //yes, every step is an array
+        for(var stepData of patData[step]){
+          if(filterFunction(stepData))
+            return true;
+          return false;
+        }
+      }else{
+        for(var stepData of patData[step]){
+          if(patData[step]||false)
+            return true;
+          return false;
+        }
+      }
+    return false;
   };
   var getBitmapx16=function(filter){
     var ret=0x0000;
     if(filter){
-      for(var a=0; a<16;a++)
-        if(patData[a])
-          if(filter(patData[a])){
-            ret|=0x1<<a;
-          }
+      for(var step=0; step<16;step++)
+        if(patData[step])
+          for(var stepData of patData[step])
+            if(filter(stepData)){
+              ret|=0x1<<step;
+            }
     }else{
-      for(var a=0; a<16;a++)
-        if(patData[a]){
-          ret|=0x1<<a;
-        }
+      for(var step=0; step<16;step++)
+        if(patData[step])
+          for(var stepData of patData[step])
+            if(stepData){
+              ret|=0x1<<step;
+            }
     }
     // console.log(">"+ret.toString(16));
     return ret;
@@ -62,9 +112,13 @@ module.exports=function(environment){return new(function(){
     updateLeds();
 
     if(getBoolean(currentStep)){
-      if(patData[currentStep].destination=="midi")
-      var val=patData[currentStep].value;
-      environment.midi.note(val[0],val[1],val[2]);
+      for(var stepData of patData[currentStep]){
+        // if(stepData.destination=="midi"){
+        // }else if(stepData.destination=="midi"){
+          // var val=stepData.value;
+          environment.patcher.receiveEvent(stepData);
+        // }else
+      }
     }
   }
   function updateLeds(){
@@ -83,10 +137,9 @@ module.exports=function(environment){return new(function(){
     engaged=false;
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    // console.log("bmatr",evt);
+    var editorFilter=selectors.dimension.getFilter();
     if(subSelectorEngaged===false){
-      if(getBoolean(evt.data[0])){
-        store(evt.data[0],false);
+      if(clearStepByFilter(evt.data[0],editorFilter)){
       }else{
         // console.log(selectors.dimension);
         // console.log(selectors.dimension.getSeqEvent());
