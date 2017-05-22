@@ -8,11 +8,12 @@ module.exports=function(environment){return new(function(){
   base.call(this);
   var currentValue=0;
   var currentDimension=0;
+  var destNames=["midi","presets","grade","sequence","etc.."];
   var options=[{
     name:'dest',
     currentValue:0,
     valueNames:function(value){
-      return (["midi","presets","grade","sequence","etc.."])[value];
+      return destNames[value];
     }
   },{
     name:'header',
@@ -49,7 +50,7 @@ module.exports=function(environment){return new(function(){
     return function(message){
       var ret=true;
       if(criteria){
-        console.log(criteria);
+        // console.log(criteria);
         if(criteria.destination)
           ret&=(message.destination===options[0].valueNames(options[0].currentValue));
         if(criteria.header)
@@ -61,6 +62,12 @@ module.exports=function(environment){return new(function(){
       }
       return ret;
     }
+  }
+  this.setFromSeqEvent=function(eventMessage){
+    options[0].currentValue=destNames.indexOf(eventMessage.destination);
+    options[1].currentValue=eventMessage.value[0];
+    options[2].currentValue=eventMessage.value[1];
+    options[3].currentValue=eventMessage.value[2];
   }
   this.getSeqEvent=function(){
     return new eventMessage({

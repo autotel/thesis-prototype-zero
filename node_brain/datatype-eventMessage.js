@@ -1,9 +1,12 @@
 'use strict'
-module.exports=function(data){
+module.exports=function(properties){
   this.destination="midi";
   this.value=[]
-  for(var a in data){
-    if(typeof data[a]!=="function")
-      this[a]=JSON.parse(JSON.stringify(data[a]));
+  this.set=function(data){
+    for(var a in data){
+      if(typeof data[a]!=="function")
+        this[a]=JSON.parse(JSON.stringify(data[a]));
+    }
   }
+  this.set(properties);
 }

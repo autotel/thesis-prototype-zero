@@ -14,7 +14,7 @@ module.exports=function(environment){return new(function(){
   this.receive=function(event){
     newEvent=new eventMessage(event);
     newEvent.destination=myDestination;
-    console.log(thisDest.scaleArray);
+    // console.log(thisDest.scaleArray);
     var noteWraped=thisDest.scaleArray[event.value[1]%thisDest.scaleArray.length];
     newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/12));
     environment.patcher.receiveEvent(newEvent);
