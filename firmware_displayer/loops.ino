@@ -49,25 +49,40 @@ void timedLoop() {
   //evaluate Selector buttons (the tact buttons on top of the matrix)
   //less frequently than matrix, because these are not performance buttons
   if (cp49 == 0) {
-    //cp64/16 will be 0,1,2,3 alernatingly each time cp16 is 0
-    byte cb_4 = cp64 / 0xf;
+    //cp64/16 will be 0,1,2,3,4 alernatingly each time cp16 is 0
+    byte cb_5 = cp64 / 12;
     //see previous use of this var for more reference
-    evaluator = 0x1 << cb_4;
-    if (digitalReadMuxB(cb_4 + 4)) {
+    evaluator = 0x1 << cb_5;
+    if(cb_5==4) cb_5=8;//encoder buttn
+    if (digitalReadMuxB(cb_5 + 4)) {
       //if last lap this button was not pressed, trigger on  button pressed
       if ((evaluator & pressedSelectorButtonsBitmap) == 0) {
         pressedSelectorButtonsBitmap |= evaluator;
-        onSelectorButtonPressed(cb_4);
+        if(cb_5<4){
+          onSelectorButtonPressed(cb_5);
+        }else{
+          onEncoderButtonPressed();
+        }
       } else {
-        onSelectorButtonHold(cb_4);
+        if(cb_5<4){
+          onSelectorButtonHold(cb_5);
+        }else{
+          onEncoderButtonPressed();
+        }
       }
     } else {
       //if in last lap this button was pressed but in this lap is not
       if ((evaluator & pressedSelectorButtonsBitmap) != 0) {
-        pressedSelectorButtonsBitmap &= ~(0x1 << cb_4);
-        onSelectorButtonReleased(cb_4);
+        pressedSelectorButtonsBitmap &= ~(evaluator);
+        if(cb_5<4){
+          onSelectorButtonReleased(cb_5);
+        }else{
+          onEncoderButtonPressed();
+        }
       }
     }
+    // if(cb_5==0)
+      // doEncoderButton();
   }
   doEncoder();
   if (cp128 == 2) {

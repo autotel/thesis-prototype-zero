@@ -118,18 +118,22 @@ void doEncoder() {
     }
     enc_last = enc_read;
 
-    bool readPress=digitalReadMuxB(0x12);
-    if(readPress!=enc_0LastPressed){
-      enc_0LastPressed=readPress;
-      if(readPress){
-        onEncoderButtonPressed();
-      }else{
-        onEncoderButtonReleased();
-      }
-      // digitalWriteMuxB(0x13,readPress);
-    }
+
     //lcdPrintB(String(enc_read, HEX)+"-"+String(encoder0Pos, HEX)+"-"+String(enc_inc, HEX));
   }
-
 }
+// void doEncoderButton(){
+//   bool readPress=digitalReadMuxB(12);
+//   if(readPress!=enc_0LastPressed){
+//     enc_0LastPressed=readPress;
+//     if(readPress){
+//       onEncoderButtonPressed();
+//       // digitalWriteMuxB(0x13,HIGH);
+//     }else{
+//       onEncoderButtonReleased();
+//       // digitalWriteMuxB(0x13,LOW);
+//
+//     }
+//   }
+// }
 
