@@ -13,7 +13,7 @@ int readMatrixButton(byte currentButton) {
   //set the mux to the button address; row and col
   char ADDRMAP = (nibbleB << 4) | (nibbleA);
   //test irresponsible write (not masking)
-  PORTD = ADDRMAP;
+  // PORTD = ADDRMAP;
 
   //turn A2 & A3 to outputs
 #define CSHIFT 2
