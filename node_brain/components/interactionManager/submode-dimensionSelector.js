@@ -4,48 +4,31 @@ var fingerMap=0x0000;
 var RARROW=String.fromCharCode(126);
 var eventMessage=require('../../datatype-eventMessage');
 module.exports=function(environment){return new(function(){
+
   base.call(this);
   var currentValue=0;
   var currentDimension=0;
   var options=[{
-    name:'header',
-    destination:"midi",
+    name:'dest',
     currentValue:0,
     valueNames:function(value){
-      return value;
+      return (["midi","presets","grade","sequence","etc.."])[value];
     }
   },{
-    name:'midi notes',
-    destination:"midi",
+    name:'header',
+    currentValue:0,
+    valueNames:function(value){
+      return "C"+(value&0x0F);
+    }
+  },{
+    name:'value a',
     currentValue:45,
     valueNames:function(value){
       return value;
     }
   },{
-    name:'patch grade',
-    destination:"grade",
-    currentValue:0,
-    valueNames:function(value){
-      return value;
-    }
-  },{
-    name:'patch preset',
-    destination:"preset",
-    currentValue:0,
-    valueNames:function(value){
-      return value;
-    }
-  },{
-    name:'patch alterator',
-    destination:"alterator",
-    currentValue:0,
-    valueNames:function(value){
-      return value;
-    }
-  },{
-    name:'patch seqs',
-    destination:"sequencer",
-    currentValue:0,
+    name:'value b',
+    currentValue:97,
     valueNames:function(value){
       return value;
     }
@@ -61,34 +44,29 @@ module.exports=function(environment){return new(function(){
 
   }
   this.Filter=function(criteria){
-    var checkValue=[];
-    if(criteria.value){
-      checkValue[0]=criteria.value[0];
-      checkValue[1]=criteria.value[1];
-      checkValue[2]=criteria.value[2];
-    }
-    var checkDestination=criteria.destination;
-    return function(message){//or new?
-      var ret=false;
-      //if not checking something, returns true. if checking, has to evaluate the criteria
-      if((!checkValue[0])||message.value[0]==options[0].currentValue){
-        if((!checkValue[1])||message.value[1]==options[currentDimension].currentValue){
-          // if((!checkValue[2])||message.value[2]==options[2].currentValue){
-          if((!checkDestination)||message.destination[1]==options[currentDimension].destination){
-            return true;
-          }
-          // }
-        }
+    this.criteria=criteria;
+    var criteria=this.criteria;
+    return function(message){
+      var ret=true;
+      if(criteria){
+        console.log(criteria);
+        if(criteria.destination)
+          ret&=(message.destination===options[0].valueNames(options[0].currentValue));
+        if(criteria.header)
+          ret&=(message.value[0]===options[1].currentValue);
+        if(criteria.value_a)
+          ret&=(message.value[1]===options[2].currentValue);
+        if(criteria.value_b)
+          ret&=(message.value[2]===options[3].currentValue);
       }
       return ret;
     }
   }
   this.getSeqEvent=function(){
-    if(currentDimension<2){
-      return new eventMessage({type:'patch',destination:options[currentDimension].destination,value:[options[0].currentValue,options[1].currentValue,97]});
-    }else if(currentDimension<6){
-      return new eventMessage({type:'patch',destination:options[currentDimension].destination,value:[options[0].currentValue,options[currentDimension].currentValue,97]});
-    }
+    return new eventMessage({
+      destination:options[0].valueNames(options[0].currentValue),
+      value:[options[1].currentValue,options[2].currentValue,options[3].currentValue]
+    });
   }
   this.engage=function(){
     // console.log("engage mode selector");

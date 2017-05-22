@@ -1,12 +1,17 @@
 'use strict';
 var activeModes={};
 
-var modeBeingTweaked="sequencer";
+var modeBeingTweaked="scaleSetter";
 var changeToMode=modeBeingTweaked;
 
 activeModes.scaleSetter=require('./mode-scaleSetter');
 activeModes.presetSetter=require('./mode-presetSetter');
-activeModes.sequencer=require('./mode-sequencer');
+
+activeModes.sequencer_a=require('./mode-sequencer');
+activeModes.sequencer_b=require('./mode-sequencer');
+activeModes.sequencer_c=require('./mode-sequencer');
+activeModes.sequencer_d=require('./mode-sequencer');
+
 activeModes.performer=require('./mode-performer');
 activeModes.modeSelector=require('./mode-selector');
 

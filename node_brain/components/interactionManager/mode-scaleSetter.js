@@ -11,6 +11,7 @@ module.exports=function(environment){return new(function(){
     var displayScaleMap=scaleMap|scaleMap<<12;
     var displayFingerMap=fingerMap|fingerMap<<12;
     environment.hardware.draw([displayFingerMap|displayScaleMap,displayFingerMap^displayScaleMap,displayScaleMap]);
+    environment.hardware.sendScreenA("grades: "+controlledDestination.scaleArray.length);
   }
 
   this.engage=function(){
@@ -22,7 +23,8 @@ module.exports=function(environment){return new(function(){
     fingerMap=evt.data[2]|(evt.data[3]<<8);
     //wrap around chromatic 12, as we are using our occidental logic
     fingerMap|=fingerMap>>12;
-    scaleMap^=fingerMap;
+    scaleMap^=1<<evt.data[0];
+    // scaleMap|=fingerMap;
     controlledDestination.newScaleMap(scaleMap);
     updateHardware();
   }

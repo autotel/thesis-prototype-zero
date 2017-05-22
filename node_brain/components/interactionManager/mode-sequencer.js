@@ -1,12 +1,15 @@
 'use strict';
 var base=require('./interactionModeBase');
-var selectors={};
-selectors.dimension=require('./submode-dimensionSelector');
-//pendant: the sequencer functionality should be in the destinations folder,
-//as to separate the functionality (which can receive events) from the interaction
-var sequencer=require('../destinations/sequencer');
 
-module.exports=function(environment){return new(function(){
+
+module.exports=function(environment){
+  var selectors={};
+  selectors.dimension=require('./submode-dimensionSelector');
+  //pendant: the sequencer functionality should be in the destinations folder,
+  //as to separate the functionality (which can receive events) from the interaction
+  var sequencer=require('../destinations/sequencer');
+
+  return new(function(){
 
   base.call(this);
   var tPattern=this;
@@ -121,9 +124,11 @@ module.exports=function(environment){return new(function(){
       }
     }
   }
+  var focusedFilter=new selectors.dimension.Filter({destination:true,header:true,value_a:true});
+  var bluredFilter=new selectors.dimension.Filter({destination:true,header:true});
   function updateLeds(){
-    var mostImportant=getBitmapx16(new selectors.dimension.Filter({checkDestination:true,checkValue:[true,true,false]}));
-    var leastImportant=getBitmapx16(new selectors.dimension.Filter({checkDestination:true,checkValue:[true,false,false]}));
+    var mostImportant=getBitmapx16(focusedFilter);
+    var leastImportant=getBitmapx16(bluredFilter);
     var playHeadBmp=0x1<<currentStep;
     environment.hardware.draw([leastImportant,playHeadBmp^mostImportant,playHeadBmp|mostImportant]);
   }
@@ -137,9 +142,8 @@ module.exports=function(environment){return new(function(){
     engaged=false;
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    var editorFilter=getBitmapx16(new selectors.dimension.Filter({checkDestination:true,checkValue:[true,!shiftPressed,false]}));
     if(subSelectorEngaged===false){
-      if(clearStepByFilter(evt.data[0],editorFilter)){
+      if(clearStepByFilter(evt.data[0],focusedFilter)){
       }else{
         // console.log(selectors.dimension);
         // console.log(selectors.dimension.getSeqEvent());
