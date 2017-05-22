@@ -88,3 +88,10 @@ void setup() {
   lcdPrintB("init");
 
 }
+
+
+
+
+char sign(char x) {
+ return (x > 0) - (x < 0);
+}

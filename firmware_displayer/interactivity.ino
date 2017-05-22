@@ -46,9 +46,13 @@ void onEncoderScroll(int absolute, int delta) {
   sendToBrain(TH_encoderScroll,TH_encoderScroll_len);
 }
 
-void onEncoderPressed() {
-  sendToBrainData[0]=1;
+void onEncoderButtonPressed() {
+  sendToBrainData[0]=1;//should be empty
   sendToBrain(TH_encoderPressed,TH_encoderPressed_len);
+}
+void onEncoderButtonReleased() {
+  sendToBrainData[0]=0;//should be empty
+  sendToBrain(TH_encoderReleased,TH_encoderReleased_len);
 }
 
 //

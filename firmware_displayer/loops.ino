@@ -53,7 +53,7 @@ void timedLoop() {
     byte cb_4 = cp64 / 0xf;
     //see previous use of this var for more reference
     evaluator = 0x1 << cb_4;
-    if (readMuxB(cb_4 + 4)) {
+    if (digitalReadMuxB(cb_4 + 4)) {
       //if last lap this button was not pressed, trigger on  button pressed
       if ((evaluator & pressedSelectorButtonsBitmap) == 0) {
         pressedSelectorButtonsBitmap |= evaluator;
