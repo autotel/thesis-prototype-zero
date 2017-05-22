@@ -13,13 +13,13 @@ module.exports=function(environment){return new(function(){
   var patData={};
   var currentStep=0;
   var engaged=false;
-
+  var shiftPressed=false;
   var currentModulus=16;
 
 
-  console.log(selectors);
+//console.log(selectors);
   for(var a in selectors){
-    console.log("init subs "+a);
+//console.log("init subs "+a);
     selectors[a]=selectors[a](environment);
   }
 
@@ -34,9 +34,9 @@ module.exports=function(environment){return new(function(){
   this.init=function(){
     environment.metronome.on('step',step);
   }
-  environment.destinations.sequencer=this;
+  environment.patcher.destinations.sequencer=this;
   this.receiveEvent=function(){
-    console.log("not implemented yet");
+//console.log("not implemented yet");
   }
   var store=function(step,data){
     if(!patData[step]) patData[step]=[];
@@ -122,8 +122,8 @@ module.exports=function(environment){return new(function(){
     }
   }
   function updateLeds(){
-    var mostImportant=getBitmapx16(selectors.dimension.getFilter());
-    var leastImportant=getBitmapx16();
+    var mostImportant=getBitmapx16(new selectors.dimension.Filter({checkDestination:true,checkValue:[true,true,false]}));
+    var leastImportant=getBitmapx16(new selectors.dimension.Filter({checkDestination:true,checkValue:[true,false,false]}));
     var playHeadBmp=0x1<<currentStep;
     environment.hardware.draw([leastImportant,playHeadBmp^mostImportant,playHeadBmp|mostImportant]);
   }
@@ -137,7 +137,7 @@ module.exports=function(environment){return new(function(){
     engaged=false;
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
-    var editorFilter=selectors.dimension.getFilter();
+    var editorFilter=getBitmapx16(new selectors.dimension.Filter({checkDestination:true,checkValue:[true,!shiftPressed,false]}));
     if(subSelectorEngaged===false){
       if(clearStepByFilter(evt.data[0],editorFilter)){
       }else{
@@ -170,11 +170,18 @@ module.exports=function(environment){return new(function(){
       subSelectorEngaged='dimension';
       lastsubSelectorEngaged='dimension';
       selectors.dimension.engage();
+    }else if(evt.data[0]==3){
+      shiftPressed=true;
     }
   }
   this.eventResponses.selectorButtonReleased=function(evt){
-    subSelectorEngaged=false;
-    selectors.dimension.disengage();
+    if(evt.data[0]==1){
+      subSelectorEngaged=false;
+      selectors.dimension.disengage();
+    }else if(evt.data[0]==3){
+      shiftPressed=false;
+    }
+
   }
   return this;
 })()};

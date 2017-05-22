@@ -2,21 +2,22 @@
 var base=require('./interactionModeBase');
 var fingerMap=0x0000;
 var RARROW=String.fromCharCode(126);
+var eventMessage=require('../../datatype-eventMessage');
 module.exports=function(environment){return new(function(){
   base.call(this);
   var currentValue=0;
   var currentDimension=0;
   var options=[{
-    name:'midi notes',
+    name:'header',
     destination:"midi",
-    currentValue:45,
+    currentValue:0,
     valueNames:function(value){
       return value;
     }
   },{
-    name:'midi channels',
+    name:'midi notes',
     destination:"midi",
-    currentValue:0,
+    currentValue:45,
     valueNames:function(value){
       return value;
     }
@@ -59,32 +60,34 @@ module.exports=function(environment){return new(function(){
     environment.hardware.sendScreenB(""+options[currentDimension].name+RARROW+displayValue);
 
   }
-  this.getFilter=function(){
-    if(currentDimension==0){
-      return function(a){
-        // if(a)
-        if(a.value[0]==options[1].currentValue&&a.value[1]==options[0].currentValue) return true
-        return false
+  this.Filter=function(criteria){
+    var checkValue=[];
+    if(criteria.value){
+      checkValue[0]=criteria.value[0];
+      checkValue[1]=criteria.value[1];
+      checkValue[2]=criteria.value[2];
+    }
+    var checkDestination=criteria.destination;
+    return function(message){//or new?
+      var ret=false;
+      //if not checking something, returns true. if checking, has to evaluate the criteria
+      if((!checkValue[0])||message.value[0]==options[0].currentValue){
+        if((!checkValue[1])||message.value[1]==options[currentDimension].currentValue){
+          // if((!checkValue[2])||message.value[2]==options[2].currentValue){
+          if((!checkDestination)||message.destination[1]==options[currentDimension].destination){
+            return true;
+          }
+          // }
+        }
       }
-    }else if(currentDimension==1){
-      return function(a){
-        // if(a)
-        if(a.value[0]==options[1].currentValue) return true
-        return false
-      }
-    }else if(currentDimension<6){
-      return function(a){
-        // if(a)
-        if(a.value==options[currentDimension].currentValue) return true
-        return false
-      }
+      return ret;
     }
   }
   this.getSeqEvent=function(){
     if(currentDimension<2){
-      return({type:'patch',destination:options[currentDimension].destination,value:[options[1].currentValue,options[0].currentValue,97]});
+      return new eventMessage({type:'patch',destination:options[currentDimension].destination,value:[options[0].currentValue,options[1].currentValue,97]});
     }else if(currentDimension<6){
-      return({type:'patch',destination:options[currentDimension].destination,value:options[currentDimension].currentValue});
+      return new eventMessage({type:'patch',destination:options[currentDimension].destination,value:[options[0].currentValue,options[currentDimension].currentValue,97]});
     }
   }
   this.engage=function(){

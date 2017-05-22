@@ -4,6 +4,9 @@ var midi = require('midi');
 // Set up a new output.
 var output = new midi.output();
 module.exports=function(environment){return new (function(){
+  if(!environment.patcher.destinations) environment.patcher.destinations={};
+  environment.patcher.destinations.midi=this;
+
   console.log("midi setup:");
   // Count the available output ports.
   console.log(output.getPortCount());
@@ -18,7 +21,7 @@ module.exports=function(environment){return new (function(){
   //   output.sendMessage([176,22,1]);
   // },100);
   this.receive=function(evt){
-    this.note(evt.data[0],evt.data[1],evt.data[2]);
+    this.note(evt.value[0],evt.value[1],evt.value[2]);
   }
   this.note=function(chan,num,velo){
     var b=0x00;
@@ -27,7 +30,7 @@ module.exports=function(environment){return new (function(){
     }else{
       b=0x90|(chan&0xf);
     }
-    console.log("midi"+[b,num&0xff,velo&0xff]);
+    // console.log("midi"+[b,num&0xff,velo&0xff]);
     output.sendMessage([b,num&0xff,velo&0xff]);
   }
   this.closeMidi=function(){
