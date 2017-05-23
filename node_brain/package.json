@@ -11,6 +11,7 @@
   "dependencies": {
     "onhandlers": "^1.0.3",
     "raspi-serial": "^3.1.0",
-    "serialport": "^4.0.7"
+    "serialport": "^4.0.7",
+    "shelljs": "^0.7.7"
   }
 }

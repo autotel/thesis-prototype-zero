@@ -8,7 +8,7 @@ module.exports=function(environment){return new(function(){
   base.call(this);
   var currentValue=0;
   var currentDimension=0;
-  var destNames=["midi","presets","grade","sequence","etc.."];
+  var destNames=["midi","presetKit","grade","sequence","etc.."];
   var options=[{
     name:'dest',
     currentValue:0,
@@ -63,11 +63,14 @@ module.exports=function(environment){return new(function(){
       return ret;
     }
   }
-  this.setFromSeqEvent=function(eventMessage){
-    options[0].currentValue=destNames.indexOf(eventMessage.destination);
-    options[1].currentValue=eventMessage.value[0];
-    options[2].currentValue=eventMessage.value[1];
-    options[3].currentValue=eventMessage.value[2];
+  this.setFromSeqEvent=function(evm){
+    if(!evm) evm=new eventMessage(this.getSeqEvent());
+    if(!evm.isEventMessage) evm=new eventMessage(this.getSeqEvent());
+    options[0].currentValue=destNames.indexOf(evm.destination);
+    options[1].currentValue=evm.value[0];
+    options[2].currentValue=evm.value[1];
+    options[3].currentValue=evm.value[2];
+    updateLcd();
   }
   this.getSeqEvent=function(){
     return new eventMessage({

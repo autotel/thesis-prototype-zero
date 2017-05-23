@@ -4,16 +4,18 @@ var activeModes={};
 var modeBeingTweaked="scaleSetter";
 var changeToMode=modeBeingTweaked;
 
-activeModes.scaleSetter=require('./mode-scaleSetter');
-activeModes.presetSetter=require('./mode-presetSetter');
 
 activeModes.sequencer_a=require('./mode-sequencer');
 activeModes.sequencer_b=require('./mode-sequencer');
 activeModes.sequencer_c=require('./mode-sequencer');
 activeModes.sequencer_d=require('./mode-sequencer');
 
+activeModes.scaleSetter=require('./mode-scaleSetter');
+activeModes.presetSetter=require('./mode-presetSetter');
 activeModes.performer=require('./mode-performer');
 activeModes.modeSelector=require('./mode-selector');
+
+activeModes.system=require('./mode-system');
 
 module.exports=function(environment){
   //transform function declarations into new objects providing the environment

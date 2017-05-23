@@ -1,7 +1,9 @@
 var destinationBase=require('./destinationBase');
 var eventMessage=require('../../datatype-eventMessage');
+const onhandlers=require('onhandlers');
 module.exports=function(environment){return new(function(){
   destinationBase.call(this,environment);
+  onhandlers.call(this);
   environment.patcher.destinations.grade=this;
 //console.log("..");
 //console.log(environment);
@@ -18,6 +20,7 @@ module.exports=function(environment){return new(function(){
     var noteWraped=thisDest.scaleArray[event.value[1]%thisDest.scaleArray.length];
     newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/12));
     environment.patcher.receiveEvent(newEvent);
+    this.handle('receive',event);
     // thisDest.lastUsed=noteWraped;
     // environment.patcher.destinations[myDestination];
   }
