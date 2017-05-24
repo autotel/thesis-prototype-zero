@@ -148,10 +148,10 @@ module.exports=function(environment){return new (function(){
         });
       }
       var sendScreenA=function(str){
-        sendString(tHeaders.screenA,str);
+        sendString(tHeaders.screenA,str.substring(0,16));
       }
       var sendScreenB=function(str){
-        sendString(tHeaders.screenB,str);
+        sendString(tHeaders.screenB,str.substring(0,16));
       }
       this.sendScreenA=sendScreenA;
       this.sendScreenB=sendScreenB;
