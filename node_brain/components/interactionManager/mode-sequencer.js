@@ -5,6 +5,7 @@ var base=require('./interactionModeBase');
 module.exports=function(environment){
   var selectors={};
   selectors.dimension=require('./submode-dimensionSelector');
+  selectors.timeConfig=require('./submode-2dConfigurator');
   //pendant: the sequencer functionality should be in the destinations folder,
   //as to separate the functionality (which can receive events) from the interaction
   var sequencer=require('../destinations/sequencer');
@@ -26,6 +27,42 @@ module.exports=function(environment){
       selectors[a]=selectors[a](environment);
     }
 
+    selectors.timeConfig.initOptions({
+      'look loop':{
+        value:4,
+        getValueName:function(a){ return "%"+a },
+        maximumValue:256,
+      },
+      'look page':{
+        getValueName:function(a){ return a },
+        maximumValue:(256/16),
+      },
+      'loop length':{
+        value:16,
+        getValueName:function(a){ return a },
+        maximumValue:256,
+        minimumValue:1,
+      },
+      'loop displace':{
+        value:0,
+        getValueName:function(a){ if(a>0){ return "+"+a }else{ return a } },
+        maximumValue:4,
+        minimumValue:-4,
+      },
+      'step length':{
+        value:12,
+        getValueName:function(a){ return a },
+        maximumValue:16*12,
+        minimumValue:1,
+      },
+    });
+
+    var lookLoop=selectors.timeConfig.options[0];
+    var selectedPage=selectors.timeConfig.options[1];
+    var loopLength=selectors.timeConfig.options[2];
+    var loopDisplace=selectors.timeConfig.options[3];
+    var stepLength=selectors.timeConfig.options[4];
+    // console.log(":)",loopLength);
     var lastsubSelectorEngaged=0;
     var subSelectorEngaged=false;
 
@@ -107,9 +144,16 @@ module.exports=function(environment){
       // console.log(">"+ret.toString(16));
       return ret;
     }
+
     //some events run regardless of engagement. in these cases, the screen refresh is conditional
     function step(evt){
-      currentStep=evt.step;
+
+      currentStep++;
+      currentStep+=loopDisplace.value;
+      loopDisplace.value=0;
+      if(currentStep>=loopLength.value) currentStep%=loopLength.value;
+      if(currentStep<0) currentStep%=loopLength.value;
+
       if(engaged)
       if(subSelectorEngaged===false)
       updateLeds();
@@ -122,6 +166,10 @@ module.exports=function(environment){
             environment.patcher.receiveEvent(stepData);
           // }else
         }
+      }
+
+      if(lastsubSelectorEngaged==="timeConfig"){
+        selectors.timeConfig.updateLcd();
       }
     }
     var focusedFilter=new selectors.dimension.Filter({destination:true,header:true,value_a:true});
@@ -154,10 +202,10 @@ module.exports=function(environment){
           // console.log(selectors.dimension.getSeqEvent());
           store(evt.data[0],/*currentModulus,*/selectors.dimension.getSeqEvent());
         }
+        updateLeds();
       }else{
         selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
       }
-      updateLeds();
     }
     this.eventResponses.buttonMatrixReleased=function(evt){
       if(subSelectorEngaged===false){
@@ -179,6 +227,10 @@ module.exports=function(environment){
         subSelectorEngaged='dimension';
         lastsubSelectorEngaged='dimension';
         selectors.dimension.engage();
+      }else if(evt.data[0]==2){
+        subSelectorEngaged='timeConfig';
+        lastsubSelectorEngaged='timeConfig';
+        selectors.timeConfig.engage();
       }else if(evt.data[0]==3){
         shiftPressed=true;
       }
@@ -187,6 +239,9 @@ module.exports=function(environment){
       if(evt.data[0]==1){
         subSelectorEngaged=false;
         selectors.dimension.disengage();
+      }else if(evt.data[0]==2){
+        subSelectorEngaged=false;
+        selectors.timeConfig.disengage();
       }else if(evt.data[0]==3){
         shiftPressed=false;
       }
