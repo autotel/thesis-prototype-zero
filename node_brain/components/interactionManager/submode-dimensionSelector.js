@@ -8,28 +8,44 @@ module.exports=function(environment){return new(function(){
   base.call(this);
   var currentValue=0;
   var currentDimension=0;
-  var destNames=["midi","presetKit","grade","sequence","etc.."];
+  var destNames=environment.patcher.getDestList();
+
+
+  destNames.push("none");
+
   var options=[{
     name:'dest',
     currentValue:0,
+    maximumValue:destNames.length-1,
+    minimumValue:0,
     valueNames:function(value){
+      if(destNames.length!==environment.patcher.destinations.length){
+        destNames=environment.patcher.getDestList();
+        options[0].maximumValue=destNames.length-1;
+      }
       return destNames[value];
     }
   },{
     name:'header',
     currentValue:0,
+    maximumValue:255,
+    minimumValue:0,
     valueNames:function(value){
       return "C"+(value&0x0F);
     }
   },{
     name:'value a',
     currentValue:45,
+    maximumValue:255,
+    minimumValue:0,
     valueNames:function(value){
       return value;
     }
   },{
     name:'value b',
     currentValue:97,
+    maximumValue:255,
+    minimumValue:0,
     valueNames:function(value){
       return value;
     }
@@ -41,6 +57,7 @@ module.exports=function(environment){return new(function(){
   }
   function updateLcd(){
     var displayValue=options[currentDimension].valueNames(options[currentDimension].currentValue);
+
     environment.hardware.sendScreenB(""+options[currentDimension].name+RARROW+displayValue);
 
   }
@@ -92,9 +109,17 @@ module.exports=function(environment){return new(function(){
     }
   }
   this.eventResponses.encoderScroll=function(evt){
+    var currentOption=options[currentDimension];
     if(evt.data[1]==0xff)
-      options[currentDimension].currentValue--;
-    else  options[currentDimension].currentValue++;
+      currentOption.currentValue--;
+    else  currentOption.currentValue++;
+
+    if(currentOption.currentValue<currentOption.minimumValue){
+      currentOption.currentValue=currentOption.maximumValue;
+    }
+    if(currentOption.currentValue>currentOption.maximumValue){
+      currentOption.currentValue=currentOption.minimumValue;
+    }
 
     updateLcd();
   }

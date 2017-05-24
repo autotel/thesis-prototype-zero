@@ -18,20 +18,32 @@ var environment=new(function(){
 
   this.patcher=new(function(){
     var thisPatcher=this;
+    var destinationList=[];
     if(!this.destinations) this.destinations={};
+    this.getDestList=function(){
+      destinationList=[];
+      for(var a in this.destinations){
+        destinationList.push(a);
+      }
+      return destinationList;
+    }
     this.receiveEvent=function(evt){
       if(evt.destination){
 //console.log(evt);
 //console.log(thisPatcher.destinations);
-        thisPatcher.destinations[evt.destination].receive(evt);
+        if(thisPatcher.destinations[evt.destination]){
+          thisPatcher.destinations[evt.destination].receive(evt);
+        }else{
+          console.log("invalid "+evt.destination+" destination");
+        }
       }else{
         console.warn("event didn't have destination", evt);
       }
 //console.log("reve",evt);
-      if(evt.destination=="midi"){
-        var val=evt.value;
-        environment.midi.note(val[0],val[1],val[2]);
-      }
+      // if(evt.destination=="midi"){
+      //   var val=evt.value;
+      //   environment.midi.note(val[0],val[1],val[2]);
+      // }
     }
   })();
 
@@ -39,7 +51,7 @@ var environment=new(function(){
   return this;
 })();
 
-const midi=require('./components/midi')(environment);
+const midi=require('./components/destinations/midi')(environment);
 environment.midi=midi;
 const hardware=require('./components/uiHardware')(environment);
 environment.hardware=hardware;

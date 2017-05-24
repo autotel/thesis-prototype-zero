@@ -111,6 +111,8 @@ void sendToBrain(byte header, int len) {
   for (int a = 0; a < len; a++) {
     Serial.write(sendToBrainData[a]);
   }
+  //this ensures that there is a healthy pause between messages
+  Serial.write(TH_null);
 }
 
 

@@ -3,13 +3,13 @@ var base=require('./interactionModeBase');
 var shell = require('shelljs');
 
 var fingerMap=0x0000;
-var functions=["shutdown","exit process"];
+var functions=["shutdown","exit process","restart process","restart w. UCA"];
 var lastFunctionPressed=false;
 var confirm=0;
 module.exports=function(environment){return new(function(){
   base.call(this);
   function updateHardware(){
-    environment.hardware.draw([fingerMap,fingerMap,0x0003]);
+    environment.hardware.draw([fingerMap,fingerMap|0x000C,0x0003]);
   }
   this.engage=function(){
     environment.hardware.sendScreenA("Performer");
@@ -49,6 +49,31 @@ module.exports=function(environment){return new(function(){
         setTimeout(function(){
           process.exit();
         },1000);
+      }
+      confirm++;
+    }else if(selectedFunction=="restart process"){
+      lastFunctionPressed=selectedFunction;
+      environment.hardware.sendScreenA("confirm restart app");
+      environment.hardware.sendScreenB("press again");
+      if(confirm>0){
+        environment.hardware.sendScreenA("restarting...");
+        shell.exec('node restartApp.js');
+
+        setTimeout(function(){
+          process.exit();
+        },500);
+      }
+      confirm++;
+    }else if(selectedFunction=="restart w. UCA"){
+      lastFunctionPressed=selectedFunction;
+      environment.hardware.sendScreenA("confirm restart app");
+      environment.hardware.sendScreenB("press again");
+      if(confirm>0){
+        environment.hardware.sendScreenA("restarting...");
+        shell.exec('node useUCA222.js');
+        setTimeout(function(){
+          process.exit();
+        },500);
       }
       confirm++;
     }

@@ -15,7 +15,9 @@ activeModes.presetSetter=require('./mode-presetSetter');
 activeModes.performer=require('./mode-performer');
 activeModes.modeSelector=require('./mode-selector');
 
+activeModes.midiEdit=require('./mode-midiEdit');
 activeModes.system=require('./mode-system');
+
 
 module.exports=function(environment){
   //transform function declarations into new objects providing the environment
