@@ -53,7 +53,15 @@ module.exports=function(environment){
             console.log("a:"+a);
             console.log(notesInPlay[a]);
             environment.patcher.receiveEvent(notesInPlay[a].sequencerEvent.off);
+            notesInPlay[a]=false;
           }
+        }
+        //splicing requires backward iteration
+        var a=notesInPlay.length;
+        while(a>0){
+          if(notesInPlay[a]===false)
+            notesInPlay.splice(a,1);
+          a--;
         }
         stepCounter++;
       }
@@ -137,7 +145,7 @@ module.exports=function(environment){
       if(data){
         var cancel=false;
         for(var a in patData[step]){
-          if(patData[step][a].on.compareTo(data,['destination','value'])){
+          if(patData[step][a].on.compareTo(data.on,['destination','value'])){
             cancel=true;
             break;
           }
@@ -297,15 +305,22 @@ module.exports=function(environment){
 
 
 
+      var drawStep=0;
       var playHeadBmp=0;
-      //draw multi playheads to represent the lookLoop
-      var drawStep=currentStep%lookLoop.value;
-      var stepFolds=Math.ceil(loopLength.value/lookLoop.value);
-
-      for(var a=0; a<stepFolds;a++){
-        playHeadBmp|=0x1<<drawStep+a*lookLoop.value;
+      //"render" play header:
+      //if we are in modulus view, it renders many playheads
+      if(lastsubSelectorEngaged=="timeConfig"){
+        drawStep=currentStep%lookLoop.value;
+        var stepFolds=Math.ceil(loopLength.value/lookLoop.value);
+        for(var a=0; a<stepFolds;a++){
+          playHeadBmp|=0x1<<drawStep+a*lookLoop.value;
+        }
+        playHeadBmp&=0xFFFF;
+      }else{
+        //otherwise, normal one header
+        drawStep=currentStep%loopLength.value;
+        var playHeadBmp=0x1<<drawStep;
       }
-      playHeadBmp&=0xFFFF;
 
       environment.hardware.draw([
           playHeadBmp^  mostImportant,
