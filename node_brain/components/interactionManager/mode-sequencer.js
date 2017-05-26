@@ -1,5 +1,6 @@
 'use strict';
 var base=require('./interactionModeBase');
+var eventMessage=require('../../datatype-eventMessage');
 
 /*
 pendant: it gets quite hard to understand what are the roles of
@@ -50,8 +51,8 @@ module.exports=function(environment){
       this.step=function(){
         for(var a in notesInPlay){
           if(notesInPlay[a].offInStep==stepCounter){
-            console.log("a:"+a);
-            console.log(notesInPlay[a]);
+            // console.log("a:"+a);
+            // console.log(notesInPlay[a]);
             environment.patcher.receiveEvent(notesInPlay[a].sequencerEvent.off);
             notesInPlay[a]=false;
           }
@@ -90,7 +91,13 @@ module.exports=function(environment){
         maximumValue:256,
         minimumValue:1,
       },
-      'l fold':{//duplicate/ divide length
+      'fold!':{//duplicate/ divide length
+        value:4,
+        getValueName:function(a){ return a },
+        maximumValue:9,
+        minimumValue:0,
+      },
+      'fold ':{
         value:4,
         getValueName:function(a){ return a },
         maximumValue:9,
@@ -114,11 +121,12 @@ module.exports=function(environment){
     var selectedPage=selectors.timeConfig.options[1];
     var loopLength=selectors.timeConfig.options[2];
     var loopFold=selectors.timeConfig.options[3];
-    var loopDisplace=selectors.timeConfig.options[4];
-    var stepLength=selectors.timeConfig.options[5];
+    var loopUndestructiveFold=selectors.timeConfig.options[4];
+    var loopDisplace=selectors.timeConfig.options[5];
+    var stepLength=selectors.timeConfig.options[6];
 
     loopFold.base=2;
-    loopFold.getValueName=function(a){
+    loopFold.getValueName=loopUndestructiveFold.getValueName=function(a){
       return loopFold.base+"^"+loopFold.value+"="+loopLength.value;
     }
     loopFold.valueChangeFunction=function(absolute,delta){
@@ -132,7 +140,19 @@ module.exports=function(environment){
         loopFold.value+=delta;
         loopLength.value=Math.pow(loopFold.base,loopFold.value);
       }
-      duplicateSequence(loopLength.value/oldLength,0);
+      duplicateSequence(0,oldLength,loopLength.value/oldLength);
+    }
+    loopUndestructiveFold.valueChangeFunction=function(absolute,delta){
+      if(!delta) delta=absolute-loopFold.value;
+      //if(!absolute) absolute=loopFold.value+delta;
+      var oldLength=loopLength.value;
+      if(shiftPressed){
+        loopFold.base+=delta;
+        loopLength.value=Math.pow(loopFold.base,loopFold.value);
+      }else{
+        loopFold.value+=delta;
+        loopLength.value=Math.pow(loopFold.base,loopFold.value);
+      }
     }
 
     // console.log(":)",loopLength);
@@ -257,13 +277,34 @@ module.exports=function(environment){
       return ret;
     };
     var clearStepRange=function(from,to){
-
+      for(var step=to; step>from; step--){
+        //maybe this iteration is unnecesary?
+        for(var a in patData[step]){
+          delete patData[step][a];
+        }
+        delete patData[step];
+      }
     }
-    var duplicateSequence=function(startingStep,endingStep,factor){
-      if(factor>1){
-        clearStepRange();
+    var duplicateSequence=function(startingStep,originalEndingStep,multiplyFactor){
+      var initialStepSize=originalEndingStep-startingStep;
+      if(multiplyFactor>1){
+        clearStepRange(originalEndingStep+1,initialStepSize*(multiplyFactor-1));
+        //starts in 1 because the 0 is the currently existing one
+        for(var duplicationNumber=1; duplicationNumber<multiplyFactor; duplicationNumber++){
+          for(var step=startingStep; step<originalEndingStep; step++){
+            // var testc=0;
+            if(patData[step])
+            for(var a=0; a<patData[step].length; a++){
+              // testc++;
+              var targetStep=(initialStepSize*duplicationNumber)+step;
+              // console.log(duplicationNumber,step,testc,targetStep);
+              if(!patData[targetStep]) patData[targetStep]=[];
+              patData[targetStep].push(new eventMessage(patData[step][a]));
+            }
+          }
+        }
       }else{
-        //??if shortened, clear all the steps after???
+        clearStepRange(startingStep,originalEndingStep*multiplyFactor);
       }
     }
 
@@ -376,7 +417,7 @@ module.exports=function(environment){
 
         //if shift is pressed, there is only one repetition throughfold required, making the edition more prone to delete.
         if(shiftPressed){ if(throughfold!==true) throughfold=throughfold>0; }else{ throughfold=throughfold===true; }
-        console.log(throughfold);
+        // console.log(throughfold);
         if(throughfold){
           //there is an event on every fold of the lookloop
           eachFold(button,function(step){
