@@ -75,7 +75,7 @@ module.exports=function(environment){
 
     selectors.timeConfig.initOptions({
       'look loop':{
-        value:4,
+        value:0,
         getValueName:function(a){ if(a==0) return "off"; return "%"+a },
         maximumValue:256,
         minimumValue:0,
@@ -90,11 +90,11 @@ module.exports=function(environment){
         maximumValue:256,
         minimumValue:1,
       },
-      'loop fold':{//duplicate/ divide length
-        value:16,
+      'l fold':{//duplicate/ divide length
+        value:4,
         getValueName:function(a){ return a },
-        maximumValue:16,
-        minimumValue:1,
+        maximumValue:9,
+        minimumValue:0,
       },
       'loop displace':{
         value:0,
@@ -113,8 +113,28 @@ module.exports=function(environment){
     var lookLoop=selectors.timeConfig.options[0];
     var selectedPage=selectors.timeConfig.options[1];
     var loopLength=selectors.timeConfig.options[2];
-    var loopDisplace=selectors.timeConfig.options[3];
-    var stepLength=selectors.timeConfig.options[4];
+    var loopFold=selectors.timeConfig.options[3];
+    var loopDisplace=selectors.timeConfig.options[4];
+    var stepLength=selectors.timeConfig.options[5];
+
+    loopFold.base=2;
+    loopFold.getValueName=function(a){
+      return loopFold.base+"^"+loopFold.value+"="+loopLength.value;
+    }
+    loopFold.valueChangeFunction=function(absolute,delta){
+      if(!delta) delta=absolute-loopFold.value;
+      //if(!absolute) absolute=loopFold.value+delta;
+      var oldLength=loopLength.value;
+      if(shiftPressed){
+        loopFold.base+=delta;
+        loopLength.value=Math.pow(loopFold.base,loopFold.value);
+      }else{
+        loopFold.value+=delta;
+        loopLength.value=Math.pow(loopFold.base,loopFold.value);
+      }
+      duplicateSequence(loopLength.value/oldLength,0);
+    }
+
     // console.log(":)",loopLength);
     var lastsubSelectorEngaged=0;
     var subSelectorEngaged=false;
@@ -236,6 +256,17 @@ module.exports=function(environment){
       // console.log("ret is "+ret);
       return ret;
     };
+    var clearStepRange=function(from,to){
+
+    }
+    var duplicateSequence=function(startingStep,endingStep,factor){
+      if(factor>1){
+        clearStepRange();
+      }else{
+        //??if shortened, clear all the steps after???
+      }
+    }
+
     var getBitmapx16=function(filter, requireAllFold){
       var ret=0x0000;
       if(requireAllFold){

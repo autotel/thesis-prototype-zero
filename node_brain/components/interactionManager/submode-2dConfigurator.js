@@ -52,11 +52,19 @@ module.exports=function(environment){return new(function(){
   this.eventResponses.encoderScroll=function(evt){
     var currentOption=options[currentSelection];
     if(evt.data[1]==0xff){
-      if(currentOption.value>currentOption.minimumValue)
-        currentOption.value--;
+      if(currentOption.valueChangeFunction){
+        currentOption.valueChangeFunction(false,-1);
+      }else{
+        if(currentOption.value>currentOption.minimumValue)
+          currentOption.value--;
+      }
     }else{
-      if(currentOption.value<currentOption.maximumValue)
-        currentOption.value++;
+      if(currentOption.valueChangeFunction){
+        currentOption.valueChangeFunction(false,+1);
+      }else{
+        if(currentOption.value<currentOption.maximumValue)
+          currentOption.value++;
+      }
     }
     updateLcd();
   }
