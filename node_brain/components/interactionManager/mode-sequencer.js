@@ -76,9 +76,9 @@ module.exports=function(environment){
     selectors.timeConfig.initOptions({
       'look loop':{
         value:4,
-        getValueName:function(a){ return "%"+a },
+        getValueName:function(a){ if(a==0) return "off"; return "%"+a },
         maximumValue:256,
-        minimumValue:1,
+        minimumValue:0,
       },
       'look page':{
         getValueName:function(a){ return a },
@@ -198,8 +198,8 @@ module.exports=function(environment){
 
     function eachFold(button,callback){
       var len=loopLength.value;
-      var look=lookLoop.value;
-      button%=lookLoop.value;
+      var look=lookLoop.value||len;
+      button%=look;
       //how many repetitions of the lookloop are represented under this button?
       var stepFolds;
       if(len%look>button){
@@ -310,10 +310,10 @@ module.exports=function(environment){
       //"render" play header:
       //if we are in modulus view, it renders many playheads
       if(lastsubSelectorEngaged=="timeConfig"){
-        drawStep=currentStep%lookLoop.value;
-        var stepFolds=Math.ceil(loopLength.value/lookLoop.value);
+        drawStep=currentStep%(lookLoop.value||loopLength.value);
+        var stepFolds=Math.ceil(loopLength.value/(lookLoop.value||loopLength.value));
         for(var a=0; a<stepFolds;a++){
-          playHeadBmp|=0x1<<drawStep+a*lookLoop.value;
+          playHeadBmp|=0x1<<drawStep+a*(lookLoop.value||loopLength.value);
         }
         playHeadBmp&=0xFFFF;
       }else{
