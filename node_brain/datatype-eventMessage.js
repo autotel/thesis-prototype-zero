@@ -9,5 +9,12 @@ module.exports=function(properties){
         this[a]=JSON.parse(JSON.stringify(data[a]));
     }
   }
+  this.compareTo=function(otherEvent,propertyList){
+    for(var a of propertyList){
+      if(JSON.parse(JSON.stringify(this[a]))!=JSON.parse(JSON.stringify(otherEvent[a])))
+      return false;
+    }
+    return true;
+  }
   this.set(properties);
 }

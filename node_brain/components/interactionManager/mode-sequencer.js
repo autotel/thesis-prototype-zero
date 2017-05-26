@@ -1,6 +1,11 @@
 'use strict';
 var base=require('./interactionModeBase');
 
+/*
+pendant: it gets quite hard to understand what are the roles of
+the color hierarchy should be based on the lastsubSelectorEngaged,
+if it was the timeConfig, the main color is given to the modularly repeated
+if it was the dimension, the main color is given to the ones of the same option*/
 
 module.exports=function(environment){
   var selectors={};
@@ -21,6 +26,24 @@ module.exports=function(environment){
     var currentModulus=16;
 
 
+    var Notes=new(function(){
+      this.noteBuffer=[];
+      this.startAdding=function(button,newStepEv){
+        if(!note.stepLength){
+          note.stepLength=1;
+        }
+        eachFold(button,function(step){
+          storeNoDup(step,newStepEv);
+        });
+      }
+      this.finishAdding=function(button){}
+      this.step=function(){
+        // for(var a in noteBuffer){
+        //   noteBuffer[a].stepLength++;
+        // }
+      }
+    })();
+
   //console.log(selectors);
     for(var a in selectors){
   //console.log("init subs "+a);
@@ -32,6 +55,7 @@ module.exports=function(environment){
         value:4,
         getValueName:function(a){ return "%"+a },
         maximumValue:256,
+        minimumValue:1,
       },
       'look page':{
         getValueName:function(a){ return a },
@@ -41,6 +65,12 @@ module.exports=function(environment){
         value:16,
         getValueName:function(a){ return a },
         maximumValue:256,
+        minimumValue:1,
+      },
+      'loop fold':{//duplicate/ divide length
+        value:16,
+        getValueName:function(a){ return a },
+        maximumValue:16,
         minimumValue:1,
       },
       'loop displace':{
@@ -74,14 +104,29 @@ module.exports=function(environment){
     this.init=function(){
       environment.metronome.on('step',step);
     }
-    environment.patcher.destinations.sequencer=this;
-    this.receiveEvent=function(){
-  //console.log("not implemented yet");
-    }
+    // environment.patcher.destinations.sequencer=this;
+
+  //   this.receiveEvent=function(event){
+  // //console.log("not implemented yet");
+  //   }
     var store=function(step,data){
       if(!patData[step]) patData[step]=[];
       if(data){
         patData[step].push(data);
+      }
+    }
+    var storeNoDup=function(step,data){
+      if(!patData[step]) patData[step]=[];
+      if(data){
+        var cancel=false;
+        for(var a in patData[step]){
+          if(patData[step][a].compareTo(data,['destination','value'])){
+            cancel=true;
+            break;
+          }
+        }
+        if(!cancel)
+          patData[step].push(data);
       }
     }
     var clearStepNewest=function(step){
@@ -124,22 +169,69 @@ module.exports=function(environment){
         }
       return false;
     };
-    var getBitmapx16=function(filter){
-      var ret=0x0000;
-      if(filter){
-        for(var step=0; step<16;step++)
-          if(patData[step])
-            for(var stepData of patData[step])
-              if(filter(stepData)){
-                ret|=0x1<<step;
-              }
+
+    function eachFold(button,callback){
+      var len=loopLength.value;
+      var look=lookLoop.value;
+      button%=lookLoop.value;
+      //how many repetitions of the lookloop are represented under this button?
+      var stepFolds;
+      if(len%look>button){
+        stepFolds=Math.ceil(len/look);
       }else{
-        for(var step=0; step<16;step++)
-          if(patData[step])
-            for(var stepData of patData[step])
-              if(stepData){
-                ret|=0x1<<step;
-              }
+        stepFolds=Math.floor(len/look);
+      }
+      // console.log("start check folds:"+stepFolds+" len:"+len+" look:"+look);
+      for(var foldNumber=0; foldNumber<stepFolds; foldNumber++){
+        callback((look*foldNumber)+button);
+      }
+      return {stepFolds:stepFolds}
+    }
+
+    //does the event under the button repeat througout all the repetitions of lookLoop?
+    var getThroughfoldBoolean=function(button,filterFunction){
+      var ret=0;
+      var stepFolds=eachFold(button,function(step){
+        if(patData[step])
+          if(typeof filterFunction==="function"){
+            // console.log("   check bt"+step);
+            //yes, every step is an array
+            for(var stepData of patData[step]){
+              if(filterFunction(stepData)) ret ++;
+            }
+          }else{
+            // console.log("   check bt"+step);
+            for(var stepData of patData[step]){
+              if(patData[step]||false) ret ++;
+            }
+          }
+      }).stepFolds;
+      //if the step was repeated throughout all the folds, the return is true.
+      if(ret>=stepFolds) ret=true; //ret can be higher than twofold because each step can hold any n of events
+      // console.log("ret is "+ret);
+      return ret;
+    };
+    var getBitmapx16=function(filter, requireAllFold){
+      var ret=0x0000;
+      if(requireAllFold){
+        for(var button=0; button<16;button++)
+          if(getThroughfoldBoolean(button,filter)===requireAllFold) ret|=0x1<<button;
+      }else{
+        if(filter){
+          for(var button=0; button<16;button++)
+            if(patData[button])
+              for(var stepData of patData[button])
+                if(filter(stepData)){
+                  ret|=0x1<<button;
+                }
+        }else{
+          for(var button=0; button<16;button++)
+            if(patData[button])
+              for(var stepData of patData[button])
+                if(stepData){
+                  ret|=0x1<<button;
+                }
+        }
       }
       // console.log(">"+ret.toString(16));
       return ret;
@@ -154,9 +246,6 @@ module.exports=function(environment){
       if(currentStep>=loopLength.value) currentStep%=loopLength.value;
       if(currentStep<0) currentStep%=loopLength.value;
 
-      if(engaged)
-      if(subSelectorEngaged===false)
-      updateLeds();
 
       if(getBoolean(currentStep)){
         for(var stepData of patData[currentStep]){
@@ -164,12 +253,17 @@ module.exports=function(environment){
           // }else if(stepData.destination=="midi"){
             // var val=stepData.value;
             environment.patcher.receiveEvent(stepData);
+            noteOffr.append(stepData);
           // }else
         }
       }
 
-      if(lastsubSelectorEngaged==="timeConfig"){
-        selectors.timeConfig.updateLcd();
+      if(engaged){
+        if(subSelectorEngaged===false)
+        updateLeds();//, console.log("step"+currentStep);
+        if(lastsubSelectorEngaged==="timeConfig"){
+          selectors.timeConfig.updateLcd();
+        }
       }
     }
     var focusedFilter=new selectors.dimension.Filter({destination:true,header:true,value_a:true});
@@ -178,12 +272,28 @@ module.exports=function(environment){
     function updateLeds(){
       //actually should display also according to the currently being tweaked
 
-      var mostImportant=getBitmapx16(shiftPressed?moreBluredFilter:focusedFilter);
+      var mostImportant=getBitmapx16(shiftPressed?moreBluredFilter:focusedFilter,lastsubSelectorEngaged=="timeConfig");
+      var mediumImportant=getBitmapx16(moreBluredFilter,lastsubSelectorEngaged=="timeConfig");
+      var leastImportant=getBitmapx16(bluredFilter);//red, apparently
 
-      // var mediumImportant=getBitmapx16(bluredFilter);
-      var leastImportant=getBitmapx16(moreBluredFilter)
-      var playHeadBmp=0x1<<currentStep;
-      environment.hardware.draw([playHeadBmp,leastImportant|(playHeadBmp^mostImportant),playHeadBmp|mostImportant]);
+
+
+
+      var playHeadBmp=0;
+      //draw multi playheads to represent the lookLoop
+      var drawStep=currentStep%lookLoop.value;
+      var stepFolds=Math.ceil(loopLength.value/lookLoop.value);
+
+      for(var a=0; a<stepFolds;a++){
+        playHeadBmp|=0x1<<drawStep+a*lookLoop.value;
+      }
+      playHeadBmp&=0xFFFF;
+
+      environment.hardware.draw([
+                        mostImportant,
+          playHeadBmp|  mostImportant|  mediumImportant,
+        ( playHeadBmp^  mostImportant)| mediumImportant|  leastImportant,
+      ]);
     }
 
     this.engage=function(){
@@ -196,11 +306,27 @@ module.exports=function(environment){
     }
     this.eventResponses.buttonMatrixPressed=function(evt){
       if(subSelectorEngaged===false){
-        if(clearStepByFilter(evt.data[0],shiftPressed?moreBluredFilter:focusedFilter)){
-        }else{
-          // console.log(selectors.dimension);
-          // console.log(selectors.dimension.getSeqEvent());
-          store(evt.data[0],/*currentModulus,*/selectors.dimension.getSeqEvent());
+        var button=evt.data[0];
+        var currentFilter=shiftPressed?moreBluredFilter:focusedFilter;
+        var throughfold=getThroughfoldBoolean(button,currentFilter);
+
+        //if shift is pressed, there is only one repetition throughfold required, making the edition more prone to delete.
+        if(shiftPressed){ if(throughfold!==true) throughfold=throughfold>0; }else{ throughfold=throughfold===true; }
+        console.log(throughfold);
+        if(throughfold){
+          //there is an event on every fold of the lookloop
+          eachFold(button,function(step){
+            clearStepByFilter(step,currentFilter)
+          });
+        }/*else if(trhoughFold>0){
+          //there is an event on some folds of the lookloop
+          var newStepEv=selectors.dimension.getSeqEvent();
+          eachFold(button,function(step){
+            store(step,newStepEv);
+          });
+        }*/else{
+          //on every repetition is empty
+          Notes.startAdding(button,selectors.dimension.getSeqEvent());
         }
         updateLeds();
       }else{
@@ -221,6 +347,18 @@ module.exports=function(environment){
       //   environment.hardware.sendScreenB(String.fromCharCode(evt.data[0])+"-"+evt.data[0]);
       // }else{
       // }
+    }
+    this.eventResponses.encoderPressed=function(evt){
+      /*/
+      while held, the matrix becomes a pad, in each pad it is assigned one of the
+      options within the current parameter being tweaked, and on pressed it previews it
+      and also it selects it.
+
+      if shift+encoder+one matrix button is pressed it lists all the events in that step
+      or perhaps explodes that single step in the whole matrix, allowing detailed change
+      to a step
+
+      */
     }
     this.eventResponses.selectorButtonPressed=function(evt){
       if(evt.data[0]==1){

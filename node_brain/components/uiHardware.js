@@ -96,6 +96,7 @@ module.exports=function(environment){return new (function(){
       serial.write(tHeaders.hello);
       console.log("wrote hello");
 
+
       var sendx8=function(header,dataArray){
         lazyStack.enq(function(){
           if(dataArray.constructor !== Array)
@@ -189,6 +190,9 @@ module.exports=function(environment){return new (function(){
           environment.handle(event.type,event);
         }
       });
+
+
+      
     });
   });
   return this;

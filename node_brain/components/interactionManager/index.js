@@ -59,4 +59,6 @@ module.exports=function(environment){
     }
 
   });
+  // environment.hardware.sendScreenA("ready");
+  // environment.hardware.sendScreenB("");
 }
