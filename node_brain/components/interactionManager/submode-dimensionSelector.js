@@ -66,17 +66,18 @@ module.exports=function(environment){return new(function(){
     this.criteria=criteria;
     var criteria=this.criteria;
     return function(message){
+      var onMessage=message.on
       var ret=true;
       if(criteria){
         // console.log(criteria);
         if(criteria.destination)
-          ret&=(message.destination===options[0].valueNames(options[0].currentValue));
+          ret&=(onMessage.destination===options[0].valueNames(options[0].currentValue));
         if(criteria.header)
-          ret&=(message.value[0]===options[1].currentValue);
+          ret&=(onMessage.value[0]===options[1].currentValue);
         if(criteria.value_a)
-          ret&=(message.value[1]===options[2].currentValue);
+          ret&=(onMessage.value[1]===options[2].currentValue);
         if(criteria.value_b)
-          ret&=(message.value[2]===options[3].currentValue);
+          ret&=(onMessage.value[2]===options[3].currentValue);
       }
       return ret;
     }
@@ -91,10 +92,18 @@ module.exports=function(environment){return new(function(){
     updateLcd();
   }
   this.getSeqEvent=function(){
-    return new eventMessage({
-      destination:options[0].valueNames(options[0].currentValue),
-      value:[options[1].currentValue,options[2].currentValue,options[3].currentValue]
-    });
+    var newDest=options[0].valueNames(options[0].currentValue);
+    return {
+      on:new eventMessage({
+        destination:newDest,
+        value:[options[1].currentValue,options[2].currentValue,options[3].currentValue]
+      }),
+      off:new eventMessage({
+        destination:newDest,
+        value:[options[1].currentValue,options[2].currentValue,0]
+      }),
+      stepLength:1
+    };
   }
   this.engage=function(){
     // console.log("engage mode selector");

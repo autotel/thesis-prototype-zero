@@ -26,21 +26,36 @@ module.exports=function(environment){
     var currentModulus=16;
 
 
-    var Notes=new(function(){
-      this.noteBuffer=[];
+    var NoteLenManager=new(function(){
+      var notesInCreation=[];
+      var notesInPlay=[];
+      var stepCounter=0;
       this.startAdding=function(button,newStepEv){
-        if(!note.stepLength){
-          note.stepLength=1;
+        if(!newStepEv.stepLength){
+          newStepEv.stepLength=1;
         }
         eachFold(button,function(step){
-          storeNoDup(step,newStepEv);
+          var added=storeNoDup(step,newStepEv);
+          if(added) notesInCreation[button]={sequencerEvent:added,started:stepCounter};
         });
       }
-      this.finishAdding=function(button){}
+      this.finishAdding=function(button){
+        if(notesInCreation[button])
+          notesInCreation[button].sequencerEvent.stepLength=stepCounter-notesInCreation[button].started;
+      }
+      this.noteStarted=function(stepEvent){
+        if(!stepEvent.stepLength)stepEvent.stepLength=1;
+        notesInPlay.push({sequencerEvent:stepEvent,offInStep:stepCounter+stepEvent.stepLength});
+      }
       this.step=function(){
-        // for(var a in noteBuffer){
-        //   noteBuffer[a].stepLength++;
-        // }
+        for(var a in notesInPlay){
+          if(notesInPlay[a].offInStep==stepCounter){
+            console.log("a:"+a);
+            console.log(notesInPlay[a]);
+            environment.patcher.receiveEvent(notesInPlay[a].sequencerEvent.off);
+          }
+        }
+        stepCounter++;
       }
     })();
 
@@ -113,20 +128,23 @@ module.exports=function(environment){
       if(!patData[step]) patData[step]=[];
       if(data){
         patData[step].push(data);
+        return data;
       }
     }
     var storeNoDup=function(step,data){
+      var ret=false;
       if(!patData[step]) patData[step]=[];
       if(data){
         var cancel=false;
         for(var a in patData[step]){
-          if(patData[step][a].compareTo(data,['destination','value'])){
+          if(patData[step][a].on.compareTo(data,['destination','value'])){
             cancel=true;
             break;
           }
         }
-        if(!cancel)
-          patData[step].push(data);
+        if(!cancel){
+          patData[step].push(data); return data;
+        }
       }
     }
     var clearStepNewest=function(step){
@@ -194,7 +212,6 @@ module.exports=function(environment){
       var stepFolds=eachFold(button,function(step){
         if(patData[step])
           if(typeof filterFunction==="function"){
-            // console.log("   check bt"+step);
             //yes, every step is an array
             for(var stepData of patData[step]){
               if(filterFunction(stepData)) ret ++;
@@ -246,14 +263,15 @@ module.exports=function(environment){
       if(currentStep>=loopLength.value) currentStep%=loopLength.value;
       if(currentStep<0) currentStep%=loopLength.value;
 
+      NoteLenManager.step();
 
       if(getBoolean(currentStep)){
         for(var stepData of patData[currentStep]){
           // if(stepData.destination=="midi"){
           // }else if(stepData.destination=="midi"){
             // var val=stepData.value;
-            environment.patcher.receiveEvent(stepData);
-            noteOffr.append(stepData);
+            environment.patcher.receiveEvent(stepData.on);
+            NoteLenManager.noteStarted(stepData);
           // }else
         }
       }
@@ -290,9 +308,9 @@ module.exports=function(environment){
       playHeadBmp&=0xFFFF;
 
       environment.hardware.draw([
-                        mostImportant,
+          playHeadBmp^  mostImportant,
           playHeadBmp|  mostImportant|  mediumImportant,
-        ( playHeadBmp^  mostImportant)| mediumImportant|  leastImportant,
+        (               mostImportant)| mediumImportant|  leastImportant,
       ]);
     }
 
@@ -326,7 +344,7 @@ module.exports=function(environment){
           });
         }*/else{
           //on every repetition is empty
-          Notes.startAdding(button,selectors.dimension.getSeqEvent());
+          NoteLenManager.startAdding(button,selectors.dimension.getSeqEvent());
         }
         updateLeds();
       }else{
@@ -334,6 +352,7 @@ module.exports=function(environment){
       }
     }
     this.eventResponses.buttonMatrixReleased=function(evt){
+      NoteLenManager.finishAdding(evt.data[0]);
       if(subSelectorEngaged===false){
         updateLeds();
       }else{
