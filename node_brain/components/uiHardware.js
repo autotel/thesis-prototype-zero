@@ -44,6 +44,9 @@ var dataChopper=new(function(){
   var expectedLength;
   var byteNumber=0;
   var recordingBuffer=false;
+  this.wholePacketReady=function(packet){
+    console.log("packet ready",packet);
+  }
   this.incom= function(data){
     for(var a=0; a<data.length; a++){
       if(!recordingBuffer){
@@ -57,6 +60,7 @@ var dataChopper=new(function(){
           // console.log(rLengths[data[a]]);
           expectedLength=rLengths[data[a]]+1;
           inBuff=new Buffer(expectedLength);
+
           byteNumber=0;
         }
       }
@@ -68,17 +72,16 @@ var dataChopper=new(function(){
         }else{
           //a whole expected packet arrived
           inBuff[byteNumber]=data[a];
+          this.wholePacketReady(inBuff);
           recordingBuffer=false;
           // console.log(inBuff);
           byteNumber=0;
-          return inBuff;
         }
       }else{
         //a byte arrived, but there is no packet gathering bytes
         console.log("invalid byte: ",data[a], "in the context of: ", data);
       }
     }
-    return false;
   }
   return this;
 })();
@@ -178,10 +181,15 @@ module.exports=function(environment){return new (function(){
       environment.handle('serialopened');
 
       serial.on('data', (data) => {
-        var chd=dataChopper.incom(data);
-        console.log(data);
+        console.log("       data:",data);
+        dataChopper.incom(data);
+      });
+
+      dataChopper.wholePacketReady=function(chd){
+        console.log("------------packet",chd);
+        // console.log(data);
         if(chd&&chd[0]!==rHeaders.null){
-          console.log("-------handle",chd);
+          // console.log("-------handle",chd);
           var event={
             type:rHNames[chd[0]],
             data:chd.slice(1),
@@ -191,7 +199,7 @@ module.exports=function(environment){return new (function(){
           environment.handle('interaction',event);
           environment.handle(event.type,event);
         }
-      });
+      }
 
 
 
