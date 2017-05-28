@@ -85,6 +85,7 @@ module.exports=function(environment){return new(function(){
   this.setFromSeqEvent=function(evm){
     if(!evm) evm=new eventMessage(this.getSeqEvent());
     if(!evm.isEventMessage) evm=new eventMessage(this.getSeqEvent());
+    evm=evm.on;
     options[0].currentValue=destNames.indexOf(evm.destination);
     options[1].currentValue=evm.value[0];
     options[2].currentValue=evm.value[1];

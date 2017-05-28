@@ -56,6 +56,7 @@ module.exports=function(environment){
       interactionResponse(event);
     }else{
       console.log(modeBeingTweaked+" has no interaction mode response to "+event.type,interactionResponse);
+      console.log(event);
     }
 
   });

@@ -1,11 +1,16 @@
 'use strict';
 var base=require('./interactionModeBase');
 var fingerMap=0x0000;
+var recording=false;
 
 module.exports=function(environment){return new(function(){
   base.call(this);
   function updateHardware(){
-    environment.hardware.draw([fingerMap,fingerMap,fingerMap]);
+    if(recording){
+      environment.hardware.draw([fingerMap,fingerMap,0xffff]);
+    }else{
+      environment.hardware.draw([fingerMap,fingerMap,fingerMap]);
+    }
   }
   this.engage=function(){
     environment.hardware.sendScreenA("Performer");
@@ -28,6 +33,10 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.encoderReleased=function(evt){
 
+  }
+  this.eventResponses.selectorButtonPressed=function(evt){
+    if(evt.data[0]==3)
+    recording=!recording;
   }
   return this;
 })()};

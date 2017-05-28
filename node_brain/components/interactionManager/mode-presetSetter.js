@@ -10,6 +10,7 @@ var shiftPressed=false;
 var subSelectorEngaged=false;
 var lastsubSelectorEngaged="dimension";
 var engaged=false;
+var recording=false;
 module.exports=function(environment){
   var selectors={};
   selectors.dimension=require('./submode-dimensionSelector');
@@ -27,7 +28,11 @@ module.exports=function(environment){
         programmedMap|=1<<a;
       }
       var presetBitMap=0x1<<currentlySelectedPreset;
-      environment.hardware.draw([presetBitMap,programmedMap|presetBitMap|noteHighlightMap,presetBitMap|noteHighlightMap]);
+      if(recording){
+        environment.hardware.draw([presetBitMap,programmedMap|presetBitMap|noteHighlightMap,0xffff]);
+      }else{
+        environment.hardware.draw([presetBitMap,programmedMap|presetBitMap|noteHighlightMap,presetBitMap|noteHighlightMap]);
+      }
     }
     //when a note is routed to the presetKit that this mode controls
     controlledDestination.on('receive',function(evm){
@@ -53,7 +58,7 @@ module.exports=function(environment){
         fingerMap=evt.data[2]|(evt.data[3]<<8);
         currentlySelectedPreset=evt.data[0];
         selectors.dimension.setFromSeqEvent(controlledDestination.kit[currentlySelectedPreset]);
-        controlledDestination.triggerPad(evt.data[0]);
+        controlledDestination.padOn(evt.data[0]);
         updateHardware();
       }else{
         selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
@@ -62,6 +67,7 @@ module.exports=function(environment){
     this.eventResponses.buttonMatrixReleased=function(evt){
       if(!subSelectorEngaged){
         fingerMap=evt.data[2]|(evt.data[3]<<8);
+        controlledDestination.padOff(evt.data[0]);
         updateHardware();
       }else{
         selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
@@ -86,6 +92,8 @@ module.exports=function(environment){
         lastsubSelectorEngaged='dimension';
         console.log(selectors);
         selectors.dimension.engage();
+      }else if(evt.data[0]==2){
+        recording=!recording;
       }else if(evt.data[0]==3){
         shiftPressed=true;
       }

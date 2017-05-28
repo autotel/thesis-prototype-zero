@@ -13,9 +13,13 @@ module.exports=function(environment){return new(function(){
     environment.patcher.receiveEvent(kit[event.value[1]]);
     this.handle('receive',event);
   }
-  this.triggerPad=function(num){
+  this.padOn=function(num){
     if(kit[num])
-    environment.patcher.receiveEvent(kit[num]);
+    environment.patcher.receiveEvent(kit[num].on);
+  }
+  this.padOff=function(num){
+      if(kit[num])
+      environment.patcher.receiveEvent(kit[num].off)
   }
   this.set=function(number,data){
     if(!kit[number]){

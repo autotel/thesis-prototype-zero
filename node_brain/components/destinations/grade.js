@@ -33,7 +33,7 @@ module.exports=function(environment){return new(function(){
         thisDest.scaleArray.push(a);
       }
     }
-    console.log("sa",thisDest.scaleArray);
+    // console.log("sa",thisDest.scaleArray);
   }
 
 })()}
