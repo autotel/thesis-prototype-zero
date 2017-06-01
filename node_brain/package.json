@@ -14,6 +14,10 @@
     "onhandlers": "^1.0.3",
     "raspi-serial": "^3.1.0",
     "serialport": "^4.0.7",
-    "shelljs": "^0.7.7"
+    "shelljs": "^0.7.7",
+    
+    "http-server": "^0.10.0",
+    "socket.io": "^1.7.3",
+    "web-audio-api": "^0.2.2"
   }
 }
