@@ -1,7 +1,7 @@
 // var shell = require('shelljs');
 const spawn  = require('child_process').spawn;
 // var child=cp.fork('./startSound');
-const ls = spawn('fluidsynth',["--server","--audio-driver=alsa","-o","audio.alsa.device=hw:2","/home/pi/sounfonts/hqorch.sf2"]);//,"&"///usr/share/soundfonts/FluidR3_GM.sf2  /home/pi/sounfonts/hqorch.sf2
+// const ls = spawn('fluidsynth',["--server","--audio-driver=alsa","-o","audio.alsa.device=hw:2","/home/pi/sounfonts/hqorch.sf2"]);//,"&"///usr/share/soundfonts/FluidR3_GM.sf2  /home/pi/sounfonts/hqorch.sf2
 
 var timeoutSet=false;
 ls.stdout.on('data', (data) => {
