@@ -1,39 +1,45 @@
-var onHandlers=require('onHandlers');
-
+'use strict';
+var onHandlers=require('onhandlers');
 var httpPort=80;
-
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var SocketMan = require('socket.io')(http);
 var getMessageNames=require('../bothEnds/messageNames.js');
+var SocketClient = require('./SocketClient.js');
+
 
 module.exports=function(master){ return new (function(master){
   onHandlers.call(this);
   var serverMan=this;
-  var SocketClient = new (require('./SocketClient.js'))(this);
 
+  var socketClients=new SocketClient(this);
   getMessageNames(this);
 
   this.start=function(file){
     app.get('/', function(req, res){
-      app.use("/",express.static('frontend'));
-      app.use("/shared",express.static('bothEnds'));
+      /*
+      var directory = require('serve-index');
+       app.use(directory(your_path));
+      */
+      app.use("/",express.static('./online/frontend'));
+      app.use("/shared",express.static('./online/bothEnds'));
       res.sendFile(file);
     });
     http.listen(httpPort, function(){
       console.log('listening on :'+httpPort);
     });
     SocketMan.on('connection', function(socket){
-      new SocketClient.add(socket,master);
-      master.systemManager.each(function(){
-        var nparams=this.getOntoParams();
-        socket.emit(serverMan.messageIndexes.CREATE,nparams);
-      });
-      master.systemManager.each(function(){
-        var nparams=this.getAllParameters();
-        socket.emit(serverMan.messageIndexes.CHANGE,nparams);
-      });
+      socketClients.add(socket,master);
+      //emit current state
+      // master.systemManager.each(function(){
+      //   var nparams=this.getOntoParams();
+      //   socket.emit(serverMan.messageIndexes.CREATE,nparams);
+      // });
+      // master.systemManager.each(function(){
+      //   var nparams=this.getAllParameters();
+      //   socket.emit(serverMan.messageIndexes.CHANGE,nparams);
+      // });
     });
   }
 

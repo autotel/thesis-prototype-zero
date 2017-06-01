@@ -1,7 +1,7 @@
 //this is created when a client connects to the socket, and keeps track of the user and it's events and so on.
 var socketList=[];
 
-var onHandlers=require('onHandlers');
+var onHandlers=require('onhandlers');
 
 var SocketClient=function(socket,master){
   var server=master.httpSocket;
@@ -31,15 +31,9 @@ var SocketClient=function(socket,master){
 
   socket.on(server.messageIndexes.CREATE,function(event){
     console.log("component create requested");
-    master.systemManager.createComponent(event,function(params){
-      socket.broadcast.emit(server.messageIndexes.CREATE,params);
-      socket.emit(server.messageIndexes.CREATE,params);
-    });
   });
   socket.on(server.messageIndexes.CHANGE,function(params){
-    master.systemManager.tweakComponent(params,function(original){
-      socket.broadcast.emit(server.messageIndexes.CHANGE,params);
-    });
+    console.log("component change requested");
   });
 
 

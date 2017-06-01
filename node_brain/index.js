@@ -56,7 +56,7 @@ var environment=new(function(){
 
   return this;
 })();
-
+const online=require('./online')(environment);
 const midi=require('./components/destinations/midi')(environment);
 environment.midi=midi;
 const hardware=require('./components/uiHardware')(environment);

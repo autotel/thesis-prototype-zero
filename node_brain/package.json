@@ -6,17 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": "https://autotel@bitbucket.org/autotel/thesis-prototype-zero.git",
   "author": "autotel",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.15.3",
+    "http-server": "^0.10.0",
     "jazz-midi": "^1.5.4",
     "midi": "^0.9.5",
     "onhandlers": "^1.0.3",
     "raspi-serial": "^3.1.0",
     "serialport": "^4.0.7",
+    "serve-index": "^1.9.0",
     "shelljs": "^0.7.7",
-    
-    "http-server": "^0.10.0",
     "socket.io": "^1.7.3",
     "web-audio-api": "^0.2.2"
   }

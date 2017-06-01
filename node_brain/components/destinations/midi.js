@@ -54,7 +54,7 @@ module.exports=function(environment){return new (function(){
     createMidiInputs();
     console.log("midi input crashed",e);
   }
-
+/*
   var createMidiInputs=function(){
     var child = child_process.fork('./components/destinations/midiInputWorkaround.js');
     child.send({type:"initialize",val:0});
@@ -75,7 +75,7 @@ module.exports=function(environment){return new (function(){
       }
     });
   };
-  createMidiInputs();
+  createMidiInputs();*/
 
 
   this.getMidiOutList=function(){return midiOutputs;}
