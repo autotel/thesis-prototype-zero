@@ -25,10 +25,10 @@ var environment=new(function(){
   this.patcher=new(function(){
     var thisPatcher=this;
     var destinationList=[];
-    if(!this.destinations) this.destinations={};
+    if(!this.modules) this.modules={};
     this.getDestList=function(){
       destinationList=[];
-      for(var a in this.destinations){
+      for(var a in this.modules){
         destinationList.push(a);
       }
       return destinationList;
@@ -36,9 +36,9 @@ var environment=new(function(){
     this.receiveEvent=function(evt){
       if(evt.destination){
 //console.log(evt);
-//console.log(thisPatcher.destinations);
-        if(thisPatcher.destinations[evt.destination]){
-          thisPatcher.destinations[evt.destination].receive(evt);
+//console.log(thisPatcher.modules);
+        if(thisPatcher.modules[evt.destination]){
+          thisPatcher.modules[evt.destination].receive(evt);
         }else{
           console.log("invalid "+evt.destination+" destination");
         }
@@ -57,7 +57,7 @@ var environment=new(function(){
   return this;
 })();
 const online=require('./online')(environment);
-const midi=require('./components/destinations/midi')(environment);
+const midi=require('./components/modules/midi')(environment);
 environment.midi=midi;
 const hardware=require('./components/uiHardware')(environment);
 environment.hardware=hardware;

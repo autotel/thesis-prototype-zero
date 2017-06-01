@@ -15,9 +15,9 @@ module.exports=function(environment){
   var selectors={};
   selectors.dimension=require('./submode-dimensionSelector');
   selectors.timeConfig=require('./submode-2dConfigurator');
-  //pendant: the sequencer functionality should be in the destinations folder,
+  //pendant: the sequencer functionality should be in the modules folder,
   //as to separate the functionality (which can receive events) from the interaction
-  var sequencer=require('../destinations/sequencer');
+  var sequencer=require('../modules/sequencer');
 
   return new(function(){
 
@@ -170,7 +170,7 @@ module.exports=function(environment){
     this.init=function(){
       environment.metronome.on('step',step);
     }
-    // environment.patcher.destinations.sequencer=this;
+    // environment.patcher.modules.sequencer=this;
 
   //   this.receiveEvent=function(event){
   // //console.log("not implemented yet");

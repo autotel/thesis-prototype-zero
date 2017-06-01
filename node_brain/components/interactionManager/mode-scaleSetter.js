@@ -1,6 +1,6 @@
 'use strict';
 var base=require('./interactionModeBase');
-var controlledDestination=require('../destinations/grade.js');
+var controlledDestination=require('../modules/grade.js');
 var fingerMap=0x0000;
 var scaleMap=0xAB5;//major
 module.exports=function(environment){return new(function(){

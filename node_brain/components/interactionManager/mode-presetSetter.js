@@ -1,6 +1,6 @@
 'use strict';
 var base=require('./interactionModeBase');
-var controlledDestination=require('../destinations/presetKit.js');
+var controlledDestination=require('../modules/presetKit.js');
 //pendant: there should be a really easy way to mute presets.
 //pendant: preset editor should have many channels allowing 16*16 presets
 var fingerMap=0x0000;

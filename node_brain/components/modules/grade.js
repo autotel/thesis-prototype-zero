@@ -4,7 +4,7 @@ const onhandlers=require('onhandlers');
 module.exports=function(environment){return new(function(){
   destinationBase.call(this,environment);
   onhandlers.call(this);
-  environment.patcher.destinations.grade=this;
+  environment.patcher.modules.grade=this;
 //console.log("..");
 //console.log(environment);
   var thisDest=this;
@@ -22,7 +22,7 @@ module.exports=function(environment){return new(function(){
     environment.patcher.receiveEvent(newEvent);
     this.handle('receive',event);
     // thisDest.lastUsed=noteWraped;
-    // environment.patcher.destinations[myDestination];
+    // environment.patcher.modules[myDestination];
   }
   this.newScaleMap=function(to){
     scaleMap=to;

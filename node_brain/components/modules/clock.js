@@ -7,8 +7,8 @@ module.exports=function(environment){return new(function(){
   var name=function(a){
     return ["a","b","c","d","e","f"][a]||a;
   }
-  while(environment.patcher.destinations[name(n)]){
+  while(environment.patcher.modules[name(n)]){
     n++;
   }
-  environment.patcher.destinations[name(n)]=this;
+  environment.patcher.modules[name(n)]=this;
 })()}

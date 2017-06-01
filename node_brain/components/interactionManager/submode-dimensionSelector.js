@@ -20,7 +20,7 @@ module.exports=function(environment){return new(function(){
     maximumValue:destNames.length-1,
     minimumValue:0,
     valueNames:function(value){
-      if(destNames.length!==environment.patcher.destinations.length){
+      if(destNames.length!==environment.patcher.modules.length){
         destNames=environment.patcher.getDestList();
         options[0].maximumValue=destNames.length-1;
       }

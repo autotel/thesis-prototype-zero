@@ -4,7 +4,7 @@ const onhandlers=require('onhandlers');
 module.exports=function(environment){return new(function(){
   destinationBase.call(this,environment);
   onhandlers.call(this);
-  environment.patcher.destinations.presetKit=this;
+  environment.patcher.modules.presetKit=this;
   var thisDest=this;
   var kit=[];
   this.kit=kit;
