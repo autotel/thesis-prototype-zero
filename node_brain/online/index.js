@@ -1,10 +1,13 @@
 'use strict';
-var master={};
-master.httpSocket = require('./backend/server.js')(master);
+var nodeServer={};
+var httpSocket=require('./backend/server.js');
+var systemManager=require('./backend/patcherModuleBinder.js');
 module.exports=function(environment){
-  master.modules=environment.patcher.modules;
-  console.log("modules:",master.modules);
-  var httpSocket=master.httpSocket;
-  var systemManager=master.systemManager;
-  httpSocket.start(__dirname + '/frontend/index.html');
+
+  nodeServer.httpSocket = httpSocket(nodeServer);
+  nodeServer.binder = systemManager(environment);
+
+  environment.server=nodeServer;
+  // console.log("modules:",nodeServer.modules);
+  nodeServer.httpSocket.start(__dirname + '/frontend/index.html');
 }

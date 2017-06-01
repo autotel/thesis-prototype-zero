@@ -26,7 +26,7 @@ module.exports=function(environment){return new (function(){
     try{
       output.openPort(a);
       midiOutputs[portName]=output;
-      environment.patcher.modules[portName]=new(function(output){
+      var midiModule=new(function(output){
         this.receive=function(evt){
           this.note(evt.value[0],evt.value[1],evt.value[2]);
         }
@@ -46,6 +46,7 @@ module.exports=function(environment){return new (function(){
         }
         console.log("  created output "+portName);
       })(output);
+      environment.patcher.addModule(portName,midiModule);
     }catch(e){
       console.log("  creating "+portName+" output was not possible: ",e);
     }

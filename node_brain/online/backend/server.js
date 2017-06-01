@@ -9,7 +9,7 @@ var getMessageNames=require('../bothEnds/messageNames.js');
 var SocketClient = require('./SocketClient.js');
 
 
-module.exports=function(master){ return new (function(master){
+module.exports=function(nodeServer){ return new (function(nodeServer){
   onHandlers.call(this);
   var serverMan=this;
 
@@ -30,17 +30,18 @@ module.exports=function(master){ return new (function(master){
       console.log('listening on :'+httpPort);
     });
     SocketMan.on('connection', function(socket){
-      socketClients.add(socket,master);
+      socketClients.add(socket,nodeServer);
       //emit current state
-      // master.systemManager.each(function(){
+      // nodeServer.systemManager.each(function(){
       //   var nparams=this.getOntoParams();
       //   socket.emit(serverMan.messageIndexes.CREATE,nparams);
       // });
-      // master.systemManager.each(function(){
+      // nodeServer.systemManager.each(function(){
       //   var nparams=this.getAllParameters();
       //   socket.emit(serverMan.messageIndexes.CHANGE,nparams);
       // });
     });
+
   }
 
 
@@ -57,4 +58,4 @@ module.exports=function(master){ return new (function(master){
   }
 
   return this;
-})(master)};
+})(nodeServer)};

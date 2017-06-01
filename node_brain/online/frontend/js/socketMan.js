@@ -30,10 +30,10 @@ var socketMan=new (function(){
   getMessageNames(this);
   var messageIndexes=this.messageIndexes;
   var messageNames=this.messageNames;
+
   var applyReceivedProperties=function(e){
     document.getElementById('stage').html+="<br>"+JSON.stringify(e);
   }
-
 
   socket.on(messageIndexes.CHANGE, function(e){
     applyReceivedProperties(e);

@@ -10,5 +10,5 @@ module.exports=function(environment){return new(function(){
   while(environment.patcher.modules[name(n)]){
     n++;
   }
-  environment.patcher.modules[name(n)]=this;
+  environment.patcher.addModule(name(n),this);
 })()}

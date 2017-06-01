@@ -4668,7 +4668,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * Logic borrowed from Modernizr:
 	 *
-	 *   - https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cors.js
+	 *   - https://github.com/Modernizr/Modernizr/blob/nodeServer/feature-detects/cors.js
 	 */
 
 	try {

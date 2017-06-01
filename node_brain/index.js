@@ -23,6 +23,7 @@ var environment=new(function(){
   })();
 
   this.patcher=new(function(){
+    onhandlers.call(this);
     var thisPatcher=this;
     var destinationList=[];
     if(!this.modules) this.modules={};
@@ -32,6 +33,10 @@ var environment=new(function(){
         destinationList.push(a);
       }
       return destinationList;
+    }
+    this.addModule=function(name,what){
+      this.modules[name]=what;
+      this.handle("modulecreated",{name:name,module:what});
     }
     this.receiveEvent=function(evt){
       if(evt.destination){

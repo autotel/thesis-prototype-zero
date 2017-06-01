@@ -3,10 +3,10 @@ var socketList=[];
 
 var onHandlers=require('onhandlers');
 
-var SocketClient=function(socket,master){
-  var server=master.httpSocket;
+var SocketClient=function(socket,nodeServer){
+  var server=nodeServer.httpSocket;
   console.log('a client connected');
-  console.log(master);
+  console.log(nodeServer);
   onHandlers.call(this);
   socketList.push(this);
   socket.emit(server.messageIndexes.HELLO,"hellolo");
@@ -47,8 +47,8 @@ var SocketClient=function(socket,master){
 
 module.exports=function(server){
   onHandlers.call(this);
-  this.add=function(socket,master){
-    return new SocketClient(socket,master);
+  this.add=function(socket,nodeServer){
+    return new SocketClient(socket,nodeServer);
   }
   this.each=function(cb){
     for(var a in socketList){

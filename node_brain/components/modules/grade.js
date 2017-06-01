@@ -4,7 +4,7 @@ const onhandlers=require('onhandlers');
 module.exports=function(environment){return new(function(){
   destinationBase.call(this,environment);
   onhandlers.call(this);
-  environment.patcher.modules.grade=this;
+  environment.patcher.addModule("grade",this);
 //console.log("..");
 //console.log(environment);
   var thisDest=this;

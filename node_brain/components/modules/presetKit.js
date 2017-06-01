@@ -1,10 +1,10 @@
 var destinationBase=require('./destinationBase');
 var eventMessage=require('../../datatype-eventMessage');
-const onhandlers=require('onhandlers');
+const moduleEvent=require("./moduleEvent");
 module.exports=function(environment){return new(function(){
   destinationBase.call(this,environment);
-  onhandlers.call(this);
-  environment.patcher.modules.presetKit=this;
+  environment.patcher.addModule("presetKit",this);
+
   var thisDest=this;
   var kit=[];
   this.kit=kit;
@@ -16,7 +16,7 @@ module.exports=function(environment){return new(function(){
     }else{
       environment.patcher.receiveEvent(kit[event.value[1]].off);
     }
-    this.handle('receive',event);
+    this.handle('receive',moduleEvent(this,event));
   }
   this.padOn=function(num){
     if(kit[num])
