@@ -10,7 +10,12 @@ module.exports=function(environment){return new(function(){
   this.kit=kit;
   this.receive=function(event){
     if(kit[event.value[1]])
-    environment.patcher.receiveEvent(kit[event.value[1]]);
+    //pendant: I feel that this solution to route note offs is a bit too patchy and too much like midi.
+    if(event.value[2]==0){
+      environment.patcher.receiveEvent(kit[event.value[1]].on);
+    }else{
+      environment.patcher.receiveEvent(kit[event.value[1]].off);
+    }
     this.handle('receive',event);
   }
   this.padOn=function(num){

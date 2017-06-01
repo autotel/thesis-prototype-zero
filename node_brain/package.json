@@ -9,6 +9,8 @@
   "author": "autotel",
   "license": "ISC",
   "dependencies": {
+    "jazz-midi": "^1.5.4",
+    "midi": "^0.9.5",
     "onhandlers": "^1.0.3",
     "raspi-serial": "^3.1.0",
     "serialport": "^4.0.7",

@@ -3,10 +3,13 @@ var base=require('./interactionModeBase');
 var eventMessage=require('../../datatype-eventMessage');
 
 /*
-pendant: it gets quite hard to understand what are the roles of
-the color hierarchy should be based on the lastsubSelectorEngaged,
-if it was the timeConfig, the main color is given to the modularly repeated
-if it was the dimension, the main color is given to the ones of the same option*/
+pendant: There should be a way to select many events and change a param to all
+at once. perhaps by pressing shift one starts selecting, and if dimension parameter
+changes while shift held, all selected or all events get the new value...
+
+*/
+
+
 
 module.exports=function(environment){
   var selectors={};
@@ -114,7 +117,7 @@ module.exports=function(environment){
         getValueName:function(a){ return a },
         maximumValue:16*12,
         minimumValue:1,
-      },
+      }
     });
 
     var lookLoop=selectors.timeConfig.options[0];

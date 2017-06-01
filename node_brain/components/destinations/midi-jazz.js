@@ -1,9 +1,11 @@
+//not compatible with raspi
 'use strict';
-var midi = require('midi');
+var jazz = require('jazz-midi');
+var midi = new jazz.MIDI();
+
 var midiOutputs={};
 var midiInputs={};
 var eventMessage=require('../../datatype-eventMessage');
-var child_process = require('child_process');
 // Set up a new output.
 module.exports=function(environment){return new (function(){
   if(!environment.patcher.destinations) environment.patcher.destinations={};
@@ -13,12 +15,13 @@ module.exports=function(environment){return new (function(){
   };
   console.log("midi setup:");
   // Count the available output ports.
-  var outputPortCount=(new midi.output()).getPortCount();
+  var outports=midi.MidiOutList();
   // console.log(output.getoutputPortCount());
   // Get the name of a specified output port.
-  for(var a=0; a<outputPortCount; a++){
-    var output = new midi.output();
-    var portName=output.getPortName(a);
+  // for(var a=0; a<outports.length; a++){
+  var a=1;
+    var output = midi.MidiOutOpen(a);
+    var portName=midi.MidiOutInfo(a);
     console.log(" opening port["+a+"]="+portName);
     try{
       output.openPort(a);
@@ -46,38 +49,7 @@ module.exports=function(environment){return new (function(){
     }catch(e){
       console.log("  creating "+portName+" output was not possible: ",e);
     }
-  }
-
-  var averageClockDelta=0;
-
-  var closeHandler=function(e){
-    createMidiInputs();
-    console.log("midi input crashed",e);
-  }
-
-  var createMidiInputs=function(){
-    var child = child_process.fork('./components/destinations/midiInputWorkaround.js');
-    child.send({type:"initialize",val:0});
-    child.on('error', closeHandler);
-    child.on('close', closeHandler);
-    child.on('message', function(message) {
-      // console.log('input sends:', message);
-      if(message.val[0]==248){
-        if(message.delta!=0){
-          if(averageClockDelta=0){
-            averageClockDelta=message.delta;
-          }else{
-            averageClockDelta=message.delta*0.999+averageClockDelta*0.001;
-            console.log("average: "+averageClockDelta*2400);
-            environment.metronome.interval(averageClockDelta*2400);
-          }
-        }
-      }
-    });
-  };
-  createMidiInputs();
-
-
+  // }
   this.getMidiOutList=function(){return midiOutputs;}
 
   //library is broken. no midi inputs possible :(

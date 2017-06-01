@@ -2,10 +2,36 @@
 var base=require('./interactionModeBase');
 var fingerMap=0x0000;
 var editingOutput=false;
+// var selectors={};
 module.exports=function(environment){return new(function(){
-  var midiOutputs=environment.midi.getMidiList();
+  var destNames=environment.patcher.getDestList();
+  var midiOutputs=environment.midi.getMidiOutList();
   var midiMap=~(0xffff<<midiOutputs.length);
   base.call(this);
+
+  // selectors.midiRouting=require('./submode-2dConfigurator');
+
+
+  // for(var a in selectors){
+  //
+  //   selectors[a]=selectors[a](environment);
+  // }
+  // selectors.midiRouting.initOptions({
+  //   'Header is':{
+  //     value:0,
+  //     getValueName:function(a){ if(a==0) return "off"; return a+"(0x"+a.toString(16)+")" },
+  //     maximumValue:256,
+  //     minimumValue:0,
+  //   },
+  //   'Send to':{
+  //     getValueName:function(a){ return destNames[a] },
+  //     maximumValue:(256/16),
+  //   }
+  // });
+
+
+
+
   function updateHardware(){
     environment.hardware.draw([midiMap|fingerMap,fingerMap,fingerMap]);
   }
@@ -24,6 +50,9 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.encoderScroll=function(evt){
     //program change is CX PP https://www.midi.org/specifications/item/table-1-summary-of-midi-message
+
+    environment.metronome.interval(evt.data[0]);
+    environment.hardware.sendScreenB("interval"+evt.data[0]+"ms");
   }
   this.eventResponses.encoderPressed=function(evt){
 

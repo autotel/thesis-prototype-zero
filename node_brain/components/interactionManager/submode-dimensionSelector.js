@@ -36,19 +36,30 @@ module.exports=function(environment){return new(function(){
     }
   },{
     name:'value a',
-    currentValue:45,
-    maximumValue:255,
+    currentValue:0,
+    maximumValue:256,
     minimumValue:0,
     valueNames:function(value){
+      if(value==256) return "transp."
       return value;
     }
   },{
     name:'value b',
     currentValue:97,
-    maximumValue:255,
+    maximumValue:256,
     minimumValue:0,
     valueNames:function(value){
+      if(value==256) return "transp."
       return value;
+    }
+  },{
+    name:'rec from',
+    currentValue:-1,
+    maximumValue:destNames.length-1,
+    minimumValue:-1,
+    valueNames:function(value){
+      if(value==-1) return "off"
+      return destNames[value];
     }
   }];
 
@@ -126,10 +137,10 @@ module.exports=function(environment){return new(function(){
     else  currentOption.currentValue++;
 
     if(currentOption.currentValue<currentOption.minimumValue){
-      currentOption.currentValue=currentOption.maximumValue;
+      currentOption.currentValue=currentOption.minimumValue;
     }
     if(currentOption.currentValue>currentOption.maximumValue){
-      currentOption.currentValue=currentOption.minimumValue;
+      currentOption.currentValue=currentOption.maximumValue;
     }
 
     updateLcd();
