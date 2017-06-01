@@ -5,16 +5,14 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var SocketMan = require('socket.io')(http);
-var getMessageNames=require('../bothEnds/messageNames.js');
-var SocketClient = require('./SocketClient.js');
+var SocketClients = require('./SocketClient.js');
 
 
-module.exports=function(nodeServer){ return new (function(nodeServer){
+module.exports=function(nodeServer){ return new (function(){
   onHandlers.call(this);
   var serverMan=this;
 
-  var socketClients=new SocketClient(this);
-  getMessageNames(this);
+  var socketClients=new SocketClients(this);
 
   this.start=function(file){
     app.get('/', function(req, res){
@@ -25,6 +23,11 @@ module.exports=function(nodeServer){ return new (function(nodeServer){
       app.use("/",express.static('./online/frontend'));
       app.use("/shared",express.static('./online/bothEnds'));
       res.sendFile(file);
+      var ip = req.headers['x-forwarded-for'] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress;
+      console.log("IP:",ip);
     });
     http.listen(httpPort, function(){
       console.log('listening on :'+httpPort);
@@ -52,10 +55,9 @@ module.exports=function(nodeServer){ return new (function(nodeServer){
   //   console.log(event);
   //   this.handle(event.message,event);
   // });
-
-  this.emit=function(a,b){
-    SocketMan.emit(a,b);
-  }
+  //if "SocketMan" emits, it's recieved by all. if SocketClient broadcast.emits,
+  //its received by all but that socket
+  this.broadcast=function(a,b){SocketMan.emit(a,b)};
 
   return this;
-})(nodeServer)};
+})()};

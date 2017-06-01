@@ -4,17 +4,17 @@ var socketList=[];
 var onHandlers=require('onhandlers');
 
 var SocketClient=function(socket,nodeServer){
-  var server=nodeServer.httpSocket;
+  // console.log(nodeServer);
   console.log('a client connected');
-  console.log(nodeServer);
+  // console.log(nodeServer);
   onHandlers.call(this);
   socketList.push(this);
-  socket.emit(server.messageIndexes.HELLO,"hellolo");
+  socket.emit(nodeServer.messageIndexes.HELLO,"hellolo");
   var thisClient=this;
 
-  for(var a in server.messageNames){
+  for(var a in nodeServer.messageNames){
     (function(mtn){
-      var messageName=server.messageNames[mtn];
+      var messageName=nodeServer.messageNames[mtn];
       socket.on(mtn,function(e){
         var event={
           originalEvent:e,
@@ -22,17 +22,17 @@ var SocketClient=function(socket,nodeServer){
           messageName:messageName,
           messageIndex:mtn
         };
-        console.log(JSON.stringify(event));
-        server.handle('message',event);
-        server.handle("rec_"+messageName.toLowerCase(),event);
+        // console.log(JSON.stringify(event));
+        nodeServer.handle('message',event);
+        nodeServer.handle("rec_"+messageName.toLowerCase(),event);
       });
     })(a);
   }
 
-  socket.on(server.messageIndexes.CREATE,function(event){
+  socket.on(nodeServer.messageIndexes.CREATE,function(event){
     console.log("component create requested");
   });
-  socket.on(server.messageIndexes.CHANGE,function(params){
+  socket.on(nodeServer.messageIndexes.CHANGE,function(params){
     console.log("component change requested");
   });
 
@@ -45,7 +45,7 @@ var SocketClient=function(socket,nodeServer){
   });
 }
 
-module.exports=function(server){
+module.exports=function(nodeServer){
   onHandlers.call(this);
   this.add=function(socket,nodeServer){
     return new SocketClient(socket,nodeServer);

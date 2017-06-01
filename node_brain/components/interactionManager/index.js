@@ -41,14 +41,14 @@ module.exports=function(environment){
       changeToMode=modeBeingTweaked;
       modeBeingTweaked="modeSelector";
       activeModes[modeBeingTweaked].engage(changeToMode);
-      console.log("<"+modeBeingTweaked+">");
+      // console.log("<"+modeBeingTweaked+">");
     }else if(event.type=="selectorButtonReleased"&&event.data[0]==0){
       modeBeingTweaked="modeSelector";
       //get from the modeselector, the mode that was selected
       var newMode=activeModes[modeBeingTweaked].disengage();
       modeBeingTweaked=newMode||changeToMode;
       activeModes[modeBeingTweaked].engage();
-      console.log("<"+modeBeingTweaked+">");
+      // console.log("<"+modeBeingTweaked+">");
     }
 
     var interactionResponse = activeModes[modeBeingTweaked].eventResponses[event.type];

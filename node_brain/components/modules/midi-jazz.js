@@ -22,7 +22,7 @@ module.exports=function(environment){return new (function(){
   var a=1;
     var output = midi.MidiOutOpen(a);
     var portName=midi.MidiOutInfo(a);
-    console.log(" opening port["+a+"]="+portName);
+    // console.log(" opening port["+a+"]="+portName);
     try{
       output.openPort(a);
       midiOutputs[portName]=output;

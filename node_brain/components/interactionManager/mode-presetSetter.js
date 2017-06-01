@@ -90,7 +90,7 @@ module.exports=function(environment){
       if(evt.data[0]==1){
         subSelectorEngaged='dimension';
         lastsubSelectorEngaged='dimension';
-        console.log(selectors);
+        // console.log(selectors);
         selectors.dimension.engage();
       }else if(evt.data[0]==2){
         recording=!recording;

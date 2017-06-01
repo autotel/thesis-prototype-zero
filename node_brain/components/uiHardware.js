@@ -37,7 +37,7 @@ var lastSentBitmap={
   screenB:""
 };
 
-console.log(comConsts);
+// console.log(comConsts);
 
 var dataChopper=new(function(){
   var inBuff;
@@ -45,7 +45,7 @@ var dataChopper=new(function(){
   var byteNumber=0;
   var recordingBuffer=false;
   this.wholePacketReady=function(packet){
-    console.log("packet ready",packet);
+    // console.log("packet ready",packet);
   }
   this.incom= function(data){
     for(var a=0; a<data.length; a++){
@@ -97,7 +97,7 @@ module.exports=function(environment){return new (function(){
     var serial = new Serial({baudRate:baudRate,portId:serialPort});
     serial.open(() => {
       serial.write(tHeaders.hello);
-      console.log("wrote hello");
+      // console.log("wrote hello");
 
 
       var sendx8=function(header,dataArray){
@@ -181,12 +181,12 @@ module.exports=function(environment){return new (function(){
       environment.handle('serialopened');
 
       serial.on('data', (data) => {
-        console.log("       data:",data);
+        // console.log("       data:",data);
         dataChopper.incom(data);
       });
 
       dataChopper.wholePacketReady=function(chd){
-        console.log("------------packet",chd);
+        // console.log("------------packet",chd);
         // console.log(data);
         if(chd&&chd[0]!==rHeaders.null){
           // console.log("-------handle",chd);

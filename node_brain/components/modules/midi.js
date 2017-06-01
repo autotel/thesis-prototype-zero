@@ -19,7 +19,7 @@ module.exports=function(environment){return new (function(){
   for(var a=0; a<outputPortCount; a++){
     var output = new midi.output();
     var portName=output.getPortName(a);
-    console.log(" opening port["+a+"]="+portName);
+    // console.log(" opening port["+a+"]="+portName);
     try{
       output.openPort(a);
       midiOutputs[portName]=output;
