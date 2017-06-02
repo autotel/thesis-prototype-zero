@@ -20,7 +20,6 @@ module.exports=function(environment){
   var sequencer=require('../modules/sequencer');
 
   return new(function(){
-
     base.call(this);
     var tPattern=this;
     var patData={};
@@ -28,8 +27,6 @@ module.exports=function(environment){
     var engaged=false;
     var shiftPressed=false;
     var currentModulus=16;
-
-
     var NoteLenManager=new(function(){
       var notesInCreation=[];
       var notesInPlay=[];
