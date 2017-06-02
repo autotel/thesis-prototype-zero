@@ -1,57 +1,53 @@
 'use strict';
-var activeModes={};
+var moduleUserInterfaces={};
 
 var modeBeingTweaked="scaleSetter";
 var changeToMode=modeBeingTweaked;
 
 
-activeModes.sequencer_a=require('./mode-sequencer');
-activeModes.sequencer_b=require('./mode-sequencer');
-activeModes.sequencer_c=require('./mode-sequencer');
-activeModes.sequencer_d=require('./mode-sequencer');
+moduleUserInterfaces.sequencer=require('./mode-sequencer');
+moduleUserInterfaces.scaleSetter=require('./mode-scaleSetter');
+moduleUserInterfaces.presetSetter=require('./mode-presetSetter');
+moduleUserInterfaces.performer=require('./mode-performer');
 
-activeModes.scaleSetter=require('./mode-scaleSetter');
-activeModes.presetSetter=require('./mode-presetSetter');
-activeModes.performer=require('./mode-performer');
-activeModes.modeSelector=require('./mode-selector');
-
-activeModes.midiEdit=require('./mode-midiEdit');
-activeModes.system=require('./mode-system');
-
+moduleUserInterfaces.modeSelector=require('./mode-selector');
+moduleUserInterfaces.midiEdit=require('./mode-midiEdit');
+moduleUserInterfaces.system=require('./mode-system');
+moduleUserInterfaces.patcher=require('./mode-selector');
 
 module.exports=function(environment){
   //transform function declarations into new objects providing the environment
-  for(var a in activeModes){
-    activeModes[a]=activeModes[a](environment);
+  for(var a in moduleUserInterfaces){
+    moduleUserInterfaces[a]=moduleUserInterfaces[a](environment);
   }
 
-  activeModes.modeSelector.setModeList(activeModes);
+  moduleUserInterfaces.modeSelector.setModeList(moduleUserInterfaces);
 
   environment.on('serialopened',function(){
     console.log("serial opened");
     //init all active modes, supposedly only once per run
-    for(var a in activeModes){
-      activeModes[a].init();
+    for(var a in moduleUserInterfaces){
+      moduleUserInterfaces[a].init();
     }
   });
   environment.on('interaction',function(event){
     //the selector button 0 engages modeselector temporarily
     if(event.type=="selectorButtonPressed"&&event.data[0]==0){
-      activeModes[modeBeingTweaked].disengage();
+      moduleUserInterfaces[modeBeingTweaked].disengage();
       changeToMode=modeBeingTweaked;
       modeBeingTweaked="modeSelector";
-      activeModes[modeBeingTweaked].engage(changeToMode);
+      moduleUserInterfaces[modeBeingTweaked].engage(changeToMode);
       // console.log("<"+modeBeingTweaked+">");
     }else if(event.type=="selectorButtonReleased"&&event.data[0]==0){
       modeBeingTweaked="modeSelector";
       //get from the modeselector, the mode that was selected
-      var newMode=activeModes[modeBeingTweaked].disengage();
+      var newMode=moduleUserInterfaces[modeBeingTweaked].disengage();
       modeBeingTweaked=newMode||changeToMode;
-      activeModes[modeBeingTweaked].engage();
+      moduleUserInterfaces[modeBeingTweaked].engage();
       // console.log("<"+modeBeingTweaked+">");
     }
 
-    var interactionResponse = activeModes[modeBeingTweaked].eventResponses[event.type];
+    var interactionResponse = moduleUserInterfaces[modeBeingTweaked].eventResponses[event.type];
     if(typeof interactionResponse==="function"){
       interactionResponse(event);
     }else{

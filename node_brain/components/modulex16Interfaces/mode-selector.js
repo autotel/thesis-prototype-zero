@@ -1,8 +1,7 @@
 'use strict';
 var base=require('./interactionModeBase');
 var currentlySelectedMode=0;
-var modes=[
-]
+var modes=[]
 
 module.exports=function(environment){return new(function(){
   var thisMode=this;
@@ -19,7 +18,7 @@ module.exports=function(environment){return new(function(){
   }
   this.engage=function(){
     // console.log("engage mode selector");
-    environment.hardware.sendScreenA("mode selecta!");
+    environment.hardware.sendScreenA("Select module");
     updateHardware();
   }
   this.disengage=function(){
