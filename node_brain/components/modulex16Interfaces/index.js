@@ -1,53 +1,61 @@
 'use strict';
-var moduleUserInterfaces={};
+//interfaces for general use, are needed one and only one
+var basicUserInterfaces={};
+//singleton available interfaces to control modules
+var Modulex16Interfaces={};
+//interfaces that have been instanced, they are correlated to modules.
+var moduleUserInterfaces=[];
 
-var modeBeingTweaked="scaleSetter";
+var modeBeingTweaked="moduleSelector";
 var changeToMode=modeBeingTweaked;
 
+Modulex16Interfaces.presetKit=require('./mode-presetSetter');
 
-moduleUserInterfaces.sequencer=require('./mode-sequencer');
-moduleUserInterfaces.scaleSetter=require('./mode-scaleSetter');
-moduleUserInterfaces.presetSetter=require('./mode-presetSetter');
-moduleUserInterfaces.performer=require('./mode-performer');
-
-moduleUserInterfaces.modeSelector=require('./mode-selector');
-moduleUserInterfaces.midiEdit=require('./mode-midiEdit');
-moduleUserInterfaces.system=require('./mode-system');
-moduleUserInterfaces.patcher=require('./mode-selector');
+basicUserInterfaces.moduleSelector=require('./mode-selector');
+basicUserInterfaces.add=require('./mode-add');
 
 module.exports=function(environment){
-  //transform function declarations into new objects providing the environment
-  for(var a in moduleUserInterfaces){
-    moduleUserInterfaces[a]=moduleUserInterfaces[a](environment);
+  //initialize the user interfaces now that environment is provided;
+  for(var a in Modulex16Interfaces){
+    Modulex16Interfaces[a]=Modulex16Interfaces[a](environment);
   }
+  var add=basicUserInterfaces.add=new basicUserInterfaces.add(environment);
+  add.setAvailableInterfaces(Modulex16Interfaces);
+  var moduleSelector=basicUserInterfaces.moduleSelector=new basicUserInterfaces.moduleSelector(environment);
 
-  moduleUserInterfaces.modeSelector.setModeList(moduleUserInterfaces);
+  basicUserInterfaces.moduleSelector.setModeList(basicUserInterfaces);
 
+  environment.patcher.on('modulecreated',function(event){
+    var newUserInterface=Modulex16Interfaces[event.type].create(event.module);
+    event.module.x16Interface=newUserInterface;
+    moduleSelector.addModuleUi(event.name);
+    moduleUserInterfaces.push(newUserInterface);
+  });
   environment.on('serialopened',function(){
     console.log("serial opened");
     //init all active modes, supposedly only once per run
-    for(var a in moduleUserInterfaces){
-      moduleUserInterfaces[a].init();
+    for(var a in basicUserInterfaces){
+      basicUserInterfaces[a].init();
     }
   });
   environment.on('interaction',function(event){
     //the selector button 0 engages modeselector temporarily
     if(event.type=="selectorButtonPressed"&&event.data[0]==0){
-      moduleUserInterfaces[modeBeingTweaked].disengage();
+      basicUserInterfaces[modeBeingTweaked].disengage();
       changeToMode=modeBeingTweaked;
-      modeBeingTweaked="modeSelector";
-      moduleUserInterfaces[modeBeingTweaked].engage(changeToMode);
+      modeBeingTweaked="moduleSelector";
+      basicUserInterfaces[modeBeingTweaked].engage(changeToMode);
       // console.log("<"+modeBeingTweaked+">");
     }else if(event.type=="selectorButtonReleased"&&event.data[0]==0){
-      modeBeingTweaked="modeSelector";
+      modeBeingTweaked="moduleSelector";
       //get from the modeselector, the mode that was selected
-      var newMode=moduleUserInterfaces[modeBeingTweaked].disengage();
+      var newMode=basicUserInterfaces[modeBeingTweaked].disengage();
       modeBeingTweaked=newMode||changeToMode;
-      moduleUserInterfaces[modeBeingTweaked].engage();
+      basicUserInterfaces[modeBeingTweaked].engage();
       // console.log("<"+modeBeingTweaked+">");
     }
 
-    var interactionResponse = moduleUserInterfaces[modeBeingTweaked].eventResponses[event.type];
+    var interactionResponse = basicUserInterfaces[modeBeingTweaked].eventResponses[event.type];
     if(typeof interactionResponse==="function"){
       interactionResponse(event);
     }else{

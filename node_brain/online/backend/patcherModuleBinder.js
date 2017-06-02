@@ -12,7 +12,8 @@ module.exports=function(environment){
     var newUnique=uniques.add({
       original:ev.module,
       trackedData:{
-        type:ev.name,
+        type:ev.type,
+        name:ev.name,
       },
     });
     bindedModules[newUnique].trackedData.unique=newUnique;

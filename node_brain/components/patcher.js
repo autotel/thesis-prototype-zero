@@ -1,6 +1,32 @@
 "use strict";
 const onhandlers=require('onhandlers');
+
+//midi modules are auto-instanced
+var Modules={
+  clock:require('./modules/clock'),
+  grade:require('./modules/grade'),
+  presetKit:require('./modules/presetKit'),
+  sequencer:require('./modules/sequencer'),
+}
+var uniqueName={
+  nameInstances:{}
+}
+uniqueName.get=function(base){
+  if(uniqueName.nameInstances[base]){
+    var ret= base+" "+uniqueName.nameInstances[base];
+    uniqueName.nameInstances[base]++;
+    return ret;
+  }else{
+    uniqueName.nameInstances[base]=1;
+    return base;
+  }
+}
 module.exports=function(environment){return new(function(){
+  this.availableModules=[];
+  for(var a in Modules){
+    this.availableModules.push(a);
+    Modules[a]=Modules[a](environment);
+  }
   onhandlers.call(this);
   var thisPatcher=this;
   var destinationList=[];
@@ -12,10 +38,24 @@ module.exports=function(environment){return new(function(){
     }
     return destinationList;
   }
-  this.addModule=function(name,what){
-    this.modules[name]=what;
-    this.handle("modulecreated",{name:name,module:what});
+
+  //creates a module
+  this.createModule=function(type,props){
+    if(Modules[type]){
+      var newModule=new Modules[type].instance(props);
+      thisPatcher.registerModule(type,newModule);
+      return newModule;
+    }else{
+      console.log("a "+type+ "module was not created because it doesnt exist");
+    }
   }
+  this.registerModule=function(type,what){
+    var name=uniqueName.get(type);
+    console.log(name+": a new "+type+" module was created");
+    this.modules[name]=what;
+    this.handle("modulecreated",{name:name,type:type,module:what});
+  }
+
   this.receiveEvent=function(evt){
     if(evt.destination){
 //console.log(evt);

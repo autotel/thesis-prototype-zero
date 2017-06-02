@@ -3,7 +3,7 @@ var base=require('./interactionModeBase');
 var currentlySelectedMode=0;
 var modes=[]
 
-module.exports=function(environment){return new(function(){
+module.exports=function(environment){
   var thisMode=this;
   this.isModeSelector=true;
   base.call(this);
@@ -16,17 +16,20 @@ module.exports=function(environment){return new(function(){
       modes.push(a);
     }
   }
+  this.addModuleUi=function(a){
+    modes.push(a);
+  }
   this.engage=function(){
     // console.log("engage mode selector");
     environment.hardware.sendScreenA("Select module");
     updateHardware();
   }
   this.disengage=function(){
-    return modes[currentlySelectedMode];
+    return modes[currentlySelectedMode]||"add";
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
     currentlySelectedMode=evt.data[0];
-    environment.hardware.sendScreenB(">"+modes[currentlySelectedMode]);
+    environment.hardware.sendScreenB(">"+(modes[currentlySelectedMode]||"add"));
     updateHardware();
   }
   this.eventResponses.encoderScroll=function(evt){
@@ -37,26 +40,4 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.encoderReleased=function(evt){
   }
-  return this;
-})()};
-/*
-0000 0000
-0000 0000
-
-0000 0001
-0010 1000
-
-0000 0010
-0000 0011
-0001 0100
-
-0000 0100
-0010 1001
-
-0000 0110
-0000 0111
-0000 1010
-
-
-
-*/
+};
