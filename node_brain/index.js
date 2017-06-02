@@ -66,7 +66,7 @@ const midi=require('./components/modules/midi')(environment);
 environment.midi=midi;
 const hardware=require('./components/uiHardware')(environment);
 environment.hardware=hardware;
-const interaction=require('./components/interactionManager')(environment);
+const interaction=require('./components/modulex16Interfaces')(environment);
 
 
 
