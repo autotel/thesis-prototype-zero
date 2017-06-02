@@ -12,14 +12,13 @@ changes while shift held, all selected or all events get the new value...
 
 
 module.exports=function(environment){
-  var selectors={};
-  selectors.dimension=require('./submode-dimensionSelector');
-  selectors.timeConfig=require('./submode-2dConfigurator');
-  //pendant: the sequencer functionality should be in the modules folder,
-  //as to separate the functionality (which can receive events) from the interaction
-  var sequencer=require('../modules/sequencer');
-
   this.instance=function(){
+    var selectors={};
+    selectors.dimension=require('./submode-dimensionSelector');
+    selectors.timeConfig=require('./submode-2dConfigurator');
+    //pendant: the sequencer functionality should be in the modules folder,
+    //as to separate the functionality (which can receive events) from the interaction
+    var sequencer=require('../modules/sequencer');
     base.call(this);
     var tPattern=this;
     var patData={};

@@ -4,7 +4,7 @@ var fingerMap=0x0000;
 var editingOutput=false;
 // var selectors={};
 module.exports=function(environment){
-  this.instance=function(){
+  return new(function(){
     var destNames=environment.patcher.getDestList();
     var midiOutputs=environment.midi.getMidiOutList();
     var midiMap=~(0xffff<<midiOutputs.length);
@@ -61,6 +61,5 @@ module.exports=function(environment){
     this.eventResponses.encoderReleased=function(evt){
 
     }
-  }
-  return this;
+  });
 }

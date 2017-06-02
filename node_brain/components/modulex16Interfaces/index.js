@@ -5,35 +5,45 @@ var basicUserInterfaces={};
 var Modulex16Interfaces={};
 //interfaces that have been instanced, they are correlated to modules.
 var moduleUserInterfaces=[];
+//all interfaces, to be able to engage from a number that is related to a pad
+var allUserInterfaces=[];
 
 var modeBeingTweaked="moduleSelector";
 var changeToMode=modeBeingTweaked;
 
-// Modulex16Interfaces.clock=require('./mode-presetSetter');
 Modulex16Interfaces.grade=require('./moduleController-grade');
 Modulex16Interfaces.presetKit=require('./moduleController-presetKit');
 Modulex16Interfaces.sequencer=require('./moduleController-sequencer');
 
-basicUserInterfaces.moduleSelector=require('./monomode-selector');
-basicUserInterfaces.midiEdit=require('./monomode-midiEdit');
-basicUserInterfaces.system=require('./monomode-system');
-basicUserInterfaces.add=require('./monomode-add');
+allUserInterfaces.moduleSelector=require('./monomode-selector');
+allUserInterfaces.midiEdit=require('./monomode-midiEdit');
+allUserInterfaces.system=require('./monomode-system');
+allUserInterfaces.add=require('./monomode-add');
+
+basicUserInterfaces.moduleSelector=allUserInterfaces.moduleSelector;
+basicUserInterfaces.midiEdit=allUserInterfaces.midiEdit;
+basicUserInterfaces.system=allUserInterfaces.system;
+basicUserInterfaces.add=allUserInterfaces.add;
 
 module.exports=function(environment){
   //initialize the user interfaces now that environment is provided;
+  for(var a in allUserInterfaces){
+    allUserInterfaces[a]=allUserInterfaces[a](environment);
+  }
+  //create singletons for available module interfaces
   for(var a in Modulex16Interfaces){
     Modulex16Interfaces[a]=Modulex16Interfaces[a](environment);
   }
-  var add=basicUserInterfaces.add=new basicUserInterfaces.add(environment);
-  add.setAvailableInterfaces(Modulex16Interfaces);
-  var moduleSelector=basicUserInterfaces.moduleSelector=new basicUserInterfaces.moduleSelector(environment);
+  allUserInterfaces.add.setAvailableInterfaces(['grade','presetKit','sequencer']);
+  // var moduleSelector=basicUserInterfaces.moduleSelector=new basicUserInterfaces.moduleSelector(environment);
 
-  basicUserInterfaces.moduleSelector.setModeList(basicUserInterfaces);
+  allUserInterfaces.moduleSelector.setModeList(allUserInterfaces);
 
   environment.patcher.on('modulecreated',function(event){
     var newUserInterface=new Modulex16Interfaces[event.type].instance(event.module);
     event.module.x16Interface=newUserInterface;
-    moduleSelector.addModuleUi(event.name);
+    allUserInterfaces.moduleSelector.addModuleUi(event.name);
+    allUserInterfaces.push(newUserInterface);
     moduleUserInterfaces.push(newUserInterface);
   });
   // environment.on('serialopened',function(){
@@ -46,21 +56,22 @@ module.exports=function(environment){
   environment.on('interaction',function(event){
     //the selector button 0 engages modeselector temporarily
     if(event.type=="selectorButtonPressed"&&event.data[0]==0){
-      basicUserInterfaces[modeBeingTweaked].disengage();
+      allUserInterfaces[modeBeingTweaked].disengage();
       changeToMode=modeBeingTweaked;
       modeBeingTweaked="moduleSelector";
-      basicUserInterfaces[modeBeingTweaked].engage(changeToMode);
+      allUserInterfaces[modeBeingTweaked].engage(changeToMode);
       // console.log("<"+modeBeingTweaked+">");
     }else if(event.type=="selectorButtonReleased"&&event.data[0]==0){
       modeBeingTweaked="moduleSelector";
       //get from the modeselector, the mode that was selected
-      var newMode=basicUserInterfaces[modeBeingTweaked].disengage();
+      var newMode=allUserInterfaces[modeBeingTweaked].disengage();
       modeBeingTweaked=newMode||changeToMode;
-      basicUserInterfaces[modeBeingTweaked].engage();
+      console.log(modeBeingTweaked);
+      allUserInterfaces[modeBeingTweaked].engage();
       // console.log("<"+modeBeingTweaked+">");
     }
 
-    var interactionResponse = basicUserInterfaces[modeBeingTweaked].eventResponses[event.type];
+    var interactionResponse = allUserInterfaces[modeBeingTweaked].eventResponses[event.type];
     if(typeof interactionResponse==="function"){
       interactionResponse(event);
     }else{
