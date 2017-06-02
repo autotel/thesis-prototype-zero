@@ -1,3 +1,7 @@
+
+//pendant: node returns array index as handle reference,
+//but deletion does a splice, thus these indexes become
+//outdated. Node hanlding should be differnet
 var forceDirectedGrapher=new(function(){
 
   var width = 960,

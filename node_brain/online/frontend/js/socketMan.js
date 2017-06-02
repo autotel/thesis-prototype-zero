@@ -21,17 +21,22 @@ var socketMan=new (function(){
   });
   socket.on(messageIndexes.CREATE,function(e){
     console.log("socket created a module",e);
-    uniqueArray[e.unique]=forceDirectedGrapher.addNode();
+    uniqueArray[e.unique]=Ui.addSprite(e);
   });
   //not implemented yet
   socket.on(messageIndexes.CONNECT,function(e){
     console.log("socket linked a module",e);
-    forceDirectedGrapher.addLink(uniqueArray[e.fromUnique],uniqueArray[e.toUnique]);
+    Ui.addLink(uniqueArray[e.fromUnique],uniqueArray[e.toUnique]);
+  });
+  socket.on(messageIndexes.EVENT,function(e){
+    console.log("socket reported event",e);
+    Ui.representEvent(uniqueArray[e.unique],e);
   });
   //not implemented yet
   socket.on(messageIndexes.DELETE,function(e){
     console.log("socket removed a module",e);
-    forceDirectedGrapher.removeNode(uniqueArray[e.unique]);
+    Ui.removeSprite(uniqueArray[e.unique]);
+    delete uniqueArray[e.unique];
   });
 	window.addEventListener("beforeunload", function(e){
 	  socket.close();
