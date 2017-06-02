@@ -9,10 +9,15 @@ var moduleUserInterfaces=[];
 var modeBeingTweaked="moduleSelector";
 var changeToMode=modeBeingTweaked;
 
-Modulex16Interfaces.presetKit=require('./mode-presetSetter');
+// Modulex16Interfaces.clock=require('./mode-presetSetter');
+Modulex16Interfaces.grade=require('./moduleController-grade');
+Modulex16Interfaces.presetKit=require('./moduleController-presetKit');
+Modulex16Interfaces.sequencer=require('./moduleController-sequencer');
 
-basicUserInterfaces.moduleSelector=require('./mode-selector');
-basicUserInterfaces.add=require('./mode-add');
+basicUserInterfaces.moduleSelector=require('./monomode-selector');
+basicUserInterfaces.midiEdit=require('./monomode-midiEdit');
+basicUserInterfaces.system=require('./monomode-system');
+basicUserInterfaces.add=require('./monomode-add');
 
 module.exports=function(environment){
   //initialize the user interfaces now that environment is provided;
@@ -26,18 +31,18 @@ module.exports=function(environment){
   basicUserInterfaces.moduleSelector.setModeList(basicUserInterfaces);
 
   environment.patcher.on('modulecreated',function(event){
-    var newUserInterface=Modulex16Interfaces[event.type].create(event.module);
+    var newUserInterface=new Modulex16Interfaces[event.type].instance(event.module);
     event.module.x16Interface=newUserInterface;
     moduleSelector.addModuleUi(event.name);
     moduleUserInterfaces.push(newUserInterface);
   });
-  environment.on('serialopened',function(){
-    console.log("serial opened");
-    //init all active modes, supposedly only once per run
-    for(var a in basicUserInterfaces){
-      basicUserInterfaces[a].init();
-    }
-  });
+  // environment.on('serialopened',function(){
+  //   console.log("serial opened");
+  //   //init all active modes, supposedly only once per run
+  //   // for(var a in basicUserInterfaces){
+  //   //   basicUserInterfaces[a].init();
+  //   // }
+  // });
   environment.on('interaction',function(event){
     //the selector button 0 engages modeselector temporarily
     if(event.type=="selectorButtonPressed"&&event.data[0]==0){

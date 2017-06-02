@@ -19,7 +19,7 @@ module.exports=function(environment){
   //as to separate the functionality (which can receive events) from the interaction
   var sequencer=require('../modules/sequencer');
 
-  return new(function(){
+  this.instance=function(){
     base.call(this);
     var tPattern=this;
     var patData={};
@@ -491,5 +491,6 @@ module.exports=function(environment){
       }
 
     }
-    return this;
-})()};
+  }
+  return this;
+};

@@ -14,7 +14,7 @@ var recording=false;
 module.exports=function(environment){
   //pendant: this.create should be turned into a "instance" prototype
   //to make it more concordant with how the modules are created
-  this.create=function(controlledDestination){return new (function(){
+  this.instance=function(){
     var selectors={};
     selectors.dimension=require('./submode-dimensionSelector');
     console.log("new controlledDestination",controlledDestination);
@@ -108,6 +108,6 @@ module.exports=function(environment){
         }
         updateHardware();
       }
-    })}
+    }
     return this;
 };
