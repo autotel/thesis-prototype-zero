@@ -6,16 +6,20 @@ var modes=[]
 module.exports=function(environment){
   return new(function(){
     var thisMode=this;
+    var monoModesMap=0x0000;
     this.isModeSelector=true;
     base.call(this);
     function updateHardware(){
-      environment.hardware.draw([0x1<<currentlySelectedMode,~(0xffff<<modes.length),~(0xffff<<modes.length)]);
+      var selectedMap=0x1<<currentlySelectedMode;
+      var allModesMap=~(0xffff<<modes.length);
+      environment.hardware.draw([selectedMap|(allModesMap^monoModesMap),selectedMap|(allModesMap^monoModesMap),selectedMap|monoModesMap]);
       // console.log(0x1<<currentlySelectedMode);
     }
     this.setModeList=function(list){
       for(var a in list){
         modes.push(a);
       }
+      monoModesMap=~(0xffff<<modes.length)
     }
     this.addModuleUi=function(a){
       modes.push(a);

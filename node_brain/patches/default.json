@@ -1,11 +1,13 @@
 {
   "modules":[
     {
-      "type":"sequencer",
-      "options":{}
-    },{
       "type":"bus",
       "options":{"name":"master bus"}
+    },{
+      "type":"sequencer",
+      "options":{
+        "source":"master bus"
+      }
     },{
       "type":"bus",
       "options":{"name":"second bus"}
