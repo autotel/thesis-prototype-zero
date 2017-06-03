@@ -9,7 +9,9 @@ const spawn  = require('child_process').spawn;
 //   if(!timeoutSet){
     // timeoutSet=true;
     // setTimeout(function(){
-      const ss = spawn('forever',["start","/home/pi/repositories/thesis-prototype-zero/node_brain/index.js"]);//,"&"
+      // const ss = spawn('forever',["start","/home/pi/repositories/thesis-prototype-zero/node_brain/index.js"]);//,"&"
+      const ss = spawn('node',["/home/pi/repositories/thesis-prototype-zero/node_brain/index"]);//,"&"
+
       ss.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
       });

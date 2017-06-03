@@ -12,12 +12,14 @@ var lastsubSelectorEngaged="dimension";
 var engaged=false;
 var recording=false;
 module.exports=function(environment){
-  //pendant: this.create should be turned into a "instance" prototype
-  //to make it more concordant with how the modules are created
-  this.instance=function(){
-    var selectors={};
-    selectors.dimension=require('./submode-dimensionSelector');
-    console.log("new controlledDestination",controlledDestination);
+  return new(function(){
+    //pendant: this.create should be turned into a "instance" prototype
+    //to make it more concordant with how the modules are created
+    this.instance=function(controlledDestination){
+      // this.testname="presetKit control";
+      var selectors={};
+        selectors.dimension=require('./submode-dimensionSelector');
+      // console.log("new controlledDestination",controlledDestination);
       base.call(this);
       for(var a in selectors){
         selectors[a]=selectors[a](environment);
@@ -109,5 +111,5 @@ module.exports=function(environment){
         updateHardware();
       }
     }
-    return this;
+  })();
 };

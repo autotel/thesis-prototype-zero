@@ -15,35 +15,37 @@ Modulex16Interfaces.grade=require('./moduleController-grade');
 Modulex16Interfaces.presetKit=require('./moduleController-presetKit');
 Modulex16Interfaces.sequencer=require('./moduleController-sequencer');
 
-allUserInterfaces.moduleSelector=require('./monomode-selector');
-allUserInterfaces.midiEdit=require('./monomode-midiEdit');
-allUserInterfaces.system=require('./monomode-system');
-allUserInterfaces.add=require('./monomode-add');
+basicUserInterfaces.moduleSelector=require('./monomode-selector');
+basicUserInterfaces.midiEdit=require('./monomode-midiEdit');
+basicUserInterfaces.system=require('./monomode-system');
+basicUserInterfaces.add=require('./monomode-add');
 
-basicUserInterfaces.moduleSelector=allUserInterfaces.moduleSelector;
-basicUserInterfaces.midiEdit=allUserInterfaces.midiEdit;
-basicUserInterfaces.system=allUserInterfaces.system;
-basicUserInterfaces.add=allUserInterfaces.add;
 
 module.exports=function(environment){
   //initialize the user interfaces now that environment is provided;
-  for(var a in allUserInterfaces){
-    allUserInterfaces[a]=allUserInterfaces[a](environment);
+  for(var a in basicUserInterfaces){
+    basicUserInterfaces[a]=basicUserInterfaces[a](environment);
+    allUserInterfaces[a]=basicUserInterfaces[a];
   }
   //create singletons for available module interfaces
   for(var a in Modulex16Interfaces){
     Modulex16Interfaces[a]=Modulex16Interfaces[a](environment);
+    console.log("init a "+a);
   }
-  allUserInterfaces.add.setAvailableInterfaces(['grade','presetKit','sequencer']);
+  for(var a in Modulex16Interfaces){
+    console.log("init a "+a,Modulex16Interfaces[a]);
+  }
+  // allUserInterfaces.add.setAvailableInterfaces(['grade','presetKit','sequencer']);
   // var moduleSelector=basicUserInterfaces.moduleSelector=new basicUserInterfaces.moduleSelector(environment);
 
   allUserInterfaces.moduleSelector.setModeList(allUserInterfaces);
 
   environment.patcher.on('modulecreated',function(event){
     var newUserInterface=new Modulex16Interfaces[event.type].instance(event.module);
+    console.log(newUserInterface.testname);
     event.module.x16Interface=newUserInterface;
     allUserInterfaces.moduleSelector.addModuleUi(event.name);
-    allUserInterfaces.push(newUserInterface);
+    allUserInterfaces[event.name]=newUserInterface;
     moduleUserInterfaces.push(newUserInterface);
   });
   // environment.on('serialopened',function(){
