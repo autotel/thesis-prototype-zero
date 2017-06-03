@@ -1,0 +1,12 @@
+{
+  "modules":{
+    "sequencer":{},
+    "bus":{"name":"master bus"},
+    "bus":{"name":"second bus"},
+    "clock":{
+      "clock":{
+        "interval":148
+      }
+    }
+  }
+}

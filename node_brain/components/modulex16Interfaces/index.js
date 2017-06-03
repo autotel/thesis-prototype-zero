@@ -14,6 +14,7 @@ var changeToMode=modeBeingTweaked;
 Modulex16Interfaces.grade=require('./moduleController-grade');
 Modulex16Interfaces.presetKit=require('./moduleController-presetKit');
 Modulex16Interfaces.sequencer=require('./moduleController-sequencer');
+Modulex16Interfaces.clock=require('./moduleController-clock');
 
 basicUserInterfaces.moduleSelector=require('./monomode-selector');
 basicUserInterfaces.midiEdit=require('./monomode-midiEdit');
@@ -41,12 +42,22 @@ module.exports=function(environment){
   allUserInterfaces.moduleSelector.setModeList(allUserInterfaces);
 
   environment.patcher.on('modulecreated',function(event){
-    var newUserInterface=new Modulex16Interfaces[event.type].instance(event.module);
-    console.log(newUserInterface.testname);
-    event.module.x16Interface=newUserInterface;
-    allUserInterfaces.moduleSelector.addModuleUi(event.name);
-    allUserInterfaces[event.name]=newUserInterface;
-    moduleUserInterfaces.push(newUserInterface);
+    //if there is an User Interface for this new module...
+    if(Modulex16Interfaces[event.type]){
+      //create it
+      var newUserInterface=new Modulex16Interfaces[event.type].instance(event.module);
+      // console.log(newUserInterface.testname);
+      //attach it to the module.. actually I think this is not used anymore
+      event.module.x16Interface=newUserInterface;
+      //register the interface in the module selector so we can switch to it
+      allUserInterfaces.moduleSelector.addModuleUi(event.name);
+      //the module selector answers with a number, so I must know what Interface
+      //corresponds to that number
+      allUserInterfaces[event.name]=newUserInterface;
+      //this is not really necessary, but just to make available a list of the
+      //user interfaces that are for modules
+      moduleUserInterfaces.push(newUserInterface);
+    }
   });
   // environment.on('serialopened',function(){
   //   console.log("serial opened");

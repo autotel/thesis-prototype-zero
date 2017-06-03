@@ -7,7 +7,7 @@ module.exports=function(environment){
   return new(function(){
     this.instance=function(controlledDestination){
       // this.testname="grade control";
-      controlledDestination=controlledDestination(environment);
+      //controlledDestination=controlledDestination(environment);
       controlledDestination.newScaleMap(scaleMap);
       base.call(this);
       function updateHardware(){

@@ -3,24 +3,10 @@
 const onhandlers=require('onhandlers');
 
 var environment=new(function(){
+  //following line: neccesary?
   onhandlers.call(this);
 
-  this.metronome=new(function(){
-    var interval=140;
-    var currentStep=0;
-    var tMetro=this;
-    onhandlers.call(this);
-    function stm(){
-      tMetro.handle('step',{step:currentStep});
-      currentStep++;
-      currentStep%=16*15*14*13*12*11*10*9*8*7*6*5*4*3*2;
-      setTimeout(stm,interval);
-    }
-    stm();
-    this.interval=function(val){
-      interval=val;
-    }
-  })();
+
 
 
 
@@ -34,9 +20,23 @@ const midi=require('./components/modules/midi')(environment);
 environment.midi=midi;
 const hardware=require('./components/uiHardware')(environment);
 environment.hardware=hardware;
-const interaction=require('./components/modulex16Interfaces')(environment);
+const moduleX16Interfaces=require('./components/moduleX16Interfaces')(environment);
+environment.moduleX16Interface=moduleX16Interfaces;
 
-
+function loadPatch(file){
+  var fs = require('fs');
+  var obj;
+  fs.readFile(file, 'utf8', function (err, data) {
+    if (err) throw err;
+    obj = JSON.parse(data);
+    console.log("--loading a patch--");
+    // console.log(obj);
+    for(var a in obj.modules){
+      var newModule=environment.patcher.createModule(a,obj.modules[a]);
+    }
+  });
+}
+loadPatch('./patches/default.json');
 
 // const readline = require('readline');
 // environment.on('serialopened',function(){

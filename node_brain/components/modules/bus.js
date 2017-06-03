@@ -9,9 +9,6 @@ module.exports=function(environment){
     //some modules even instance themselves, like midi.
     this.instance=function(props){
       destinationBase.call(this,environment);
-      this.receiveEvent=function(evt){
-        this.handle('receive',evt)
-      }
     }
   })();
 }

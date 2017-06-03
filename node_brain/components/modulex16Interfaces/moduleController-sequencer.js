@@ -9,6 +9,9 @@ changes while shift held, all selected or all events get the new value...
 
 */
 
+/*
+pendant: perhaps all modules should have a single destination?
+*/
 module.exports=function(environment){
   return new(function(){
     this.instance=function(controlledDestination){
@@ -47,7 +50,7 @@ module.exports=function(environment){
           if(!stepEvent.stepLength)stepEvent.stepLength=1;
           notesInPlay.push({sequencerEvent:stepEvent,offInStep:stepCounter+stepEvent.stepLength});
         }
-        this.step=function(){
+        this.step=function(evt){
           for(var a in notesInPlay){
             if(notesInPlay[a].offInStep==stepCounter){
               // console.log("a:"+a);
@@ -113,6 +116,12 @@ module.exports=function(environment){
           getValueName:function(a){ return a },
           maximumValue:16*12,
           minimumValue:1,
+        },
+        'master clock':{
+          value:1,
+          getValueName:function(a){ if(a){ return "synced" }else{ return "independent" } },
+          maximumValue:16*12,
+          minimumValue:1,
         }
       });
 
@@ -123,6 +132,7 @@ module.exports=function(environment){
       var loopUndestructiveFold=selectors.timeConfig.options[4];
       var loopDisplace=selectors.timeConfig.options[5];
       var stepLength=selectors.timeConfig.options[6];
+      var masterClockSync=selectors.timeConfig.options[7];
 
       loopFold.base=2;
       loopFold.getValueName=loopUndestructiveFold.getValueName=function(a){
@@ -163,9 +173,9 @@ module.exports=function(environment){
       // var selectors=['dimension','value','modulus'];
       var currentSelector=0;
 
-      this.init=function(){
-        environment.metronome.on('step',step);
-      }
+      // this.init=function(){
+        controlledDestination.on('receiveEvent',step);
+      // }
       // environment.patcher.modules.sequencer=this;
 
     //   this.receiveEvent=function(event){

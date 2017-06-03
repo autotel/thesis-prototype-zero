@@ -7,6 +7,7 @@ var Modules={
   grade:require('./modules/grade'),
   presetKit:require('./modules/presetKit'),
   sequencer:require('./modules/sequencer'),
+  bus:require('./modules/bus'),
 }
 var uniqueName={
   nameInstances:{}

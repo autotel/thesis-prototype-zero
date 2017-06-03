@@ -29,10 +29,11 @@ module.exports=function(environment){
       selectedMap=0x1<<evt.data[0];
       if(currentSelection===evt.data[0]){
         var newModule=environment.patcher.createModule(available[currentSelection]);
-        thisMode.disengage();
-        if(newModule.x16Interface){
-          newModule.x16Interface.engage();
-        }
+
+        // thisMode.disengage();
+        // if(newModule.x16Interface){
+        //   newModule.x16Interface.engage();
+        // }
       }else{
         currentSelection=evt.data[0];
         updateHardware();
