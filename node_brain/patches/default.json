@@ -1,12 +1,21 @@
 {
-  "modules":{
-    "sequencer":{},
-    "bus":{"name":"master bus"},
-    "bus":{"name":"second bus"},
-    "clock":{
-      "clock":{
-        "interval":148
+  "modules":[
+    {
+      "type":"sequencer",
+      "options":{}
+    },{
+      "type":"bus",
+      "options":{"name":"master bus"}
+    },{
+      "type":"bus",
+      "options":{"name":"second bus"}
+    },{
+      "type":"clock",
+      "options":{
+        "clocks":[
+          {"interval":148}
+        ]
       }
     }
-  }
+  ]
 }

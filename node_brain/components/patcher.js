@@ -44,14 +44,19 @@ module.exports=function(environment){return new(function(){
   this.createModule=function(type,props){
     if(Modules[type]){
       var newModule=new Modules[type].instance(props);
-      thisPatcher.registerModule(type,newModule);
+      thisPatcher.registerModule(type,newModule,props);
       return newModule;
     }else{
       console.log("a "+type+ "module was not created because it doesnt exist");
     }
   }
-  this.registerModule=function(type,what){
-    var name=uniqueName.get(type);
+  this.registerModule=function(type,what,props){
+    var nameBase=type;
+    var name;
+    if(props){
+      if(props.name) nameBase=props.name
+    }
+    name=uniqueName.get(nameBase);
     console.log(name+": a new "+type+" module was created");
     this.modules[name]=what;
     this.handle("modulecreated",{name:name,type:type,module:what});

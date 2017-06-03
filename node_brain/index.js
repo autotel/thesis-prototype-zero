@@ -31,8 +31,8 @@ function loadPatch(file){
     obj = JSON.parse(data);
     console.log("--loading a patch--");
     // console.log(obj);
-    for(var a in obj.modules){
-      var newModule=environment.patcher.createModule(a,obj.modules[a]);
+    for(var moduleDefiner of obj.modules){
+      var newModule=environment.patcher.createModule(moduleDefiner.type,moduleDefiner.options);
     }
   });
 }
