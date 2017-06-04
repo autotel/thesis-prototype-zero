@@ -26,14 +26,15 @@ module.exports=function(environment){
       this.clearStep=patchMem.clearStep;
       this.clearStepByFilter=patchMem.clearStepByFilter;
       this.getBoolean=patchMem.getBoolean;
-      this.eachFold=patchMem.eachFold;
-      this.getThroughfoldBoolean=patchMem.getThroughfoldBoolean;
+      // this.eachFold=patchMem.eachFold;
+      // this.getThroughfoldBoolean=patchMem.getThroughfoldBoolean;
       this.clearStepRange=patchMem.clearStepRange;
       this.duplicateSequence=patchMem.duplicateSequence;
-      this.getBitmapx16=patchMem.getBitmapx16;
+      // this.getBitmapx16=patchMem.getBitmapx16;
       this.step=patchMem.step;
 
       var tPattern=this;
+      
 
       destinationBase.call(this,environment);
       this.receiveEvent=function(evt){

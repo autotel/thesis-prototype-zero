@@ -65,46 +65,6 @@ module.exports=function(sequencerModule){ return new(function(){
     return false;
   };
 
-  function eachFold(button,callback){
-    var len=loopLength.value;
-    var look=lookLoop.value||len;
-    button%=look;
-    //how many repetitions of the lookloop are represented under this button?
-    var stepFolds;
-    if(len%look>button){
-      stepFolds=Math.ceil(len/look);
-    }else{
-      stepFolds=Math.floor(len/look);
-    }
-    // console.log("start check folds:"+stepFolds+" len:"+len+" look:"+look);
-    for(var foldNumber=0; foldNumber<stepFolds; foldNumber++){
-      callback((look*foldNumber)+button);
-    }
-    return {stepFolds:stepFolds}
-  }
-
-  //does the event under the button repeat througout all the repetitions of lookLoop?
-  var getThroughfoldBoolean=function(button,filterFunction){
-    var ret=0;
-    var stepFolds=eachFold(button,function(step){
-      if(patData[step])
-        if(typeof filterFunction==="function"){
-          //yes, every step is an array
-          for(var stepData of patData[step]){
-            if(filterFunction(stepData)) ret ++;
-          }
-        }else{
-          // console.log("   check bt"+step);
-          for(var stepData of patData[step]){
-            if(patData[step]||false) ret ++;
-          }
-        }
-    }).stepFolds;
-    //if the step was repeated throughout all the folds, the return is true.
-    if(ret>=stepFolds) ret=true; //ret can be higher than twofold because each step can hold any n of events
-    // console.log("ret is "+ret);
-    return ret;
-  };
   var clearStepRange=function(from,to){
     for(var step=to; step>from; step--){
       //maybe this iteration is unnecesary?
@@ -137,31 +97,6 @@ module.exports=function(sequencerModule){ return new(function(){
     }
   }
 
-  var getBitmapx16=function(filter, requireAllFold){
-    var ret=0x0000;
-    if(requireAllFold){
-      for(var button=0; button<16;button++)
-        if(getThroughfoldBoolean(button,filter)===requireAllFold) ret|=0x1<<button;
-    }else{
-      if(filter){
-        for(var button=0; button<16;button++)
-          if(patData[button])
-            for(var stepData of patData[button])
-              if(filter(stepData)){
-                ret|=0x1<<button;
-              }
-      }else{
-        for(var button=0; button<16;button++)
-          if(patData[button])
-            for(var stepData of patData[button])
-              if(stepData){
-                ret|=0x1<<button;
-              }
-      }
-    }
-    // console.log(">"+ret.toString(16));
-    return ret;
-  }
   function step(evt){
 
     currentStep++;
@@ -198,10 +133,10 @@ module.exports=function(sequencerModule){ return new(function(){
   this.clearStep=clearStep;
   this.clearStepByFilter=clearStepByFilter;
   this.getBoolean=getBoolean;
-  this.eachFold=eachFold;
-  this.getThroughfoldBoolean=getThroughfoldBoolean;
+  // this.eachFold=eachFold;
+  // this.getThroughfoldBoolean=getThroughfoldBoolean;
   this.clearStepRange=clearStepRange;
   this.duplicateSequence=duplicateSequence;
-  this.getBitmapx16=getBitmapx16;
+  // this.getBitmapx16=getBitmapx16;
   this.step=step;
 })(); };
