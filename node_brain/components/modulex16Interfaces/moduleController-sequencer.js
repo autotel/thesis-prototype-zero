@@ -14,61 +14,18 @@ pendant: perhaps all modules should have a single destination?
 */
 module.exports=function(environment){
   return new(function(){
-    this.instance=function(controlledDestination){
+    this.instance=function(controlledModule){
       // this.testname="sequencerController";
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
       selectors.timeConfig=require('./submode-2dConfigurator');
-      //pendant: the sequencer functionality should be in the modules folder,
-      //as to separate the functionality (which can receive events) from the interaction
-      var sequencer=require('../modules/sequencer');
+
       base.call(this);
-      var tPattern=this;
-      var patData={};
-      var currentStep=0;
+
       var engaged=false;
       var shiftPressed=false;
-      var currentModulus=16;
-      var NoteLenManager=new(function(){
-        var notesInCreation=[];
-        var notesInPlay=[];
-        var stepCounter=0;
-        this.startAdding=function(button,newStepEv){
-          if(!newStepEv.stepLength){
-            newStepEv.stepLength=1;
-          }
-          eachFold(button,function(step){
-            var added=storeNoDup(step,newStepEv);
-            if(added) notesInCreation[button]={sequencerEvent:added,started:stepCounter};
-          });
-        }
-        this.finishAdding=function(button){
-          if(notesInCreation[button])
-            notesInCreation[button].sequencerEvent.stepLength=stepCounter-notesInCreation[button].started;
-        }
-        this.noteStarted=function(stepEvent){
-          if(!stepEvent.stepLength)stepEvent.stepLength=1;
-          notesInPlay.push({sequencerEvent:stepEvent,offInStep:stepCounter+stepEvent.stepLength});
-        }
-        this.step=function(evt){
-          for(var a in notesInPlay){
-            if(notesInPlay[a].offInStep==stepCounter){
-              // console.log("a:"+a);
-              // console.log(notesInPlay[a]);
-              environment.patcher.receiveEvent(notesInPlay[a].sequencerEvent.off);
-              notesInPlay[a]=false;
-            }
-          }
-          //splicing requires backward iteration
-          var a=notesInPlay.length;
-          while(a>0){
-            if(notesInPlay[a]===false)
-              notesInPlay.splice(a,1);
-            a--;
-          }
-          stepCounter++;
-        }
-      })();
+
+
 
     //console.log(selectors);
       for(var a in selectors){
@@ -133,7 +90,7 @@ module.exports=function(environment){
       var loopDisplace=selectors.timeConfig.options[5];
       var stepLength=selectors.timeConfig.options[6];
       var masterClockSync=selectors.timeConfig.options[7];
-
+      loopLength.bindValueWith(controlledModule,"loopLength");
       loopFold.base=2;
       loopFold.getValueName=loopUndestructiveFold.getValueName=function(a){
         return loopFold.base+"^"+loopFold.value+"="+loopLength.value;
@@ -174,214 +131,25 @@ module.exports=function(environment){
       var currentSelector=0;
 
       // this.init=function(){
-        controlledDestination.on('receiveEvent',step);
+        controlledModule.on('receiveEvent',updateLeds);
       // }
       // environment.patcher.modules.sequencer=this;
 
     //   this.receiveEvent=function(event){
     // //console.log("not implemented yet");
     //   }
-      var store=function(step,data){
-        if(!patData[step]) patData[step]=[];
-        if(data){
-          patData[step].push(data);
-          return data;
-        }
-      }
-      var storeNoDup=function(step,data){
-        var ret=false;
-        if(!patData[step]) patData[step]=[];
-        if(data){
-          var cancel=false;
-          for(var a in patData[step]){
-            if(patData[step][a].on.compareTo(data.on,['destination','value'])){
-              cancel=true;
-              break;
-            }
-          }
-          if(!cancel){
-            patData[step].push(data); return data;
-          }
-        }
-      }
-      var clearStepNewest=function(step){
-        patData[step].pop();
-      }
-      var clearStepOldest=function(step){
-        patData[step].shift();
-      }
-      var clearStep=function(step){
-        delete patData[step];
-      }
-      var clearStepByFilter=function(step,filterFunction){
-        if(patData[step])
-          if(typeof filterFunction==="function"){
-            for(var sEvt in patData[step]){
-              if(filterFunction(patData[step][sEvt])){
-                patData[step].splice(sEvt,1);
-                return true;
-              }
-            }
-            return false;
-          }
-        return false;
-      }
-      var getBoolean=function(step,filterFunction){
-        if(patData[step])
-          if(typeof filterFunction==="function"){
-            //yes, every step is an array
-            for(var stepData of patData[step]){
-              if(filterFunction(stepData))
-                return true;
-              return false;
-            }
-          }else{
-            for(var stepData of patData[step]){
-              if(patData[step]||false)
-                return true;
-              return false;
-            }
-          }
-        return false;
-      };
-
-      function eachFold(button,callback){
-        var len=loopLength.value;
-        var look=lookLoop.value||len;
-        button%=look;
-        //how many repetitions of the lookloop are represented under this button?
-        var stepFolds;
-        if(len%look>button){
-          stepFolds=Math.ceil(len/look);
-        }else{
-          stepFolds=Math.floor(len/look);
-        }
-        // console.log("start check folds:"+stepFolds+" len:"+len+" look:"+look);
-        for(var foldNumber=0; foldNumber<stepFolds; foldNumber++){
-          callback((look*foldNumber)+button);
-        }
-        return {stepFolds:stepFolds}
-      }
-
-      //does the event under the button repeat througout all the repetitions of lookLoop?
-      var getThroughfoldBoolean=function(button,filterFunction){
-        var ret=0;
-        var stepFolds=eachFold(button,function(step){
-          if(patData[step])
-            if(typeof filterFunction==="function"){
-              //yes, every step is an array
-              for(var stepData of patData[step]){
-                if(filterFunction(stepData)) ret ++;
-              }
-            }else{
-              // console.log("   check bt"+step);
-              for(var stepData of patData[step]){
-                if(patData[step]||false) ret ++;
-              }
-            }
-        }).stepFolds;
-        //if the step was repeated throughout all the folds, the return is true.
-        if(ret>=stepFolds) ret=true; //ret can be higher than twofold because each step can hold any n of events
-        // console.log("ret is "+ret);
-        return ret;
-      };
-      var clearStepRange=function(from,to){
-        for(var step=to; step>from; step--){
-          //maybe this iteration is unnecesary?
-          for(var a in patData[step]){
-            delete patData[step][a];
-          }
-          delete patData[step];
-        }
-      }
-      var duplicateSequence=function(startingStep,originalEndingStep,multiplyFactor){
-        var initialStepSize=originalEndingStep-startingStep;
-        if(multiplyFactor>1){
-          clearStepRange(originalEndingStep+1,initialStepSize*(multiplyFactor-1));
-          //starts in 1 because the 0 is the currently existing one
-          for(var duplicationNumber=1; duplicationNumber<multiplyFactor; duplicationNumber++){
-            for(var step=startingStep; step<originalEndingStep; step++){
-              // var testc=0;
-              if(patData[step])
-              for(var a=0; a<patData[step].length; a++){
-                // testc++;
-                var targetStep=(initialStepSize*duplicationNumber)+step;
-                // console.log(duplicationNumber,step,testc,targetStep);
-                if(!patData[targetStep]) patData[targetStep]=[];
-                patData[targetStep].push(new eventMessage(patData[step][a]));
-              }
-            }
-          }
-        }else{
-          clearStepRange(startingStep,originalEndingStep*multiplyFactor);
-        }
-      }
-
-      var getBitmapx16=function(filter, requireAllFold){
-        var ret=0x0000;
-        if(requireAllFold){
-          for(var button=0; button<16;button++)
-            if(getThroughfoldBoolean(button,filter)===requireAllFold) ret|=0x1<<button;
-        }else{
-          if(filter){
-            for(var button=0; button<16;button++)
-              if(patData[button])
-                for(var stepData of patData[button])
-                  if(filter(stepData)){
-                    ret|=0x1<<button;
-                  }
-          }else{
-            for(var button=0; button<16;button++)
-              if(patData[button])
-                for(var stepData of patData[button])
-                  if(stepData){
-                    ret|=0x1<<button;
-                  }
-          }
-        }
-        // console.log(">"+ret.toString(16));
-        return ret;
-      }
 
       //some events run regardless of engagement. in these cases, the screen refresh is conditional
-      function step(evt){
 
-        currentStep++;
-        currentStep+=loopDisplace.value;
-        loopDisplace.value=0;
-        if(currentStep>=loopLength.value) currentStep%=loopLength.value;
-        if(currentStep<0) currentStep%=loopLength.value;
-
-        NoteLenManager.step();
-
-        if(getBoolean(currentStep)){
-          for(var stepData of patData[currentStep]){
-            // if(stepData.destination=="midi"){
-            // }else if(stepData.destination=="midi"){
-              // var val=stepData.value;
-              environment.patcher.receiveEvent(stepData.on);
-              NoteLenManager.noteStarted(stepData);
-            // }else
-          }
-        }
-
-        if(engaged){
-          if(subSelectorEngaged===false)
-          updateLeds();//, console.log("step"+currentStep);
-          if(lastsubSelectorEngaged==="timeConfig"){
-            selectors.timeConfig.updateLcd();
-          }
-        }
-      }
       var focusedFilter=new selectors.dimension.Filter({destination:true,header:true,value_a:true});
       var bluredFilter=new selectors.dimension.Filter({destination:true,header:true});
       var moreBluredFilter=new selectors.dimension.Filter({destination:true});
       function updateLeds(){
         //actually should display also according to the currently being tweaked
 
-        var mostImportant=getBitmapx16(shiftPressed?moreBluredFilter:focusedFilter,lastsubSelectorEngaged=="timeConfig");
-        var mediumImportant=getBitmapx16(moreBluredFilter,lastsubSelectorEngaged=="timeConfig");
-        var leastImportant=getBitmapx16(bluredFilter);//red, apparently
+        var mostImportant=controlledModule.getBitmapx16(shiftPressed?moreBluredFilter:focusedFilter,lastsubSelectorEngaged=="timeConfig");
+        var mediumImportant=controlledModule.getBitmapx16(moreBluredFilter,lastsubSelectorEngaged=="timeConfig");
+        var leastImportant=controlledModule.getBitmapx16(bluredFilter);//red, apparently
 
 
 
@@ -391,7 +159,7 @@ module.exports=function(environment){
         //"render" play header:
         //if we are in modulus view, it renders many playheads
         if(lastsubSelectorEngaged=="timeConfig"){
-          drawStep=currentStep%(lookLoop.value||loopLength.value);
+          drawStep=controlledModule.currentStep%(lookLoop.value||loopLength.value);
           var stepFolds=Math.ceil(loopLength.value/(lookLoop.value||loopLength.value));
           for(var a=0; a<stepFolds;a++){
             playHeadBmp|=0x1<<drawStep+a*(lookLoop.value||loopLength.value);
@@ -399,7 +167,7 @@ module.exports=function(environment){
           playHeadBmp&=0xFFFF;
         }else{
           //otherwise, normal one header
-          drawStep=currentStep%loopLength.value;
+          drawStep=controlledModule.currentStep%loopLength.value;
           var playHeadBmp=0x1<<drawStep;
         }
 
@@ -422,7 +190,7 @@ module.exports=function(environment){
         if(subSelectorEngaged===false){
           var button=evt.data[0];
           var currentFilter=shiftPressed?moreBluredFilter:focusedFilter;
-          var throughfold=getThroughfoldBoolean(button,currentFilter);
+          var throughfold=controlledModule.getThroughfoldBoolean(button,currentFilter);
 
           //if shift is pressed, there is only one repetition throughfold required, making the edition more prone to delete.
           if(shiftPressed){ if(throughfold!==true) throughfold=throughfold>0; }else{ throughfold=throughfold===true; }

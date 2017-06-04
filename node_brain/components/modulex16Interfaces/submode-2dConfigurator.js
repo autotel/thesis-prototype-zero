@@ -15,6 +15,11 @@ var Option=function(opts){
   for(var a in opts){
     this[a]=opts[a];
   }
+  this.bindValue=false;
+  //wether to apply the value of this option o an objects property upon change.
+  this.bindValueWith=function(object,property){
+    this.bindValue=[object,property];
+  }
   if(!opts.maximumValue)this.maximumValue=valueNames.length;
 }
 module.exports=function(environment){return new(function(){
@@ -70,10 +75,15 @@ module.exports=function(environment){return new(function(){
       }
     }
     updateLcd();
+    //we can set the option value to set some parameter in an arbitrary object, here it is applied
+    if(currentOption.bindValue){
+      (currentOption.bindValue[0])[currentOption.bindValue[1]]=currentOption.value;
+    }
   }
   this.eventResponses.encoderPressed=function(evt){
   }
   this.eventResponses.encoderReleased=function(evt){
   }
+
   return this;
 })()};

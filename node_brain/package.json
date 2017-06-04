@@ -15,11 +15,12 @@
     "jazz-midi": "^1.5.4",
     "midi": "^0.9.5",
     "onhandlers": "^1.0.3",
+    "raspi": "^4.0.0",
     "raspi-serial": "^3.1.0",
     "serialport": "^4.0.7",
     "serve-index": "^1.9.0",
     "shelljs": "^0.7.7",
     "socket.io": "^1.7.3",
-    "web-audio-api": "^0.2.2"
+    "web-audio-api": "^0.2.2",
   }
 }
