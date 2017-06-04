@@ -1,4 +1,5 @@
 module.exports=function(sequencerModule){ return new(function(){
+  var currentStep=sequencerModule.currentStep;
   var loopLength=sequencerModule.loopLength;
   var patData=sequencerModule.patData;
   var store=function(step,data){
@@ -96,35 +97,39 @@ module.exports=function(sequencerModule){ return new(function(){
       clearStepRange(startingStep,originalEndingStep*multiplyFactor);
     }
   }
-
+  this.stepAbsolute=function(s){
+    currentStep.value=s;
+    // currentStep.value+=this.loopDisplace;
+    // loopDisplace.value=0;
+    if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
+    if(currentStep.value<0) currentStep.value%=loopLength.value;
+    step(s);
+  }
+  this.stepIncremental=function(s){
+    currentStep.value++;
+    // currentStep.value+=this.loopDisplace;
+    // loopDisplace.value=0;
+    if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
+    if(currentStep.value<0) currentStep.value%=loopLength.value;
+    step(s);
+  }
   function step(evt){
 
-    currentStep++;
-    currentStep+=loopDisplace.value;
-    loopDisplace.value=0;
-    if(currentStep>=loopLength.value) currentStep%=loopLength.value;
-    if(currentStep<0) currentStep%=loopLength.value;
 
-    NoteLenManager.step();
+    sequencerModule.noteLenManager.step();
 
-    if(getBoolean(currentStep)){
-      for(var stepData of patData[currentStep]){
+    if(getBoolean(currentStep.value)){
+      for(var stepData of patData[currentStep.value]){
         // if(stepData.destination=="midi"){
         // }else if(stepData.destination=="midi"){
           // var val=stepData.value;
           environment.patcher.receiveEvent(stepData.on);
-          NoteLenManager.noteStarted(stepData);
+          sequencerModule.noteLenManager.noteStarted(stepData);
         // }else
       }
     }
 
-    if(engaged){
-      if(subSelectorEngaged===false)
-      updateLeds();//, console.log("step"+currentStep);
-      if(lastsubSelectorEngaged==="timeConfig"){
-        selectors.timeConfig.updateLcd();
-      }
-    }
+    sequencerModule.onPatchStep();
   }
   this.store=store;
   this.storeNoDup=storeNoDup;

@@ -70,6 +70,20 @@ module.exports=function(environment){
           }
           return destNames[value];
       }
+
+      destination.valueChangeFunction=function(absolute,delta){
+        if(!absolute) absolute=destination.value+delta;
+        if(absolute>=destination.minimumValue)
+        if(absolute<=destination.maximumValue){
+          destination.value=absolute;
+          if(absolute>-1){
+            clocks[currentlySelectedClock].setDestination(destNames[destination.value]);
+          }else{
+            clocks[currentlySelectedClock].setDestination(false);
+          }
+        }
+      }
+
       base.call(this);
       function updateModifierValuesToSelectedClock(){
         if(clocks[currentlySelectedClock]){
@@ -80,7 +94,7 @@ module.exports=function(environment){
         if(subSelectorEngaged==false){
           var clocksMap=~(0xffff<<clocks.length)
           var selectMap=currentlySelectedClock!==false?1<<currentlySelectedClock:0;
-          environment.hardware.draw([selectMap|clocksMap,selectMap,selectMap|tickMap]);
+          environment.hardware.draw([selectMap|clocksMap,selectMap,selectMap^tickMap]);
         }
       }
       function updateLcd(){

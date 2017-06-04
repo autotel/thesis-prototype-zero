@@ -15,6 +15,7 @@ pendant: perhaps all modules should have a single destination?
 module.exports=function(environment){
   return new(function(){
     this.instance=function(controlledModule){
+      var currentStep=controlledModule.currentStep;
       // this.testname="sequencerController";
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
@@ -33,6 +34,10 @@ module.exports=function(environment){
         selectors[a]=selectors[a](environment);
       }
 
+      var receiveSourcesNames=environment.patcher.getSourcesList();
+
+
+
       selectors.timeConfig.initOptions({
         'look loop':{
           value:0,
@@ -45,7 +50,7 @@ module.exports=function(environment){
           maximumValue:(256/16),
         },
         'loop length':{
-          value:16,
+          value:controlledModule.loopLength,
           getValueName:function(a){ return a },
           maximumValue:256,
           minimumValue:1,
@@ -69,16 +74,17 @@ module.exports=function(environment){
           minimumValue:-4,
         },
         'step length':{
-          value:12,
+          value:controlledModule.loopLength,
           getValueName:function(a){ return a },
           maximumValue:16*12,
           minimumValue:1,
         },
-        'master clock':{
-          value:1,
-          getValueName:function(a){ if(a){ return "synced" }else{ return "independent" } },
-          maximumValue:16*12,
-          minimumValue:1,
+        'clock':{
+          value:0,
+          getValueName:function(value){
+          },
+          maximumValue:1,
+          minimumValue:-1,
         }
       });
 
@@ -89,7 +95,36 @@ module.exports=function(environment){
       var loopUndestructiveFold=selectors.timeConfig.options[4];
       var loopDisplace=selectors.timeConfig.options[5];
       var stepLength=selectors.timeConfig.options[6];
-      var masterClockSync=selectors.timeConfig.options[7];
+      var clockSourceSelection=selectors.timeConfig.options[7];
+      //get initial value of the clock source from my controlled sequencer, it could have been loaded from json
+
+      if(controlledModule.getClockSource()){
+        console.log("sequencer: controller: set clock source");
+        clockSourceSelection.value=receiveSourcesNames.indexOf(controlledModule.getClockSource());
+      }else {
+        console.log("sequencer: controller: sequencer has no clock source");
+        clockSourceSelection.value=-1;
+      }
+      clockSourceSelection.getValueName=function(value){
+        if(value==-1) return "no";
+        if(receiveSourcesNames.length!==environment.patcher.modules.length){
+          receiveSourcesNames=environment.patcher.getSourcesList();
+          clockSourceSelection.maximumValue=receiveSourcesNames.length-1;
+        }
+        return receiveSourcesNames[value];
+      }
+      clockSourceSelection.valueChangeFunction=function(absolute,delta){
+        if(!absolute) absolute=clockSourceSelection.value+delta;
+        if(absolute>=clockSourceSelection.minimumValue)
+        if(absolute<=clockSourceSelection.maximumValue){
+          clockSourceSelection.value=absolute;
+          if(absolute>-1){
+            controlledModule.updateClockSource(receiveSourcesNames[clockSourceSelection.value]);
+          }else{
+            controlledModule.disableClockSource();
+          }
+        }
+      }
       loopLength.bindValueWith(controlledModule,"loopLength");
       loopFold.base=2;
       loopFold.getValueName=loopUndestructiveFold.getValueName=function(a){
@@ -143,7 +178,7 @@ module.exports=function(environment){
 
       var currentSelector=0;
 
-        controlledModule.on('receiveEvent',updateLeds);
+        // controlledModule.on('receiveEvent',updateLeds);
 
       //some events run regardless of engagement. in these cases, the screen refresh is conditional
 
@@ -157,6 +192,7 @@ module.exports=function(environment){
         var mediumImportant=getBitmapx16(moreBluredFilter,lastsubSelectorEngaged=="timeConfig");
         var leastImportant=getBitmapx16(bluredFilter);//red, apparently
 
+        console.log("dso2"+currentStep.value);
 
 
 
@@ -165,7 +201,7 @@ module.exports=function(environment){
         //"render" play header:
         //if we are in modulus view, it renders many playheads
         if(lastsubSelectorEngaged=="timeConfig"){
-          drawStep=controlledModule.currentStep%(lookLoop.value||loopLength.value);
+          drawStep=currentStep.value%(lookLoop.value||loopLength.value);
           var stepFolds=Math.ceil(loopLength.value/(lookLoop.value||loopLength.value));
           for(var a=0; a<stepFolds;a++){
             playHeadBmp|=0x1<<drawStep+a*(lookLoop.value||loopLength.value);
@@ -173,7 +209,7 @@ module.exports=function(environment){
           playHeadBmp&=0xFFFF;
         }else{
           //otherwise, normal one header
-          drawStep=controlledModule.currentStep%loopLength.value;
+          drawStep=currentStep.value%loopLength.value;
           var playHeadBmp=0x1<<drawStep;
         }
 
@@ -274,6 +310,17 @@ module.exports=function(environment){
         }
 
       }
+      //sequencer events handler
+      controlledModule.on('step',function(evt){
+        console.log(currentStep.value);
+        if(engaged){
+          if(subSelectorEngaged===false)
+          updateLeds();//, console.log("step"+currentStep);
+          if(lastsubSelectorEngaged==="timeConfig"){
+            selectors.timeConfig.updateLcd();
+          }
+        }
+      });
 
       //modular pattern editing functions
 

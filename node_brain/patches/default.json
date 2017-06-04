@@ -6,7 +6,7 @@
     },{
       "type":"sequencer",
       "options":{
-        "source":"master bus"
+        "clockSource":"master bus"
       }
     },{
       "type":"bus",
@@ -15,7 +15,7 @@
       "type":"clock",
       "options":{
         "clocks":[
-          {"interval":148}
+          {"interval":148, "destination":"master bus"}
         ]
       }
     }
