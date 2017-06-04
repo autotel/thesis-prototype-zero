@@ -11,7 +11,7 @@ module.exports=function(environment){return new (function(){
   this.headerToDestination={
     0xF8:"clock",
   };
-  console.log("midi setup:");
+  /**/console.log("midi setup:");
   // Count the available output ports.
   var outputPortCount=(new midi.output()).getPortCount();
   // console.log(output.getoutputPortCount());
@@ -41,11 +41,11 @@ module.exports=function(environment){return new (function(){
           // Close the port when done.
           output.closePort();
         }
-        console.log("  created output "+portName);
+        /**/console.log("  created output "+portName);
       })(output);
       environment.patcher.addModule(portName,newMidiModule);
     }catch(e){
-      console.log("  creating "+portName+" output was not possible: ",e);
+      /**/console.log("  creating "+portName+" output was not possible: ",e);
     }
   }
 
@@ -53,7 +53,7 @@ module.exports=function(environment){return new (function(){
 
   var closeHandler=function(e){
     createMidiInputs();
-    console.log("midi input crashed",e);
+    /**/console.log("midi input crashed",e);
   }
 /*
   var createMidiInputs=function(){
@@ -69,7 +69,7 @@ module.exports=function(environment){return new (function(){
             averageClockDelta=message.delta;
           }else{
             averageClockDelta=message.delta*0.999+averageClockDelta*0.001;
-            console.log("average: "+averageClockDelta*2400);
+            //console.log("average: "+averageClockDelta*2400);
             environment.metronome.interval(averageClockDelta*2400);
           }
         }

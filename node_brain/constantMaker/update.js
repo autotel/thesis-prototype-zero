@@ -54,10 +54,10 @@ for(var a in constants.messagesFromArduino){
 //write javascript format constants
 fs.writeFile ('../components/constants.js', "module.exports="+JSON.stringify(jsOutput), function(err) {
   if (err) throw err;
-  console.log('complete');
+  /**/console.log('complete');
 });
 //write c format constants
 fs.writeFile ('../../firmware_displayer/_0_comConst.ino', cOutput, function(err) {
   if (err) throw err;
-  console.log('complete');
+  /**/console.log('complete');
 });

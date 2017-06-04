@@ -79,7 +79,7 @@ var dataChopper=new(function(){
         }
       }else{
         //a byte arrived, but there is no packet gathering bytes
-        console.log("invalid byte: ",data[a], "in the context of: ", data);
+        /**/console.log("invalid byte: ",data[a], "in the context of: ", data);
       }
     }
   }

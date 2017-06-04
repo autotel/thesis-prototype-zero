@@ -99,10 +99,10 @@ module.exports=function(environment){
       //get initial value of the clock source from my controlled sequencer, it could have been loaded from json
 
       if(controlledModule.getClockSource()){
-        console.log("sequencer: controller: set clock source");
+        /**/console.log("sequencer: controller: set clock source");
         clockSourceSelection.value=receiveSourcesNames.indexOf(controlledModule.getClockSource());
       }else {
-        console.log("sequencer: controller: sequencer has no clock source");
+        /**/console.log("sequencer: controller: sequencer has no clock source");
         clockSourceSelection.value=-1;
       }
       clockSourceSelection.getValueName=function(value){
@@ -192,7 +192,7 @@ module.exports=function(environment){
         var mediumImportant=getBitmapx16(moreBluredFilter,lastsubSelectorEngaged=="timeConfig");
         var leastImportant=getBitmapx16(bluredFilter);//red, apparently
 
-        console.log("dso2"+currentStep.value);
+
 
 
 
@@ -312,7 +312,6 @@ module.exports=function(environment){
       }
       //sequencer events handler
       controlledModule.on('step',function(evt){
-        console.log(currentStep.value);
         if(engaged){
           if(subSelectorEngaged===false)
           updateLeds();//, console.log("step"+currentStep);

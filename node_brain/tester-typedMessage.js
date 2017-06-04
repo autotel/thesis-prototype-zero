@@ -18,7 +18,7 @@ var port = new SerialPort('/dev/ttyUSB0',{ baudRate: baudRate });/////dev/ttyUSB
 
 var count=0;
 port.on('open', function() {
-  console.log("serial opened");
+  /**/console.log("serial opened");
 
   var inBuff;
   var expectedLength;
@@ -53,19 +53,19 @@ port.on('open', function() {
           //a whole expected packet arrived
           inBuff[byteNumber]=data[a];
           recordingBuffer=false;
-          console.log(inBuff);
+          /**/console.log(inBuff);
           byteNumber=0;
 
         }
       }else{
         //a byte arrived, but there is no packet gathering bytes
-        console.log("invalid: ",data[a]);
+        /**/console.log("invalid: ",data[a]);
       }
     }
   });
 
   setInterval(function(){
-    console.log("sent com test "+count);
+    /**/console.log("sent com test "+count);
     port.write("hi, test "+count);
     // port.write(Buffer.from([tHeaders.comTester,0xff&count]));
     // console.log("out:"+'hi there'+count);

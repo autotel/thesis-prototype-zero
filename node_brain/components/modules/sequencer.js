@@ -10,7 +10,7 @@ module.exports=function(environment){
 
       var currentStep={value:0};
       this.currentStep=currentStep;
-      console.log(sequencerFunctions);
+      /**/console.log(sequencerFunctions);
 
       this.patData={};
       var currentModulus=16;
@@ -28,7 +28,7 @@ module.exports=function(environment){
         if(clockSourceHandle)
         environment.patcher.modules[clockSource].removeOutput(clockSourceHandle);
         if(environment.patcher.modules[newOne]){
-          console.log("sequencer: receives from "+newOne+" his clock");
+          /**/console.log("sequencer: receives from "+newOne+" his clock");
           clockSource=newOne;
           var clockSourceHandle=environment.patcher.modules[newOne].attachAsOutput(this);
         }else{
@@ -66,7 +66,7 @@ module.exports=function(environment){
       var tPattern=this;
 
       this.onPatchStep=function(evt){
-        console.log("MMO"+currentStep.value);
+        //console.log("MMO"+currentStep.value);
         this.handle('step',evt);
       }
       destinationBase.call(this,environment);

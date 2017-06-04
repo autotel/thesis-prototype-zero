@@ -18,7 +18,7 @@ function MetronomePrototype(props) {
   this.onTick=function(evt){
     tickEventMessage.value[1]=currentStep;
     if(tickEventMessage.destination){
-      console.log(tickEventMessage);
+      //console.log(tickEventMessage);
       environment.patcher.receiveEvent(tickEventMessage);
     }
     tMetro.handle('tick',evt);

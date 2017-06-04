@@ -16,9 +16,9 @@ module.exports=function(environment){
         return handle;
       };
       this.receiveEvent=function(evt){
-        console.log("bus: receive",evt);
+        //console.log("bus: receive",evt);
         for(var a in myOutputs){
-          console.log(" bus: send");
+          //console.log(" bus: send");
           myOutputs[a].receiveEvent(evt);
         }
       }

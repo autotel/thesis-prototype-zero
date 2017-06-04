@@ -9,14 +9,14 @@ var midi = require('midi');
 var inputList=[];
 var messageResponses={
   initialize:function(val){
-    console.log("initializing MIDI inputs",val);
+    /**/console.log("initializing MIDI inputs",val);
     var inputPortCount=(new midi.input()).getPortCount();
     for(var a=1; a<inputPortCount; a++){
       var input = new midi.input();
       var portName=input.getPortName(a);
       input.openPort(a);
       input.ignoreTypes(false, false, false);
-      console.log(" opening in port["+a+"]="+portName);
+      /**/console.log(" opening in port["+a+"]="+portName);
       input.on('message',function(a,b){
         process.send({type:"midi",val:b,delta:a});
       });

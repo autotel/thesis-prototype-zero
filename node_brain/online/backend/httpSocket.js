@@ -28,10 +28,10 @@ module.exports=function(nodeServer){ return new (function(){
       req.connection.remoteAddress ||
       req.socket.remoteAddress ||
       req.connection.socket.remoteAddress;
-      console.log("IP:",ip);
+      /**/console.log("IP:",ip);
     });
     http.listen(httpPort, function(){
-      console.log('listening on :'+httpPort);
+      /**/console.log('listening on :'+httpPort);
     });
     SocketMan.on('connection', function(socket){
       socketClients.add(socket,nodeServer);

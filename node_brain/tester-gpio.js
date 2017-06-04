@@ -4,10 +4,10 @@ var question=require('./components/interactive-console.js');
 raspi.init(() => {
   var serial = new Serial({baudRate:115200});
   serial.open(() => {
-    console.log("serial opened");
+    /**/console.log("serial opened");
     serial.write('Hello from raspi-serial');
     serial.on('data', (data) => {
-      console.log("<<",data);
+      /**/console.log("<<",data);
       // serial.write('ack '+String.from(data));
     });
 

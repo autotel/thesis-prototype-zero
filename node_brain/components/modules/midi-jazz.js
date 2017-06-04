@@ -13,7 +13,7 @@ module.exports=function(environment){return new (function(){
   this.headerToDestination={
     0xF8:"clock",
   };
-  console.log("midi setup:");
+  /**/console.log("midi setup:");
   // Count the available output ports.
   var outports=midi.MidiOutList();
   // console.log(output.getoutputPortCount());
@@ -44,11 +44,11 @@ module.exports=function(environment){return new (function(){
           // Close the port when done.
           output.closePort();
         }
-        console.log("  created output "+portName);
+        /**/console.log("  created output "+portName);
       })(output);
       environment.patcher.addModule(portName,midiModule);
     }catch(e){
-      console.log("  creating "+portName+" output was not possible: ",e);
+      /**/console.log("  creating "+portName+" output was not possible: ",e);
     }
   // }
   this.getMidiOutList=function(){return midiOutputs;}

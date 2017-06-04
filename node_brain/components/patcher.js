@@ -58,7 +58,7 @@ module.exports=function(environment){return new(function(){
       thisPatcher.registerModule(type,newModule,props);
       return newModule;
     }else{
-      console.log("a "+type+ "module was not created because it doesnt exist");
+      /**/console.log("a "+type+ "module was not created because it doesnt exist");
     }
   }
   this.registerModule=function(type,what,props){
@@ -68,7 +68,7 @@ module.exports=function(environment){return new(function(){
       if(props.name) nameBase=props.name
     }
     name=uniqueName.get(nameBase);
-    console.log(name+": a new "+type+" module was created");
+    /**/console.log(name+": a new "+type+" module was created");
     this.modules[name]=what;
     this.handle("modulecreated",{name:name,type:type,module:what});
   }
@@ -78,7 +78,7 @@ module.exports=function(environment){return new(function(){
       if(thisPatcher.modules[evt.destination]){
         thisPatcher.modules[evt.destination].receiveEvent(evt);
       }else{
-        console.log("invalid "+evt.destination+" destination");
+        /**/console.log("invalid "+evt.destination+" destination");
       }
     }else{
       console.warn("event didn't have destination", evt);

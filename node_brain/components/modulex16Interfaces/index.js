@@ -31,10 +31,10 @@ module.exports=function(environment){
   //create singletons for available module interfaces
   for(var a in Modulex16Interfaces){
     Modulex16Interfaces[a]=Modulex16Interfaces[a](environment);
-    console.log("init a "+a);
+    /**/console.log("init a "+a);
   }
   for(var a in Modulex16Interfaces){
-    console.log("init a "+a,Modulex16Interfaces[a]);
+    /**/console.log("init a "+a,Modulex16Interfaces[a]);
   }
   // allUserInterfaces.add.setAvailableInterfaces(['grade','presetKit','sequencer']);
   // var moduleSelector=basicUserInterfaces.moduleSelector=new basicUserInterfaces.moduleSelector(environment);
@@ -79,7 +79,7 @@ module.exports=function(environment){
       //get from the modeselector, the mode that was selected
       var newMode=allUserInterfaces[modeBeingTweaked].disengage();
       modeBeingTweaked=newMode||changeToMode;
-      console.log(modeBeingTweaked);
+      //console.log(modeBeingTweaked);
       allUserInterfaces[modeBeingTweaked].engage();
       // console.log("<"+modeBeingTweaked+">");
     }
@@ -88,8 +88,8 @@ module.exports=function(environment){
     if(typeof interactionResponse==="function"){
       interactionResponse(event);
     }else{
-      console.log(modeBeingTweaked+" has no interaction mode response to "+event.type,interactionResponse);
-      console.log(event);
+      /**/console.log(modeBeingTweaked+" has no interaction mode response to "+event.type,interactionResponse);
+      /**/console.log(event);
     }
 
   });

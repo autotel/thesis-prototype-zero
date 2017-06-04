@@ -20,7 +20,7 @@ for(var a=1; a<inputPortCount; a++){
   var portName=input.getPortName(a);
   input.openPort(a);
   input.ignoreTypes(false, false, false);
-  console.log(" opening in port["+a+"]="+portName);
+  /**/console.log(" opening in port["+a+"]="+portName);
   input.on('message',function(a,b){console.log(b,a)});
 }
 

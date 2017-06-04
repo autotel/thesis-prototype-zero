@@ -29,7 +29,7 @@ function loadPatch(file){
   fs.readFile(file, 'utf8', function (err, data) {
     if (err) throw err;
     obj = JSON.parse(data);
-    console.log("--loading a patch--");
+    /**/console.log("--loading a patch--");
     // console.log(obj);
     for(var moduleDefiner of obj.modules){
       var newModule=environment.patcher.createModule(moduleDefiner.type,moduleDefiner.options);

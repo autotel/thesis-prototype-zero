@@ -11,17 +11,17 @@ var tryCount=0;
 serial=wpi.serialOpen(device, baudrate);
 // while(serial==-1){
   serial=wpi.serialOpen(device, baudrate);
-  console.log("trying connect to serial "+device+"@"+baudrate+" status:",serial);
+  /**/console.log("trying connect to serial "+device+"@"+baudrate+" status:",serial);
 // }
 setInterval(function(){
   // wiringpi.serialPuts(serial,'hello world!')
   wpi.serialPuts(serial,'hi there\n');
-  console.log("sent serial "+String(count));
+  /**/console.log("sent serial "+String(count));
   var rStr="";
   while(wpi.serialDataAvail(serial)){
     rStr+=wpi.serialGetchar(serial);
   }
-  console.log("r:"+rStr);
+  /**/console.log("r:"+rStr);
   count++;
 },2000);
 

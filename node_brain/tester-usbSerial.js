@@ -7,10 +7,10 @@ port.on('open', function() {
     if (err) {
       return console.log('Error on write: ', err.message);
     }
-    console.log('out');
+    /**/console.log('out');
   });
   port.on('data', function (data) {
-    console.log('in: ',data);
+    /**/console.log('in: ',data);
   });
 
   // setInterval(function(){

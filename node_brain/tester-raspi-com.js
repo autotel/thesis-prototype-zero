@@ -12,7 +12,7 @@ var rLengths=comConsts.rLengths;
 var baudRate=comConsts.baudRate;
 var eoString=comConsts.eoString;
 
-console.log(comConsts);
+/**/console.log(comConsts);
 
 function getChoppedData(from){
   var ret=[];
@@ -26,7 +26,7 @@ function getChoppedData(from){
     a++;
     //false currentLen indicates that a end character indicates the end of buffer
     if(currentLen===false){
-      console.log("using untested undefined length stream");
+      /**/console.log("using untested undefined length stream");
       currentLen=(from.indexOf(0x3)||from.length)-a;
     }
     if(currentLen){
@@ -52,7 +52,7 @@ raspi.init(() => {
       dataArray.unshift(header&0xff);
       var buf1 = Buffer.from(dataArray);
       serial.write(buf1);
-      console.log("send:",buf1);
+      /**/console.log("send:",buf1);
     }
     var sendx8_16=function(header,dataArray){
       var arr8=[];
@@ -66,13 +66,13 @@ raspi.init(() => {
       arr8.unshift(header&0xff);
       var buf1 = Buffer.from(arr8);
       serial.write(buf1);
-      console.log("send:",buf1);
+      /**/console.log("send:",buf1);
     }
     var updateLeds=function(bitmaps){
       sendx8_16(tHeaders.ledMatrix,bitmaps);
     }
     serial.on('data', (data) => {
-      console.log("recv:",data);
+      /**/console.log("recv:",data);
       var chd=getChoppedData(data);
       updateLeds([0x1<<count,0x1<<count,0x1<<count]);
     });

@@ -13,15 +13,15 @@ const spawn  = require('child_process').spawn;
       const ss = spawn('node',["/home/pi/repositories/thesis-prototype-zero/node_brain/index"]);//,"&"
 
       ss.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
+        /**/console.log(`stdout: ${data}`);
       });
 
       ss.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
+        /**/console.log(`stderr: ${data}`);
       });
 
       ss.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
+        /**/console.log(`child process exited with code ${code}`);
       });
 //     },5000);
 //   }

@@ -14,27 +14,27 @@ var socketMan=new (function(){
   socket.on(messageIndexes.CHANGE, function(e){
   });
   socket.on(messageIndexes.HELLO, function(e){
-    console.log("socket hello:",e);
+    /**/console.log("socket hello:",e);
   });
   socket.on(messageIndexes.CONSOLE, function(e){
-    console.log("socket console:",e);
+    /**/console.log("socket console:",e);
   });
   socket.on(messageIndexes.CREATE,function(e){
-    console.log("socket created a module",e);
+    /**/console.log("socket created a module",e);
     uniqueArray[e.unique]=Ui.addSprite(e);
   });
   //not implemented yet
   socket.on(messageIndexes.CONNECT,function(e){
-    console.log("socket linked a module",e);
+    /**/console.log("socket linked a module",e);
     Ui.addLink(uniqueArray[e.fromUnique],uniqueArray[e.toUnique]);
   });
   socket.on(messageIndexes.EVENT,function(e){
-    console.log("socket reported event",e);
+    /**/console.log("socket reported event",e);
     Ui.representEvent(uniqueArray[e.unique],e);
   });
   //not implemented yet
   socket.on(messageIndexes.DELETE,function(e){
-    console.log("socket removed a module",e);
+    /**/console.log("socket removed a module",e);
     Ui.removeSprite(uniqueArray[e.unique]);
     delete uniqueArray[e.unique];
   });
@@ -44,7 +44,7 @@ var socketMan=new (function(){
 
   this.requestCreation=function(prototype){
     // console.log("socket",e,messageIndexes.CREATE);
-    console.log({x:prototype.x,y:prototype.y,mode:prototype.modeName},prototype);
+    /**/console.log({x:prototype.x,y:prototype.y,mode:prototype.modeName},prototype);
     socket.emit(messageIndexes.CREATE,{x:prototype.sprite.attrs.x,y:prototype.sprite.attrs.y,mode:prototype.modeName});
   }
   this.requestChange=function(messageName,params){

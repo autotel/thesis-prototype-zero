@@ -8,7 +8,7 @@ module.exports=function(environment){
 
 
   environment.patcher.on('modulecreated',function(ev){
-    console.log(ev);
+    /**/console.log(ev);
     var newUnique=uniques.add({
       original:ev.module,
       trackedData:{
@@ -21,15 +21,8 @@ module.exports=function(environment){
     myBroadcaster.broadcast(header.CREATE,data);
   });
   return new (function(){
-    // this.getAll=function(){
-    //   var ret=[];
-    //   for(var a in bindedModules){
-    //     ret.push([header.CREATE,fullDescriptionOf(a)]);
-    //   }
-    // }
     this.eachData=function(callback){
       for(var a in bindedModules){
-        console.log(bindedModules[a]);
         if(bindedModules[a])
         callback(bindedModules[a].trackedData,a);
       }
