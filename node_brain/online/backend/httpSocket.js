@@ -36,7 +36,7 @@ module.exports=function(nodeServer){ return new (function(){
     SocketMan.on('connection', function(socket){
       socketClients.add(socket,nodeServer);
       //pendant: the following maybe should be in patcherModuleBinder file
-      nodeServer.binder.eachData(function(data){
+      nodeServer.binder.eachBindedUnique(function(data){
         socket.emit(header.CREATE,data);
       });
       //emit current state

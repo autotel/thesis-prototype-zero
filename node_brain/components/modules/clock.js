@@ -50,6 +50,7 @@ module.exports=function(env){
     //some modules could have many different possible instances
     //some modules even instance themselves, like midi.
     this.instance=function(props){
+      props=props||{};
       var clocks=[];
       destinationBase.call(this,environment);
       this.addClock=function(cprop){

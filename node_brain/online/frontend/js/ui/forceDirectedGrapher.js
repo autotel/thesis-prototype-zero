@@ -3,9 +3,9 @@
 //but deletion does a splice, thus these indexes become
 //outdated. Node hanlding should be differnet
 var forceDirectedGrapher=new(function(){
-
-  var width = 960,
-      height = 500;
+  var thisGrapher=this;
+  var width = window.innerWidth,
+      height = window.innerHeight;
 
   var fill = d3.scale.category20();
 
@@ -65,6 +65,27 @@ var forceDirectedGrapher=new(function(){
     });
     restart();
   }
+  this.setLinksTo=function(startNode,destList){
+    //copy destlist to avoid changing original
+    var dl=JSON.parse(JSON.stringify(destList));
+    //check all the links that are already from startNode to any of destList,
+    //remove the rest
+    links = links.filter(function(l) {
+      if(l.source == startNode){
+        var iof = dl.indexOf(l.target);
+        if(iof == -1){
+          return false;
+        }else{
+          dl.splice(iof,1);
+        }
+      }
+      return true;
+    });
+    //add all the links that were not there
+    for(var a in dl){
+      thisGrapher.addLink(startNode,dl[a]);
+    }
+  }
   this.addNode=function(props){
     var n = nodes.push({});
     restart();
@@ -78,9 +99,8 @@ var forceDirectedGrapher=new(function(){
     links = links.filter(function(l) {
       return l.source !== d && l.target !== d;
     });
-    d3.event.stopPropagation();
-    restart();
   }
+  this.rebuild=restart;
   function mousedownNode(d, i) {
     nodes.splice(i, 1);
     links = links.filter(function(l) {
@@ -89,6 +109,7 @@ var forceDirectedGrapher=new(function(){
     d3.event.stopPropagation();
 
     restart();
+    //console.log(nodes,links);
   }
 
   function tick() {
@@ -102,6 +123,8 @@ var forceDirectedGrapher=new(function(){
   }
 
   function restart() {
+
+
     node = node.data(nodes);
 
     node.enter().insert("circle", ".cursor")
@@ -113,6 +136,12 @@ var forceDirectedGrapher=new(function(){
         .remove();
 
     link = link.data(links);
+
+    force.nodes(nodes)
+    .links(links)
+    .linkDistance(30)
+    .charge(-60)
+    .on("tick", tick);
 
     link.enter().insert("line", ".node")
         .attr("class", "link");

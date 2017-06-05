@@ -7,7 +7,7 @@ module.exports=function(environment){
   //singleton return
   return new(function(){
     this.instance=function(props){
-
+      if(!props) props={};
       var currentStep={value:0};
       this.currentStep=currentStep;
       /**/console.log(sequencerFunctions);
@@ -40,6 +40,16 @@ module.exports=function(environment){
       }
       if(props.clockSource){
         this.updateClockSource(props.clockSource);
+      }
+      this.getStepEventDestinations=function(){
+        var ret={};
+        for(var a in this.patData)
+          for(var b in this.patData[a])
+            if(this.patData[a][b].on){
+              if(!ret[a]) ret[a]=[];
+              ret[a][b]=(this.patData[a][b].on.destination)
+            }
+        return ret;
       }
 
       this.noteLenManager=sequencerFunctions.NoteLenManager(this);

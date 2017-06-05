@@ -1,10 +1,11 @@
 "use strict";
 var Ui=new(function(){
-  var width = 640,
-      height = 480;
+
 
   var SpriteManager=new(function(){
     var spriteTypes={}
+    var thisSm=this;
+    this.spriteFromNames={};
     var spriteBase=function(props){};
     spriteTypes.generic=function(props){
       spriteBase.call(this,props);
@@ -14,45 +15,28 @@ var Ui=new(function(){
       }
       this.representEvent=function(){
       }
+      this.applyProperties=function(props){}
+      this.getNodeHandle=function(){
+        return myNode;
+      }
     }
-    spriteTypes.presetKit=function(props){
-      var nodeList=[];
-      spriteBase.call(this,props);
-      nodeList.push(forceDirectedGrapher.addNode());
-      var centerNode=nodeList[0];
-      for(var a=0; a<16; a++){
-        var nNodeHandle=forceDirectedGrapher.addNode();
-        nodeList.push(nNodeHandle);
-        forceDirectedGrapher.addLink(nNodeHandle,centerNode);
-      }
-      this.remove=function(){
-        for(var a in this.nodeList){
-          forceDirectedGrapher.removeNode(a);
-        }
-      }
-      this.representEvent=function(event){}
+    //this is just to shorten the code. see spriteTypes.js
+    this.addSpriteType=function(type,creator){
+      spriteTypes[type]=creator(forceDirectedGrapher,spriteBase);
+    }
+    this.applyProperties=function(who, props){
+      who.applyProperties(props);
     }
     this.add=function(options){
       var type=options.type;
       var selectedProto;
-      switch (type){
-        case "Midi Through 14:0":
-          selectedProto=spriteTypes.generic;
-        break;
-        case "UM-1 20:0":
-          selectedProto=spriteTypes.generic;
-        break;
-        case "grade":
-          selectedProto=spriteTypes.generic;
-        break;
-        case "presetKit":
-          selectedProto=spriteTypes.presetKit;
-        break;
-        default:
-          selectedProto=spriteTypes.generic;
-        break;
+      if(spriteTypes[type]){
+        selectedProto=spriteTypes[type];
+      }else{
+        selectedProto=spriteTypes.generic;
       }
       var ret=new(selectedProto)(options);
+      thisSm.spriteFromNames[options.name]=ret;
       return (ret);
     };
     this.remove=function(handler){
@@ -62,9 +46,12 @@ var Ui=new(function(){
   this.representEvent=function(handler,event){
     handler.representEvent(event);
   };
+  this.applyProperties=SpriteManager.applyProperties;
   this.addSprite=SpriteManager.add;
+  this.addSpriteType=SpriteManager.addSpriteType;
   this.addLink=forceDirectedGrapher.addLink;
   this.removeSprite=SpriteManager.remove;
+  this.spriteFromNames=SpriteManager.spriteFromNames;
   this.start=function(){
   }
 })();

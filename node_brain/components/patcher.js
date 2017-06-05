@@ -70,6 +70,7 @@ module.exports=function(environment){return new(function(){
     name=uniqueName.get(nameBase);
     /**/console.log(name+": a new "+type+" module was created");
     this.modules[name]=what;
+    what.name=name;
     this.handle("modulecreated",{name:name,type:type,module:what});
   }
 

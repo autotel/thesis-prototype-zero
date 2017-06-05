@@ -12,6 +12,8 @@ var socketMan=new (function(){
 
 
   socket.on(messageIndexes.CHANGE, function(e){
+    /**/console.log("CHANGE",e);
+    Ui.applyProperties(uniqueArray[e.unique],e);
   });
   socket.on(messageIndexes.HELLO, function(e){
     /**/console.log("socket hello:",e);
