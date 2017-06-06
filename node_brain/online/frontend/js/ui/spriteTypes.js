@@ -93,7 +93,7 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
     //would take the forceDirectedGrapher down. Timeouts are not the way but I have no time now
     setTimeout(function(){
       thisSprite.applyProperties(props);
-    },200);
+    },800);
   }
 }
 
