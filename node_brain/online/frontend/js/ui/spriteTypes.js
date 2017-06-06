@@ -16,9 +16,12 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
       return centerNode;
     }
     this.representEvent=function(event){
-      if(event.sub){
-        forceDirectedGrapher.nodeHighlight(nodeList[event.sub]);
+      if(event.sub!==undefined){
+        // console.log("sub",event.sub);
+        if(nodeList[event.sub+1])
+        forceDirectedGrapher.nodeHighlight(nodeList[event.sub+1]);
       }else{
+        // console.log("nosub",event);
         forceDirectedGrapher.nodeHighlight(centerNode);
       }
     }

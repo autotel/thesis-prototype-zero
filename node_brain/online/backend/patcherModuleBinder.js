@@ -140,11 +140,13 @@ module.exports=function(environment){
       var evtUnique=newUnique;
       // console.log(evtUnique);
       var pl={unique:evtUnique};
-      if(evtb.sub){
+      if(evtb.sub!==false||evtb.sub!==undefined){
         pl.sub=evtb.sub;
-      }else if(evtb.step){
+      }else if(evtb.step!==false||evtb.step!==undefined){
         pl.sub=evtb.step;
-      }
+      }/*else{
+        // console.log("nosub",evtb);
+      }*/
       myBroadcaster.broadcast(header.EVENT,pl);
     }
     ev.module.on('messagesend',messageBinder);
