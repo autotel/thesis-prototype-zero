@@ -7,7 +7,7 @@ var environment=false;
 
 function MetronomePrototype(clockParent,props) {
   var props=props||{};
-  var interval=140;
+  var interval=125;
   if(props.interval) interval=props.interval;
   var currentStep=0;
   var tMetro=this;
@@ -45,6 +45,18 @@ function MetronomePrototype(clockParent,props) {
   this.interval=function(val){
     if(val) interval=val;
     return interval;
+  }
+  this.bpm=function(val){
+    if(val){
+      //60,000 / BPM = interval
+      //bp/k=1/interval
+      //bp=1/interval*k
+      interval=60000/val
+      console.log("cal",interval);
+      return val;
+    }else{
+      return Math.floor((1/interval)*60000);
+    }
   }
 }
 module.exports=function(env){

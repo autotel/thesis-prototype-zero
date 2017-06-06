@@ -1,6 +1,13 @@
 {
   "modules":[
     {
+      "type":"clock",
+      "options":{
+        "clocks":[
+          {"interval":125, "destination":"master bus"}
+        ]
+      }
+    },{
       "type":"bus",
       "options":{"name":"master bus"}
     },{
@@ -11,13 +18,6 @@
     },{
       "type":"bus",
       "options":{"name":"second bus"}
-    },{
-      "type":"clock",
-      "options":{
-        "clocks":[
-          {"interval":148, "destination":"master bus"}
-        ]
-      }
     }
   ]
 }

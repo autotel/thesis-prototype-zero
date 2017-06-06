@@ -163,7 +163,13 @@ var forceDirectedGrapher=new(function(){
     force.nodes(nodes)
     .links(links)
     .linkDistance(30)
-    .charge(-60)
+    .charge(-500/*function(d){
+      if(d.grasa){
+        return -60*d.grasa
+      }else{
+        return -60;
+      }
+    }/**/)
     .on("tick", tick);
 
     link.enter().insert("line", ".node")

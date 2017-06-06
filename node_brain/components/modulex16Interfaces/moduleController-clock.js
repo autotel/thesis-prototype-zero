@@ -34,9 +34,17 @@ module.exports=function(environment){
         selectors[a]=selectors[a](environment);
       }
       selectors.timeConfig.initOptions({
+        'BPM':{
+          value:0,
+          subValue:120,
+          multiplier:4,
+          getValueName:function(a){ return (Math.round(bpm.subValue*100)/100)+"*"+bpm.multiplier+"bpm" },
+          maximumValue:10000,
+          minimumValue:10,
+        },
         'interval':{
           value:40,
-          getValueName:function(a){ return a+"ms" },
+          getValueName:function(a){ return (Math.round(a*100)/100)+"ms" },
           maximumValue:10000,
           minimumValue:10,
         },
@@ -48,9 +56,41 @@ module.exports=function(environment){
           maximumValue:destNames.length-1,
           minimumValue:0,
         },
+        'head':{
+          value:0,
+          getValueName:function(value){
+            switch (value) {
+              case 0:
+                return "absolute 0";
+                break;
+              case 1:
+                return "increment 1";
+                break;
+              default:
+                return "C"+value;
+            }
+          },
+          maximumValue:15,
+          minimumValue:0,
+        },
       });
-      var interval=selectors.timeConfig.options[0];
-      var destination=selectors.timeConfig.options[1];
+      var bpm=selectors.timeConfig.options[0];
+      var interval=selectors.timeConfig.options[1];
+      var destination=selectors.timeConfig.options[2];
+      var messageHeader=selectors.timeConfig.options[3];
+
+      // messageHeader.bindValueWith(,0);
+      messageHeader.valueChangeFunction=function(absolute,delta){
+        if(clocks[currentlySelectedClock]){
+          var absolute=absolute||messageHeader.value+delta;
+          messageHeader.value=clocks[currentlySelectedClock].event.value[0]=absolute;
+          if(shiftPressed){
+          }else{
+          }
+        }else{
+          environment.hardware.sendScreenB("select a clock");
+        }
+      }
       interval.valueChangeFunction=function(absolute,delta){
         if(clocks[currentlySelectedClock]){
           //an absolute may not be provided whilst is what we are using
@@ -60,6 +100,25 @@ module.exports=function(environment){
           // updateModifierValuesToSelectedClock();
           if(shiftPressed){
           }else{
+          }
+        }else{
+          environment.hardware.sendScreenB("select a clock");
+        }
+      }
+      bpm.valueChangeFunction=function(absolute,delta){
+        if(clocks[currentlySelectedClock]){
+          if(!delta) delta=absolute-loopFold.value;
+          if(shiftPressed){
+            if((delta<0&&bpm.multiplier>1)||delta>0){
+              bpm.multiplier+=delta;
+              bpm.subValue=clocks[currentlySelectedClock].bpm()/bpm.multiplier;
+            }
+          }else{
+            if((delta<0&&bpm.subValue>1)||delta>0){
+              bpm.subValue+=delta;
+              bpm.value=clocks[currentlySelectedClock].bpm(bpm.subValue*bpm.multiplier);
+            }
+            // updateModifierValuesToSelectedClock();
           }
         }else{
           environment.hardware.sendScreenB("select a clock");
@@ -89,7 +148,10 @@ module.exports=function(environment){
       base.call(this);
       function updateModifierValuesToSelectedClock(){
         if(clocks[currentlySelectedClock]){
+          messageHeader.value=clocks[currentlySelectedClock].event.value[0];
           interval.value=clocks[currentlySelectedClock].interval();
+          bpm.value=clocks[currentlySelectedClock].bpm();
+          bpm.subValue=clocks[currentlySelectedClock].bpm()/bpm.multiplier;
         }
       }
       function updateHardware(){

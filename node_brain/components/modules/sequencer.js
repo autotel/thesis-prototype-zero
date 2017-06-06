@@ -84,8 +84,7 @@ module.exports=function(environment){
         if(evt.value[0]==0){
           this.stepAbsolute(evt.value[1]);
         }else if(evt.value[0]==1){
-          //not designed yet..
-          // this.stepIncremental(evt.value[1]);
+          this.stepIncremental(evt.value[1]);
         }
       }
     }
