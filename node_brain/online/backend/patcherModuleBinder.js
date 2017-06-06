@@ -107,6 +107,19 @@ var dataTracker=function(type){
         return trackedDataDelta;
       return false;
     }
+    case 'bus': return function(uniqueElement){
+      var who=uniqueElement.original;
+      var trackedData=uniqueElement.trackedData;
+      var trackedDataDelta={};
+      bindprop(trackedData,"name",who.name,trackedDataDelta);
+      bindArray(trackedData,"nodeDestinations",who.getDestinations(),false,trackedDataDelta);
+      // console.log(who.getDestinations());
+      bindprop(uniqueElement,"type",uniqueElement.type,trackedDataDelta);
+      for(var a in trackedDataDelta)
+      if(trackedDataDelta[a]!==undefined)
+        return trackedDataDelta;
+      return false;
+    }
     break;
     default:
     return function(uniqueElement){
@@ -140,13 +153,14 @@ module.exports=function(environment){
       var evtUnique=newUnique;
       // console.log(evtUnique);
       var pl={unique:evtUnique};
-      if(evtb.sub!==false||evtb.sub!==undefined){
+      if(evtb.sub!==false&&evtb.sub!==undefined){
         pl.sub=evtb.sub;
-      }else if(evtb.step!==false||evtb.step!==undefined){
+      }else if(evtb.step!==false&&evtb.step!==undefined){
         pl.sub=evtb.step;
+        // console.log(pl.sub);
       }/*else{
-        // console.log("nosub",evtb);
-      }*/
+        console.log("nosub",evtb);
+      }/**/
       myBroadcaster.broadcast(header.EVENT,pl);
     }
     ev.module.on('messagesend',messageBinder);

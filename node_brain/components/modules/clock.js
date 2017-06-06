@@ -39,6 +39,8 @@ function MetronomePrototype(clockParent,props) {
     // myDestination=to;
     tickEventMessage.destination=to;
   }
+  this.receiveEvent=function(){
+  }
   stm();
   this.interval=function(val){
     if(val) interval=val;

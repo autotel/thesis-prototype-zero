@@ -3,19 +3,19 @@ var base=require('./interactionModeBase');
 // var controlledDestination=require('../modules/presetKit.js');
 //pendant: there should be a really easy way to mute presets.
 //pendant: preset editor should have many channels allowing 16*16 presets
-var fingerMap=0x0000;
-var noteHighlightMap=0x0000;
-var currentlySelectedPreset=0;
-var shiftPressed=false;
-var subSelectorEngaged=false;
-var lastsubSelectorEngaged="dimension";
-var engaged=false;
-var recording=false;
 module.exports=function(environment){
   return new(function(){
     //pendant: this.create should be turned into a "instance" prototype
     //to make it more concordant with how the modules are created
     this.instance=function(controlledDestination){
+      var fingerMap=0x0000;
+      var noteHighlightMap=0x0000;
+      var currentlySelectedPreset=0;
+      var shiftPressed=false;
+      var subSelectorEngaged=false;
+      var lastsubSelectorEngaged="dimension";
+      var engaged=false;
+      var recording=false;
       // this.testname="presetKit control";
       var selectors={};
         selectors.dimension=require('./submode-dimensionSelector');
@@ -44,7 +44,7 @@ module.exports=function(environment){
           updateHardware();
           //pendant: the note should actually go off when there is a note off,
           //but there are no note offs yet
-          setTimeout(function(){noteHighlightMap^=1<<evm.value[1]; updateHardware()},200);
+          setTimeout(function(){noteHighlightMap^=1<<evm.value[1]; if(engaged&&(!subSelectorEngaged)) updateHardware()},200);
         }
       });
       this.engage=function(){

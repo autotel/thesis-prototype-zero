@@ -13,7 +13,13 @@ module.exports=function(environment){
       var myOutputs=[];
       destinationBase.call(this,environment);
       this.getDestinations=function(){
-        return myOutputs;
+        // console.log("bus get destinations");
+        var ret=[];
+        for(var a in myOutputs){
+          if(myOutputs[a])
+          ret.push(myOutputs[a].name);
+        }
+        return ret;
       }
       this.sendOutputTo=function(who){
         var handle=undefined;
@@ -21,7 +27,7 @@ module.exports=function(environment){
           if(!myOutputs[a]) handle=a;
         }
         if(handle===undefined) handle=myOutputs.length;
-        myOutputs.push(who);
+        myOutputs[handle]=who;
         // console.log("?",handle);
         return handle;
       };
