@@ -5,7 +5,7 @@ const moduleEvent=require("./moduleEvent");
 const onhandlers=require('onhandlers');
 var environment=false;
 
-function MetronomePrototype(props) {
+function MetronomePrototype(clockParent,props) {
   var props=props||{};
   var interval=140;
   if(props.interval) interval=props.interval;
@@ -22,7 +22,7 @@ function MetronomePrototype(props) {
     if(tickEventMessage.destination){
       //console.log(tickEventMessage);
       environment.patcher.receiveEvent(tickEventMessage);
-      tMetro.handle('messagesend',{origin:tMetro,eventMessage:evt});
+      clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:evt});
     }
     tMetro.handle('tick',evt);
   };
@@ -65,7 +65,7 @@ module.exports=function(env){
         return ret;
       }
       this.addClock=function(cprop){
-        var newMetro=new MetronomePrototype(cprop);
+        var newMetro=new MetronomePrototype(this,cprop);
         newMetro.setIndex(clocks.length);
         clocks.push(newMetro);
         return newMetro;

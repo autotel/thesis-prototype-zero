@@ -52,7 +52,7 @@ module.exports=function(environment){
       var interval=selectors.timeConfig.options[0];
       var destination=selectors.timeConfig.options[1];
       interval.valueChangeFunction=function(absolute,delta){
-        if(currentlySelectedClock!==false){
+        if(clocks[currentlySelectedClock]){
           //an absolute may not be provided whilst is what we are using
           // console.log(absolute," ",delta);
           var absolute=absolute||interval.value+delta;
@@ -61,6 +61,8 @@ module.exports=function(environment){
           if(shiftPressed){
           }else{
           }
+        }else{
+          environment.hardware.sendScreenB("select a clock");
         }
       }
       destination.getValueName=function(value){
@@ -105,9 +107,7 @@ module.exports=function(environment){
       this.engage=function(){
         engaged=true;
         environment.hardware.sendScreenA("clock");
-        // console.log("engage mode selector");
         updateHardware();
-        environment.hardware.sendScreenA("clock");
       }
       this.disengage=function(){
         engaged=false;
@@ -125,6 +125,7 @@ module.exports=function(environment){
                 newClock.on('tick',function(evt){
                   clockTicked(evt.indexNumber);
                 });
+                currentlySelectedClock=evt.data[0];
             }else{
               environment.hardware.sendScreenA("Create new?");
               environment.hardware.sendScreenB("then tap again");

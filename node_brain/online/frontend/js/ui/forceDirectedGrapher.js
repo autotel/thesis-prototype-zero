@@ -60,8 +60,8 @@ var forceDirectedGrapher=new(function(){
   }
   this.addLink=function(from,to){
     links.push({
-      source: nodes[from],
-      target: nodes[to]
+      source: from,
+      target: to
     });
     restart();
   }
@@ -74,7 +74,7 @@ var forceDirectedGrapher=new(function(){
     //check all the links that are already from startNode to any of destList,
     //remove the rest
     links = links.filter(function(l) {
-      if(l.source == nodes[startNode]){
+      if(l.source == startNode){
         var iof = dl.indexOf(l.target);
         if(iof == -1){
           return false;
@@ -90,36 +90,37 @@ var forceDirectedGrapher=new(function(){
     }
   }
   this.addNode=function(props){
-    var n = nodes.push({});
+    var n = nodes.push(props||{});
     restart();
-    var nodeReference=n-1;
+    var nodeReference=nodes[n-1];
     return nodeReference;
   }
   this.removeNode=function(nodeReference){
-    var i=nodeReference;
-    var d=nodes[nodeReference];
+    var d=nodeReference;
+    var i=nodeReference.index;
     nodes.splice(i, 1);
     links = links.filter(function(l) {
       return l.source !== d && l.target !== d;
     });
   }
   this.nodeHighlight=function(handler){
-    if(nodes[handler].grasa<20)
-    nodes[handler].grasa+=4;
+    if(handler.grasa<20)
+    handler.grasa+=4;
     // console.log(nodes[handler]);
   }
   this.rebuild=restart;
   function mousedownNode(d, i) {
     d.grasa=33;
     console.log(i,d);
+    //how on earth are node.id kept??
     // nodes.splice(i, 1);
     // links = links.filter(function(l) {
     //   return l.source !== d && l.target !== d;
     // });
     // d3.event.stopPropagation();
-    //
-    // restart();
-    // //console.log(nodes,links);
+
+    restart();
+    //console.log(nodes,links);
   }
 
   function tick() {
@@ -146,12 +147,11 @@ var forceDirectedGrapher=new(function(){
   }
   animate();
   function restart() {
-
-
     node = node.data(nodes);
 
     node.enter().insert("circle", ".cursor")
-        .attr("class", "node")
+      // .attr("class",function(d) { return "node "+d.grasa; })
+        .attr("class","node")
         .attr("r", 5)
         .on("mousedown", mousedownNode);
 

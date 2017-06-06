@@ -5,12 +5,15 @@ var globalBindFunction;
 var uniqueArray=[];
 var socketMan=new (function(){
   var socket = io();
-
   getMessageNames(this);
   var messageIndexes=this.messageIndexes;
   var messageNames=this.messageNames;
 
+  // var correlationArray={};
 
+  // this.test=function mmm() {
+  //   return correlationArray;
+  // }
   socket.on(messageIndexes.CHANGE, function(e){
     /**/console.log("CHANGE",e);
     Ui.applyProperties(uniqueArray[e.unique],e);
@@ -23,7 +26,10 @@ var socketMan=new (function(){
   });
   socket.on(messageIndexes.CREATE,function(e){
     /**/console.log("socket created a module",e);
-    uniqueArray[e.unique]=Ui.addSprite(e);
+    var n=Ui.addSprite(e);
+    uniqueArray[e.unique]=n;
+
+    // correlationArray[e.unique]={orig:n,message:e};
   });
   //not implemented yet
   socket.on(messageIndexes.CONNECT,function(e){
@@ -32,7 +38,8 @@ var socketMan=new (function(){
   });
   socket.on(messageIndexes.EVENT,function(e){
     // /**/console.log("socket reported event",e);
-    Ui.representEvent(uniqueArray[e.unique],e);
+    uniqueArray[e.unique].representEvent(e);
+    // console.log(e);/
   });
   //not implemented yet
   socket.on(messageIndexes.DELETE,function(e){

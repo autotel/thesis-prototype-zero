@@ -121,7 +121,7 @@ module.exports=function(environment){
   var header=environment.server.messageIndexes;
   var myBroadcaster=environment.server.httpSocket;
   environment.patcher.on('modulecreated',function(ev){
-    /**/console.log(ev);
+    // /**/console.log(ev);
     var newUnique=uniques.add(new(function(){
       this.original=ev.module;
       this.type=ev.type;
@@ -136,16 +136,18 @@ module.exports=function(environment){
       };
     })());
     bindedModules[newUnique].trackedData.unique=newUnique;
-
-    ev.module.on('messagesend',function(evtb){
-      var pl={unique:newUnique};
+    var messageBinder=function(evtb){
+      var evtUnique=newUnique;
+      // console.log(evtUnique);
+      var pl={unique:evtUnique};
       if(evtb.sub){
         pl.sub=evtb.sub;
       }else if(evtb.step){
         pl.sub=evtb.step;
       }
       myBroadcaster.broadcast(header.EVENT,pl);
-    });
+    }
+    ev.module.on('messagesend',messageBinder);
 
     var newUniqueElement=bindedModules[newUnique];
     newUniqueElement.dataUpdate();

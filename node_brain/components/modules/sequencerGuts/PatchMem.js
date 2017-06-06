@@ -1,3 +1,4 @@
+'use strict';
 module.exports=function(sequencerModule){ return new(function(){
   var currentStep=sequencerModule.currentStep;
   var loopLength=sequencerModule.loopLength;

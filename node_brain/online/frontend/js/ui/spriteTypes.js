@@ -1,9 +1,8 @@
 var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
   return function(props){
-    console.log("new Seq");
     var nodeList=[];
     spriteBase.call(this,props);
-    nodeList.push(forceDirectedGrapher.addNode());
+    nodeList.push(forceDirectedGrapher.addNode({type:props.type,name:props.name,color:"crimson"}));
     var thisSprite=this;
     var centerNode=nodeList[0];
 
@@ -17,8 +16,11 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
       return centerNode;
     }
     this.representEvent=function(event){
-      if(event.sub)
-      forceDirectedGrapher.nodeHighlight(nodeList[event.sub]);
+      if(event.sub){
+        forceDirectedGrapher.nodeHighlight(nodeList[event.sub]);
+      }else{
+        forceDirectedGrapher.nodeHighlight(centerNode);
+      }
     }
     this.applyProperties=function(props){
       /*

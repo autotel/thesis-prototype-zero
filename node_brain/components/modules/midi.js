@@ -4,6 +4,7 @@ var midiOutputs={};
 var midiInputs={};
 var eventMessage=require('../../datatype-eventMessage');
 var child_process = require('child_process');
+var destinationBase=require('./destinationBase');
 // Set up a new output.
 module.exports=function(environment){return new (function(){
   if(!environment.patcher.modules) environment.patcher.modules={};
@@ -24,7 +25,8 @@ module.exports=function(environment){return new (function(){
       output.openPort(a);
       midiOutputs[portName]=output;
       var newMidiModule=new(function(output){
-        this.receive=function(evt){
+        destinationBase.call(this);
+        this.receiveEvent=function(evt){
           this.note(evt.value[0],evt.value[1],evt.value[2]);
         }
         this.note=function(chan,num,velo){
@@ -43,7 +45,7 @@ module.exports=function(environment){return new (function(){
         }
         /**/console.log("  created output "+portName);
       })(output);
-      environment.patcher.addModule(portName,newMidiModule);
+      environment.patcher.registerInput("midi",newMidiModule,{name:portName});
     }catch(e){
       /**/console.log("  creating "+portName+" output was not possible: ",e);
     }

@@ -9,11 +9,13 @@ var Ui=new(function(){
     var spriteBase=function(props){};
     spriteTypes.generic=function(props){
       spriteBase.call(this,props);
-      var myNode=forceDirectedGrapher.addNode();
+      this.name=props.name;
+      var myNode=forceDirectedGrapher.addNode({type:props.type,name:props.name,color:"crimson"});
       this.remove=function(){
         forceDirectedGrapher.removeNode(myNode);
       }
-      this.representEvent=function(){
+      this.representEvent=function(event){
+        // console.log(this,myNode);
         forceDirectedGrapher.nodeHighlight(myNode);
       }
       this.applyProperties=function(props){}

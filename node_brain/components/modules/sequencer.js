@@ -1,3 +1,4 @@
+'use strict';
 var destinationBase=require('./destinationBase');
 var eventMessage=require('../../datatype-eventMessage');
 const moduleEvent=require("./moduleEvent");
@@ -11,29 +12,26 @@ module.exports=function(environment){
       var currentStep={value:0};
       this.currentStep=currentStep;
       /**/console.log(sequencerFunctions);
-
+      var thisModule=this;
       this.patData={};
       var currentModulus=16;
       this.loopLength={value:16};
       this.stepLength={value:12}
 
       var clockSource=false;
-      var clockSourceHandle=false;
       this.disableClockSource=function(){
-        if(clockSourceHandle)
-        environment.patcher.modules[clockSource].removeOutput(clockSourceHandle);
-        clockSource=false;
-        clockSourceHandle=false;
+        if(clockSource!==false){
+          clockSource.disableOutputTo(this);
+        }
       }
       this.updateClockSource=function(newOne){
-        if(clockSourceHandle)
-        environment.patcher.modules[clockSource].removeOutput(clockSourceHandle);
-        if(environment.patcher.modules[newOne]){
-          /**/console.log("sequencer: receives from "+newOne+" his clock");
-          clockSource=newOne;
-          var clockSourceHandle=environment.patcher.modules[newOne].attachAsOutput(this);
+        thisModule.disableClockSource();
+        clockSource=environment.patcher.inputs[newOne];
+        if(clockSource){
+          clockSource.sendOutputTo(this);
         }else{
-          console.warn("a sequencer couldnt connect to invalid clock source: "+newOne);
+          clockSource=false;
+          console.warn("patcher doesn't have input named "+newOne);
         }
       }
       this.getClockSource=function(){

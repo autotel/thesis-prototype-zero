@@ -35,56 +35,89 @@ module.exports=function(environment){return new(function(){
   //as opposed to most of them that can only choose outputs.
   var sourcesList=[];
   if(!this.modules) this.modules={};
+  if(!this.inputs) this.inputs={};
+  if(!this.outputs) this.outputs={};
+
   this.getDestList=function(){
+    //convert objects array to reference names array
     destinationList=[];
-    for(var a in this.modules){
+    for(var a in this.inputs){
       destinationList.push(a);
     }
     return destinationList;
   }
+
   this.getSourcesList=function(){
+    //convert objects array to reference names array
     sourcesList=[];
+    // for(var a in this.outputs){
+    //   sourcesList.push(a);
+    // }
     for(var a in this.modules){
-      if(typeof this.modules[a].attachAsOutput==="function")
+      if(typeof this.modules[a].sendOutputTo==="function")
       sourcesList.push(a);
     }
     return sourcesList;
   }
 
+
+
   //creates a module
   this.createModule=function(type,props){
     if(Modules[type]){
       var newModule=new Modules[type].instance(props);
-      thisPatcher.registerModule(type,newModule,props);
+      thisPatcher.registerInput(type,newModule,props);
+      if(typeof newModule.sendOutputTo==="function")
+        thisPatcher.registerOutput(type,newModule,props);
       return newModule;
     }else{
       /**/console.log("a "+type+ "module was not created because it doesnt exist");
     }
   }
-  this.registerModule=function(type,what,props){
-    var nameBase=type;
-    var name;
-    if(props){
-      if(props.name) nameBase=props.name
+  this.registerInput=function(type,what,props){
+    if(!what.name){
+      var nameBase=type;
+      var name;
+      if(props){
+        if(props.name) nameBase=props.name
+      }
+      name=uniqueName.get(nameBase);
+      /**/console.log(name+": a new "+type+" input was created");
+      this.modules[name]=what;
+      what.name=name;
+      this.handle("modulecreated",{name:name,type:type,module:what});
     }
-    name=uniqueName.get(nameBase);
-    /**/console.log(name+": a new "+type+" module was created");
-    this.modules[name]=what;
-    what.name=name;
-    this.handle("modulecreated",{name:name,type:type,module:what});
+    this.inputs[name]=what;
+  }
+
+  this.registerOutput=function(type,what,props){
+    if(!what.name){
+      var nameBase=type;
+      var name;
+      if(props){
+        if(props.name) nameBase=props.name
+      }
+      name=uniqueName.get(nameBase);
+      /**/console.log(name+": a new "+type+" output was created");
+      this.modules[name]=what;
+      this.handle("modulecreated",{name:name,type:type,module:what});
+      what.name=name;
+    }
+    sourcesList[what.name]=what;
   }
 
   this.receiveEvent=function(evt){
-    if(evt.destination){
-      if(thisPatcher.modules[evt.destination]){
-        thisPatcher.modules[evt.destination].receiveEvent(evt);
+    setImmediate(function(){
+      if(evt.destination){
+        if(thisPatcher.inputs[evt.destination]){
+          thisPatcher.inputs[evt.destination].receiveEvent(evt);
+        }else{
+          /**/console.log("invalid "+evt.destination+" destination");
+        }
       }else{
-        /**/console.log("invalid "+evt.destination+" destination");
+        console.warn("event didn't have destination", evt);
       }
-    }else{
-      console.warn("event didn't have destination", evt);
-    }
-    thisPatcher.handle('eventmessage',{eventMessage:evt});
+      thisPatcher.handle('eventmessage',{eventMessage:evt});
+    });
   }
-});
-}
+})}
