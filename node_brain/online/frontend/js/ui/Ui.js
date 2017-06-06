@@ -14,6 +14,7 @@ var Ui=new(function(){
         forceDirectedGrapher.removeNode(myNode);
       }
       this.representEvent=function(){
+        forceDirectedGrapher.nodeHighlight(myNode);
       }
       this.applyProperties=function(props){}
       this.getNodeHandle=function(){
@@ -44,7 +45,11 @@ var Ui=new(function(){
     };
   })();
   this.representEvent=function(handler,event){
-    handler.representEvent(event);
+    if(handler){
+      handler.representEvent(event);
+    }else{
+      console.log("event sprite handler " + handler );
+    }
   };
   this.applyProperties=SpriteManager.applyProperties;
   this.addSprite=SpriteManager.add;

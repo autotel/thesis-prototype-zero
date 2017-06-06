@@ -15,13 +15,14 @@ module.exports=function(environment){
       this.scaleArray=[];
       // this.lastUsed=0;
       this.receive=function(event){
+        this.handle('receive',event);
         newEvent=new eventMessage(event);
         newEvent.destination=myDestination;
         // console.log(thisDest.scaleArray);
         var noteWraped=thisDest.scaleArray[event.value[1]%thisDest.scaleArray.length];
         newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/12));
         environment.patcher.receiveEvent(newEvent);
-        this.handle('receive',event);
+        thisDest.handle('messagesend',{origin:thisDest,eventMessage:newEvent});
         // thisDest.lastUsed=noteWraped;
         // environment.patcher.modules[myDestination];
       }

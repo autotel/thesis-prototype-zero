@@ -50,7 +50,7 @@ module.exports=function(environment){
           maximumValue:(256/16),
         },
         'loop length':{
-          value:controlledModule.loopLength,
+          value:controlledModule.loopLength.value,
           getValueName:function(a){ return a },
           maximumValue:256,
           minimumValue:1,
@@ -74,7 +74,7 @@ module.exports=function(environment){
           minimumValue:-4,
         },
         'step length':{
-          value:controlledModule.loopLength,
+          value:controlledModule.stepLength.value,
           getValueName:function(a){ return a },
           maximumValue:16*12,
           minimumValue:1,
@@ -125,7 +125,7 @@ module.exports=function(environment){
           }
         }
       }
-      loopLength.bindValueWith(controlledModule,"loopLength");
+      loopLength.bindValueWith(controlledModule.loopLength,"value");
       loopFold.base=2;
       loopFold.getValueName=loopUndestructiveFold.getValueName=function(a){
         return loopFold.base+"^"+loopFold.value+"="+loopLength.value;

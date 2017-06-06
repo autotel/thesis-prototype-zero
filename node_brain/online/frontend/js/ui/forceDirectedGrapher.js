@@ -43,20 +43,20 @@ var forceDirectedGrapher=new(function(){
   }
 
   function mousedownCanvas() {
-    var point = d3.mouse(this),
-        node = {x: point[0], y: point[1]},
-        n = nodes.push(node);
-
-    // add links to any nearby nodes
-    nodes.forEach(function(target) {
-      var x = target.x - node.x,
-          y = target.y - node.y;
-      if (Math.sqrt(x * x + y * y) < 30) {
-        links.push({source: node, target: target});
-      }
-    });
-
-    restart();
+    // var point = d3.mouse(this),
+    //     node = {x: point[0], y: point[1]},
+    //     n = nodes.push(node);
+    //
+    // // add links to any nearby nodes
+    // nodes.forEach(function(target) {
+    //   var x = target.x - node.x,
+    //       y = target.y - node.y;
+    //   if (Math.sqrt(x * x + y * y) < 30) {
+    //     links.push({source: node, target: target});
+    //   }
+    // });
+    //
+    // restart();
   }
   this.addLink=function(from,to){
     links.push({
@@ -67,11 +67,14 @@ var forceDirectedGrapher=new(function(){
   }
   this.setLinksTo=function(startNode,destList){
     //copy destlist to avoid changing original
-    var dl=JSON.parse(JSON.stringify(destList));
+    var dl=[];
+    for(var a in destList){
+      dl[a]=destList[a];
+    }
     //check all the links that are already from startNode to any of destList,
     //remove the rest
     links = links.filter(function(l) {
-      if(l.source == startNode){
+      if(l.source == nodes[startNode]){
         var iof = dl.indexOf(l.target);
         if(iof == -1){
           return false;
@@ -100,16 +103,23 @@ var forceDirectedGrapher=new(function(){
       return l.source !== d && l.target !== d;
     });
   }
+  this.nodeHighlight=function(handler){
+    if(nodes[handler].grasa<20)
+    nodes[handler].grasa+=4;
+    // console.log(nodes[handler]);
+  }
   this.rebuild=restart;
   function mousedownNode(d, i) {
-    nodes.splice(i, 1);
-    links = links.filter(function(l) {
-      return l.source !== d && l.target !== d;
-    });
-    d3.event.stopPropagation();
-
-    restart();
-    //console.log(nodes,links);
+    d.grasa=33;
+    console.log(i,d);
+    // nodes.splice(i, 1);
+    // links = links.filter(function(l) {
+    //   return l.source !== d && l.target !== d;
+    // });
+    // d3.event.stopPropagation();
+    //
+    // restart();
+    // //console.log(nodes,links);
   }
 
   function tick() {
@@ -119,9 +129,22 @@ var forceDirectedGrapher=new(function(){
         .attr("y2", function(d) { return d.target.y; });
 
     node.attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+        .attr("cy", function(d) { return d.y; })
+        // .attr("r", function(d) {
+        //   if(!d.grasa) d.grasa=5;
+        //   if(d.grasa>5)d.grasa--;
+        //   return d.grasa;
+        // });
   }
-
+  function animate(){
+    node.attr("r", function(d) {
+          if(!d.grasa) d.grasa=5;
+          if(d.grasa>5)d.grasa--;
+          return d.grasa;
+        });
+    requestAnimationFrame(animate);
+  }
+  animate();
   function restart() {
 
 

@@ -8,6 +8,7 @@ module.exports=function(environment){
     //some modules could have many different possible instances
     //some modules even instance themselves, like midi.
     this.instance=function(props){
+      thisBus=this;
       var myOutputs=[];
       destinationBase.call(this,environment);
       this.attachAsOutput=function(who){
@@ -15,12 +16,17 @@ module.exports=function(environment){
         myOutputs.push(who);
         return handle;
       };
+      this.getDestinations=function(){
+        return myOutputs;
+      }
       this.receiveEvent=function(evt){
         //console.log("bus: receive",evt);
         for(var a in myOutputs){
           //console.log(" bus: send");
           myOutputs[a].receiveEvent(evt);
+          thisBus.handle('messagesend',{origin:thisBus,eventMessage:evt});
         }
+        thisBus.handle('messagereceive',{origin:thisBus,eventMessage:evt});
       }
     }
   })();

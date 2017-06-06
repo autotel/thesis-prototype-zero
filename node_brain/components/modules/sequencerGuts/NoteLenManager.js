@@ -2,7 +2,7 @@ module.exports=function(sequencerModule){ return new(function(){
   var notesInCreation=[];
   var notesInPlay=[];
   var stepCounter=0;
-  
+
   this.noteStarted=function(stepEvent){
     if(!stepEvent.stepLength)stepEvent.stepLength=1;
     notesInPlay.push({sequencerEvent:stepEvent,offInStep:stepCounter+stepEvent.stepLength});
@@ -12,7 +12,9 @@ module.exports=function(sequencerModule){ return new(function(){
       if(notesInPlay[a].offInStep==stepCounter){
         // console.log("a:"+a);
         // console.log(notesInPlay[a]);
-        environment.patcher.receiveEvent(notesInPlay[a].sequencerEvent.off);
+        // environment.patcher.receiveEvent(notesInPlay[a].sequencerEvent.off);
+        sequencerModule.sendEvent(notesInPlay[a].sequencerEvent.off);
+
         notesInPlay[a]=false;
       }
     }

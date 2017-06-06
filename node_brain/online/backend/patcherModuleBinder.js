@@ -17,29 +17,50 @@ var bindGetter=function(trackedData,node,getter,param,trackedDataDelta){
   if(changed) {trackedData[node]=got; trackedDataDelta[node]=got };
   return changed;
 }
+
 var bindArray=function(trackedData,node,array,subprop,trackedDataDelta){
   var changed=false;
   if(trackedData[node]===undefined) trackedData[node]=[];
   if(subprop){
+    //get the created or changed data in the array
     for(var a in array){
-      if(trackedData[node][a]!=array[a][subprop]){
+      if(""+trackedData[node][a]!=""+array[a][subprop]){
         trackedData[node][a]=array[a][subprop];
-        if(!trackedDataDelta[node]){  trackedDataDelta[node]=[]; }
+        if(!trackedDataDelta[node]){  trackedDataDelta[node]={}; }
         trackedDataDelta[node][a]=array[a][subprop];
       }
     }
+    //also get the data that is not anymore in the array
+    for(var a in trackedData[node]){
+      if(!array[a][subprop]){
+        delete trackedData[node][a];
+        if(!trackedDataDelta[node]){  trackedDataDelta[node]={}; }
+        trackedDataDelta[node][a]=null;
+      }
+    }
   }else{
+    //get the created or changed data in the array
     for(var a in array){
       if(""+trackedData[node][a]!=""+array[a]){
-        console.log(trackedData[node][a]+"!="+array[a]);
+        // console.log(trackedData[node][a]+"!="+array[a]);
         trackedData[node][a]=array[a];
-        if(!trackedDataDelta[node]){  trackedDataDelta[node]=[]; }
+        if(!trackedDataDelta[node]){  trackedDataDelta[node]={}; }
         trackedDataDelta[node][a]=array[a];
       }
     }
+    //also get the data that is not anymore in the array
+    for(var a in trackedData[node]){
+      if(!array[a]){
+        delete trackedData[node][a];
+        if(!trackedDataDelta[node]){  trackedDataDelta[node]={}; }
+        trackedDataDelta[node][a]=null;
+      }
+    }
+    //i'm sure there is a more efficient way to this
   }
 }
 //functions that gather data from the monitored module specifically by type
+//pendant: perhaps we only need multinodal and monoNodal functions
 var dataTracker=function(type){
   switch (type) {
     case 'presetKit': return function(uniqueElement){
@@ -48,7 +69,8 @@ var dataTracker=function(type){
       var trackedDataDelta={};
       bindprop(trackedData,"name",who.name,trackedDataDelta);
       bindprop(trackedData,"subnodes",who.kit.length,trackedDataDelta);
-      bindArray(trackedData,"subnodeDestinations",who.kit,"destination",trackedDataDelta);
+      // console.log(who.kit);
+      bindArray(trackedData,"subnodeDestinations",who.getEventDestinations(),false,trackedDataDelta);
       bindprop(uniqueElement,"type",uniqueElement.type,trackedDataDelta);
       for(var a in trackedDataDelta)
       if(trackedDataDelta[a]!==undefined)
@@ -60,9 +82,25 @@ var dataTracker=function(type){
       var trackedData=uniqueElement.trackedData;
       var trackedDataDelta={};
       bindprop(trackedData,"name",who.name,trackedDataDelta);
-      bindprop(trackedData,"subnodes",who.loopLength,trackedDataDelta);
+      bindprop(trackedData,"subnodes",who.loopLength.value,trackedDataDelta);
+      // console.log(who.loopLength.value);
       bindArray(trackedData,"subnodeDestinations",who.getStepEventDestinations(),false,trackedDataDelta);
       // console.log(who.getStepEventDestinations());
+      bindprop(uniqueElement,"type",uniqueElement.type,trackedDataDelta);
+      for(var a in trackedDataDelta)
+      if(trackedDataDelta[a]!==undefined)
+        return trackedDataDelta;
+      return false;
+    }
+    case 'clock': return function(uniqueElement){
+      var who=uniqueElement.original;
+      var trackedData=uniqueElement.trackedData;
+      var trackedDataDelta={};
+      bindprop(trackedData,"name",who.name,trackedDataDelta);
+      bindprop(trackedData,"subnodes",who.clocks.length,trackedDataDelta);
+      // console.log(who.loopLength.value);
+      bindArray(trackedData,"subnodeDestinations",who.getClocksDestinations(),false,trackedDataDelta);
+      // console.log(who.getClocksDestinations());
       bindprop(uniqueElement,"type",uniqueElement.type,trackedDataDelta);
       for(var a in trackedDataDelta)
       if(trackedDataDelta[a]!==undefined)
@@ -98,6 +136,17 @@ module.exports=function(environment){
       };
     })());
     bindedModules[newUnique].trackedData.unique=newUnique;
+
+    ev.module.on('messagesend',function(evtb){
+      var pl={unique:newUnique};
+      if(evtb.sub){
+        pl.sub=evtb.sub;
+      }else if(evtb.step){
+        pl.sub=evtb.step;
+      }
+      myBroadcaster.broadcast(header.EVENT,pl);
+    });
+
     var newUniqueElement=bindedModules[newUnique];
     newUniqueElement.dataUpdate();
     myBroadcaster.broadcast(header.CREATE,newUniqueElement.trackedData);
@@ -111,7 +160,7 @@ module.exports=function(environment){
         myBroadcaster.broadcast(header.CHANGE,emitData);
       }
     }
-  },700);
+  },30);
   return new (function(){
     this.eachBindedUnique=function(callback){
       for(var a in bindedModules){

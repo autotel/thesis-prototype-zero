@@ -84,6 +84,7 @@ module.exports=function(environment){return new(function(){
     }else{
       console.warn("event didn't have destination", evt);
     }
+    thisPatcher.handle('eventmessage',{eventMessage:evt});
   }
 });
 }

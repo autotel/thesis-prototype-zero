@@ -31,7 +31,7 @@ var socketMan=new (function(){
     Ui.addLink(uniqueArray[e.fromUnique],uniqueArray[e.toUnique]);
   });
   socket.on(messageIndexes.EVENT,function(e){
-    /**/console.log("socket reported event",e);
+    // /**/console.log("socket reported event",e);
     Ui.representEvent(uniqueArray[e.unique],e);
   });
   //not implemented yet

@@ -14,7 +14,8 @@ module.exports=function(environment){
 
       this.patData={};
       var currentModulus=16;
-      this.loopLength=16;
+      this.loopLength={value:16};
+      this.stepLength={value:12}
 
       var clockSource=false;
       var clockSourceHandle=false;
@@ -32,7 +33,7 @@ module.exports=function(environment){
           clockSource=newOne;
           var clockSourceHandle=environment.patcher.modules[newOne].attachAsOutput(this);
         }else{
-          console.warm("a sequencer couldnt connect to invalid clock source: "+newOne);
+          console.warn("a sequencer couldnt connect to invalid clock source: "+newOne);
         }
       }
       this.getClockSource=function(){
@@ -51,7 +52,7 @@ module.exports=function(environment){
             }
         return ret;
       }
-
+      this.sendEvent=environment.patcher.receiveEvent;
       this.noteLenManager=sequencerFunctions.NoteLenManager(this);
       var patchMem=sequencerFunctions.PatchMem(this);
       //import submodule functions to my own;

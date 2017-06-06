@@ -104,6 +104,7 @@ module.exports=function(sequencerModule){ return new(function(){
     if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
     if(currentStep.value<0) currentStep.value%=loopLength.value;
     step(s);
+    // console.log("aa",currentStep.value,loopLength.value);
   }
   this.stepIncremental=function(s){
     currentStep.value++;
@@ -123,8 +124,9 @@ module.exports=function(sequencerModule){ return new(function(){
         // if(stepData.destination=="midi"){
         // }else if(stepData.destination=="midi"){
           // var val=stepData.value;
-          environment.patcher.receiveEvent(stepData.on);
+          sequencerModule.sendEvent(stepData.on);
           sequencerModule.noteLenManager.noteStarted(stepData);
+          sequencerModule.handle('messagesend',{origin:sequencerModule,step:currentStep.value,eventMessage:stepData.on});
         // }else
       }
     }

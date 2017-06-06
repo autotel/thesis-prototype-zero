@@ -1,3 +1,4 @@
+'use strict';
 var destinationBase=require('./destinationBase');
 var eventMessage=require('../../datatype-eventMessage');
 const moduleEvent=require("./moduleEvent");
@@ -13,6 +14,7 @@ function MetronomePrototype(props) {
   var myIndex=0;
   // var myDestination=false;
   var tickEventMessage=new eventMessage({destination:false,value:[0,0,0]});
+  this.event=tickEventMessage;
   if(props.destination) tickEventMessage.destination=props.destination;
   onhandlers.call(this);
   this.onTick=function(evt){
@@ -20,6 +22,7 @@ function MetronomePrototype(props) {
     if(tickEventMessage.destination){
       //console.log(tickEventMessage);
       environment.patcher.receiveEvent(tickEventMessage);
+      tMetro.handle('messagesend',{origin:tMetro,eventMessage:evt});
     }
     tMetro.handle('tick',evt);
   };
@@ -52,7 +55,15 @@ module.exports=function(env){
     this.instance=function(props){
       props=props||{};
       var clocks=[];
+      this.clocks=clocks;
       destinationBase.call(this,environment);
+      this.getClocksDestinations=function(){
+        var ret={};
+        for(var a in clocks){
+          ret[a]=clocks[a].event.destination;
+        }
+        return ret;
+      }
       this.addClock=function(cprop){
         var newMetro=new MetronomePrototype(cprop);
         newMetro.setIndex(clocks.length);

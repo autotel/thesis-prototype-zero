@@ -4,6 +4,7 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
     var nodeList=[];
     spriteBase.call(this,props);
     nodeList.push(forceDirectedGrapher.addNode());
+    var thisSprite=this;
     var centerNode=nodeList[0];
 
     this.remove=function(){
@@ -15,7 +16,10 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
     this.getNodeHandle=function(){
       return centerNode;
     }
-    this.representEvent=function(event){}
+    this.representEvent=function(event){
+      if(event.sub)
+      forceDirectedGrapher.nodeHighlight(nodeList[event.sub]);
+    }
     this.applyProperties=function(props){
       /*
       CHANGE Object {
@@ -26,12 +30,12 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
       if(props.subnodes){
         //minus 1 because the center node is also in the list
         var noDelta=props.subnodes-nodeList.length+1;
-        console.log(props.subnodes+"-"+(nodeList.length+1)+"="+noDelta);
+        // console.log(props.subnodes+"-"+(nodeList.length+1)+"="+noDelta);
         if(noDelta>0){
           for(var a=0; a<noDelta; a++){
             var nNodeHandle=forceDirectedGrapher.addNode();
             nodeList.push(nNodeHandle);
-            forceDirectedGrapher.addLink(nNodeHandle,centerNode);
+            forceDirectedGrapher.addLink(centerNode,nNodeHandle);
           }
           forceDirectedGrapher.rebuild();
         }else if(noDelta<0){
@@ -44,27 +48,42 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
       if(props.subnodeDestinations){
         var snD=props.subnodeDestinations;
         for(var a in snD){
-          var nNodeHandle=nodeList[a];
+          var subNodeHandle=nodeList[parseInt(a)+1];
+          // console.log(a+1);
           var nodeHandleDestinations=[];
           //get the link handles for the node destinations that come in names
           //sequencers throw 2d arrays whilst kits 1d arrays. perhaps different in the future
-          if(snD[a])
-          if(snD[a].constructor === Array){
-            for(var b in snD[a]){
-              var targetSprite=Ui.spriteFromNames[snD[a][b]];
-              console.log(targetSprite);
-              nodeHandleDestinations.push(targetSprite.getNodeHandle());
+          if(snD[a]){
+            if(snD[a].constructor === Array){
+              for(var b in snD[a]){
+                var targetSprite=Ui.spriteFromNames[snD[a][b]];
+                // console.log(targetSprite);
+                if(snD[a][b]!==null){
+                  nodeHandleDestinations.push(targetSprite.getNodeHandle());
+                  console.log(targetSprite.getNodeHandle());}
+              }
+              console.log(subNodeHandle,nodeHandleDestinations);
+              forceDirectedGrapher.setLinksTo(subNodeHandle,nodeHandleDestinations);
+            }else{
+              var targetSprite=Ui.spriteFromNames[snD[a]];
+              if(targetSprite&&subNodeHandle){
+                forceDirectedGrapher.setLinksTo(subNodeHandle,[targetSprite.getNodeHandle()]);
+              }else{
+                console.log(targetSprite,subNodeHandle);
+              }
             }
-            forceDirectedGrapher.setLinksTo(nNodeHandle,nodeHandleDestinations);
-          }else{
-            var targetSprite=Ui.spriteFromNames[snD[a][b]];
-            if(targetSprite)
-              forceDirectedGrapher.addLink(nNodeHandle,targetSprite.getNodeHandle());
+          }else if(snD[a]===null){
+            forceDirectedGrapher.setLinksTo(subNodeHandle,[]);
           }
         }
+        forceDirectedGrapher.rebuild();
       }
     }
-    this.applyProperties(props);
+    //pendant: I put this timeout because if some node didnt exist yet, creating a link
+    //would take the forceDirectedGrapher down. Timeouts are not the way but I have no time now
+    setTimeout(function(){
+      thisSprite.applyProperties(props);
+    },200);
   }
 }
 
@@ -73,5 +92,9 @@ Ui.addSpriteType("presetKit",function(forceDirectedGrapher,spriteBase){
 });
 
 Ui.addSpriteType("sequencer",function(forceDirectedGrapher,spriteBase){
+  return getMultiNodeSpriteBase(forceDirectedGrapher,spriteBase);
+});
+
+Ui.addSpriteType("clock",function(forceDirectedGrapher,spriteBase){
   return getMultiNodeSpriteBase(forceDirectedGrapher,spriteBase);
 });
