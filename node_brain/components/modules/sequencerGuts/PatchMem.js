@@ -20,9 +20,14 @@ module.exports=function(sequencerModule){ return new(function(){
     if(data){
       var cancel=false;
       for(var a in patData[step]){
-        if(patData[step][a].on.compareTo(data.on,['destination','value'])){
-          cancel=true;
-          break;
+        try{
+          if(patData[step][a].on.compareTo(data.on,['destination','value'])){
+            cancel=true;
+            break;
+          }
+        }catch(e){
+          console.log(patData[step]);
+          console.log(e);
         }
       }
       if(!cancel){
@@ -93,8 +98,14 @@ module.exports=function(sequencerModule){ return new(function(){
             // testc++;
             var targetStep=(initialStepSize*duplicationNumber)+step;
             // console.log(duplicationNumber,step,testc,targetStep);
+            // TODO: in many places I create these sequencer memory events, they should be
+            //instances of the same class, to avoid easter egg bugs
             if(!patData[targetStep]) patData[targetStep]=[];
-            patData[targetStep].push(new eventMessage(patData[step][a]));
+            patData[targetStep].push({
+              on:new eventMessage(patData[step][a].on),
+              off:new eventMessage(patData[step][a].off),
+              stepLength:patData[step][a].stepLength,
+            });
           }
         }
       }
