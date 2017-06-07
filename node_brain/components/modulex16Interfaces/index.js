@@ -17,7 +17,7 @@ Modulex16Interfaces.sequencer=require('./moduleController-sequencer');
 Modulex16Interfaces.clock=require('./moduleController-clock');
 
 basicUserInterfaces.moduleSelector=require('./monomode-selector');
-basicUserInterfaces.midiEdit=require('./monomode-midiEdit');
+// basicUserInterfaces.midiEdit=require('./monomode-midiEdit');
 basicUserInterfaces.system=require('./monomode-system');
 basicUserInterfaces.add=require('./monomode-add');
 

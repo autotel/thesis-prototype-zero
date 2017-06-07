@@ -17,6 +17,7 @@ module.exports=function(environment){
     }
     this.setModeList=function(list){
       for(var a in list){
+        if(list[a]!=this)
         modes.push(a);
       }
       monoModesMap=~(0xffff<<modes.length)
