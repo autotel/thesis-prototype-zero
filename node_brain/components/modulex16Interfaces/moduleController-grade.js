@@ -1,20 +1,20 @@
 'use strict';
 var base=require('./interactionModeBase');
-// var controlledDestination=require('../modules/grade.js');
+// var controlledModule=require('../modules/grade.js');
 var fingerMap=0x0000;
 var scaleMap=0xAB5;//major
 module.exports=function(environment){
   return new(function(){
-    this.instance=function(controlledDestination){
+    this.instance=function(controlledModule){
       // this.testname="grade control";
-      //controlledDestination=controlledDestination(environment);
-      controlledDestination.newScaleMap(scaleMap);
+      //controlledModule=controlledModule(environment);
+      controlledModule.newScaleMap(scaleMap);
       base.call(this);
       function updateHardware(){
         var displayScaleMap=scaleMap|scaleMap<<12;
         var displayFingerMap=fingerMap|fingerMap<<12;
         environment.hardware.draw([displayFingerMap|displayScaleMap,displayFingerMap^displayScaleMap,displayScaleMap]);
-        environment.hardware.sendScreenA("grades: "+controlledDestination.scaleArray.length);
+        environment.hardware.sendScreenA("grades: "+controlledModule.scaleArray.length);
       }
 
       this.engage=function(){
@@ -28,7 +28,7 @@ module.exports=function(environment){
         fingerMap|=fingerMap>>12;
         scaleMap^=1<<evt.data[0];
         // scaleMap|=fingerMap;
-        controlledDestination.newScaleMap(scaleMap);
+        controlledModule.newScaleMap(scaleMap);
         updateHardware();
       }
       this.eventResponses.buttonMatrixReleased=function(evt){

@@ -2,14 +2,14 @@
 var base=require('./interactionModeBase');
 var eventMessage=require('../../datatype-eventMessage');
 
-// var controlledDestination=require('../modules/presetKit.js');
+// var controlledModule=require('../modules/presetKit.js');
 //pendant: there should be a really easy way to mute presets.
 //pendant: preset editor should have many channels allowing 16*16 presets
 module.exports=function(environment){
   return new(function(){
     //pendant: this.create should be turned into a "instance" prototype
     //to make it more concordant with how the modules are created
-    this.instance=function(controlledDestination){
+    this.instance=function(controlledModule){
       var fingerMap=0x0000;
       var noteHighlightMap=0x0000;
       var currentlySelectedPreset=0;
@@ -24,7 +24,7 @@ module.exports=function(environment){
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
       selectors.recConfig=require('./submode-2dConfigurator');
-      // console.log("new controlledDestination",controlledDestination);
+      // console.log("new controlledModule",controlledModule);
       base.call(this);
       for(var a in selectors){
         selectors[a]=selectors[a](environment);
@@ -85,7 +85,7 @@ module.exports=function(environment){
 
       function updateHardware(){
         var programmedMap=0x0000;
-        for(var a in controlledDestination.kit){
+        for(var a in controlledModule.kit){
           programmedMap|=1<<a;
         }
         var presetBitMap=0x1<<currentlySelectedPreset;
@@ -96,7 +96,7 @@ module.exports=function(environment){
         }
       }
       //when a note is routed to the presetKit that this mode controls
-      controlledDestination.on('receive',function(evm){
+      controlledModule.on('receive',function(evm){
         if(engaged&& !subSelectorEngaged){
           noteHighlightMap|=1<<evm.value[1];
           updateHardware();
@@ -119,18 +119,18 @@ module.exports=function(environment){
         if(!subSelectorEngaged){
           fingerMap=evt.data[2]|(evt.data[3]<<8);
           currentlySelectedPreset=evt.data[0];
-          selectors.dimension.setFromSeqEvent(controlledDestination.kit[currentlySelectedPreset]);
-          controlledDestination.padOn(evt.data[0]);
+          selectors.dimension.setFromSeqEvent(controlledModule.kit[currentlySelectedPreset]);
+          controlledModule.padOn(evt.data[0]);
           if(recording)
           if(recTarget){
             recTarget
             .recordNoteStart(evt.data[0],
               new eventMessage({
-                destination:controlledDestination.name,
+                destination:controlledModule.name,
                 value:[
                   0,
                   evt.data[0],
-                  controlledDestination.kit[evt.data[0]]?controlledDestination.kit[evt.data[0]].value[3]:100
+                  controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].value[3]:100
                 ],
               }));
           }
@@ -142,7 +142,7 @@ module.exports=function(environment){
       this.eventResponses.buttonMatrixReleased=function(evt){
         if(!subSelectorEngaged){
           fingerMap=evt.data[2]|(evt.data[3]<<8);
-          controlledDestination.padOff(evt.data[0]);
+          controlledModule.padOff(evt.data[0]);
           if(recording)
           if(recTarget)
           recTarget.recordNoteEnd(evt.data[0]);
@@ -155,7 +155,7 @@ module.exports=function(environment){
         if(selectors[lastsubSelectorEngaged]){
           selectors[lastsubSelectorEngaged].eventResponses.encoderScroll(evt);
           if(lastsubSelectorEngaged=="dimension")
-            controlledDestination.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
+            controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
         }
       }
       this.eventResponses.encoderPressed=function(evt){

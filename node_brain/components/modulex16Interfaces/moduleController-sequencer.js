@@ -142,7 +142,7 @@ module.exports=function(environment){
           loopFold.value+=delta;
           loopLength.value=Math.pow(loopFold.base,loopFold.value);
         }
-        duplicateSequence(0,oldLength,loopLength.value/oldLength);
+        controlledModule.duplicateSequence(0,oldLength,loopLength.value/oldLength);
       }
       loopUndestructiveFold.valueChangeFunction=function(absolute,delta){
         if(!delta) delta=absolute-loopFold.value;
@@ -165,7 +165,7 @@ module.exports=function(environment){
         var notesInCreation=[];
         var stepCounter=0;
         this.startAdding=function(differenciator,newStepEv){
-          console.log("startadding("+differenciator+"...");
+          // console.log("startadding("+differenciator+"...");
           if(!newStepEv.stepLength){
             newStepEv.stepLength=1;
           }

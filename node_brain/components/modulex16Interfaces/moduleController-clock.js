@@ -2,7 +2,7 @@
 var base=require('./interactionModeBase');
 module.exports=function(environment){
   return new(function(){
-    this.instance=function(controlledDestination){
+    this.instance=function(controlledModule){
       var engaged=false;
       var shiftPressed=false;
       var lastsubSelectorEngaged=0;
@@ -20,8 +20,8 @@ module.exports=function(environment){
       var selectors={};
       // TODO: : the requires should be in the heads, but this requires
       //some general reestructuring
-      //controlledDestination=controlledDestination(environment);
-      var clocks=controlledDestination.getClocks();
+      //controlledModule=controlledModule(environment);
+      var clocks=controlledModule.getClocks();
       for(var a in clocks){
         clocks[a].on('tick',function(){
           clockTicked(a);
@@ -183,7 +183,7 @@ module.exports=function(environment){
           }else{
             if(lastMatrixButtonPressed===evt.data[0]){
               // clocks.push(
-                var newClock=controlledDestination.addClock()//);
+                var newClock=controlledModule.addClock()//);
                 newClock.on('tick',function(evt){
                   clockTicked(evt.indexNumber);
                 });

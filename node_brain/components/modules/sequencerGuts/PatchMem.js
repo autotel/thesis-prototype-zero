@@ -1,4 +1,6 @@
+
 'use strict';
+var eventMessage=require('../../../datatype-eventMessage');
 module.exports=function(sequencerModule){ return new(function(){
   var currentStep=sequencerModule.currentStep;
   var loopLength=sequencerModule.loopLength;
@@ -95,7 +97,7 @@ module.exports=function(sequencerModule){ return new(function(){
         }
       }
     }else{
-      clearStepRange(startingStep,originalEndingStep*multiplyFactor);
+      clearStepRange(originalEndingStep*multiplyFactor,originalEndingStep);
     }
   }
   this.stepAbsolute=function(s){
