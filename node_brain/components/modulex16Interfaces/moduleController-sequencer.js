@@ -144,6 +144,7 @@ module.exports=function(environment){
           loopLength.value=Math.pow(loopFold.base,loopFold.value);
         }
         controlledModule.duplicateSequence(0,oldLength,loopLength.value/oldLength);
+        controlledModule.loopLength.value=loopLength.value;
       }
       loopUndestructiveFold.valueChangeFunction=function(absolute,delta){
         if(!delta) delta=absolute-loopFold.value;
@@ -156,6 +157,7 @@ module.exports=function(environment){
           loopFold.value+=delta;
           loopLength.value=Math.pow(loopFold.base,loopFold.value);
         }
+        controlledModule.loopLength.value=loopLength.value;
       }
 
 
