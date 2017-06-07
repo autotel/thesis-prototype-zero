@@ -59,6 +59,12 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.encoderScroll=function(evt){
     var currentOption=options[currentSelection];
+    // //get values if binded
+    // if(currentOption.bindValue){
+    //   currentOption.value=(currentOption.bindValue[0])[currentOption.bindValue[1]];
+    //   updateLcd();
+    // }
+    //set values in the configurator
     if(evt.data[1]==0xff){
       if(currentOption.valueChangeFunction){
         currentOption.valueChangeFunction(false,-1);
@@ -75,6 +81,7 @@ module.exports=function(environment){return new(function(){
       }
     }
     updateLcd();
+    //bind values if binded
     //we can set the option value to set some parameter in an arbitrary object, here it is applied
     if(currentOption.bindValue){
       (currentOption.bindValue[0])[currentOption.bindValue[1]]=currentOption.value;

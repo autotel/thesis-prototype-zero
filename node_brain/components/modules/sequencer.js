@@ -57,7 +57,7 @@ module.exports=function(environment){
       //I don't use an iterator to have more clear control of the namespace
       //but in some text tools you can always multiline edit
       this.store=patchMem.store;
-
+      this.loopDisplace=patchMem.loopDisplace;
       this.storeNoDup=patchMem.storeNoDup;
       this.clearStepNewest=patchMem.clearStepNewest;
       this.clearStepOldest=patchMem.clearStepOldest;

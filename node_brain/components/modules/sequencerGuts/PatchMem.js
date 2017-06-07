@@ -5,6 +5,8 @@ module.exports=function(sequencerModule){ return new(function(){
   var currentStep=sequencerModule.currentStep;
   var loopLength=sequencerModule.loopLength;
   var patData=sequencerModule.patData;
+  var loopDisplace={value:0};
+  this.loopDisplace=loopDisplace;
   var store=function(step,data){
     if(!patData[step]) patData[step]=[];
     if(data){
@@ -102,8 +104,8 @@ module.exports=function(sequencerModule){ return new(function(){
   }
   this.stepAbsolute=function(s){
     currentStep.value=s;
-    // currentStep.value+=this.loopDisplace;
-    // loopDisplace.value=0;
+    currentStep.value+=loopDisplace.value;
+    loopDisplace.value=0;
     if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
     if(currentStep.value<0) currentStep.value%=loopLength.value;
     step(s);
@@ -111,8 +113,8 @@ module.exports=function(sequencerModule){ return new(function(){
   }
   this.stepIncremental=function(s){
     currentStep.value++;
-    // currentStep.value+=this.loopDisplace;
-    // loopDisplace.value=0;
+    currentStep.value+=loopDisplace.value;
+    loopDisplace.value=0;
     if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
     if(currentStep.value<0) currentStep.value%=loopLength.value;
     step(s);

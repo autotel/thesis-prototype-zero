@@ -70,8 +70,8 @@ module.exports=function(environment){
         'loop displace':{
           value:0,
           getValueName:function(a){ if(a>0){ return "+"+a }else{ return a } },
-          maximumValue:4,
-          minimumValue:-4,
+          maximumValue:32,
+          minimumValue:-32,
         },
         'step length':{
           value:controlledModule.stepLength.value,
@@ -127,6 +127,7 @@ module.exports=function(environment){
         }
       }
       loopLength.bindValueWith(controlledModule.loopLength,"value");
+      loopDisplace.bindValueWith(controlledModule.loopDisplace,"value");
       loopFold.base=2;
       loopFold.getValueName=loopUndestructiveFold.getValueName=function(a){
         return loopFold.base+"^"+loopFold.value+"="+loopLength.value;
