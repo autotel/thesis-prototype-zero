@@ -12,6 +12,11 @@ function MetronomePrototype(clockParent,props) {
   var currentStep=0;
   var tMetro=this;
   var myIndex=0;
+  //vars for anti drifting
+  var absoluteInterval=0;
+  var absoluteDrift=0;
+  var timeAnchor=0;
+  var iterations=0;
   // var myDestination=false;
   var tickEventMessage=new eventMessage({destination:false,value:[0,0,0]});
   this.event=tickEventMessage;
@@ -27,8 +32,20 @@ function MetronomePrototype(clockParent,props) {
     tMetro.handle('tick',evt);
   };
   function stm(){
+    //anti drifting funcs
+    iterations++;
+    var now=new Date();
+    var elapsed=now-timeAnchor;
+    absoluteInterval=(elapsed/iterations);
+    absoluteDrift=interval-absoluteInterval;
+    setTimeout(stm,interval+2*absoluteDrift);
+    console.log("tick");
+    console.log("  Tartget:"+interval);
+    console.log("  Interval:"+absoluteInterval);
+    console.log("  drift:"+absoluteDrift);
+    console.log("  nextinterval:"+(interval+2*absoluteDrift));
+    //operation functions
     tMetro.onTick({step:currentStep,indexNumber:myIndex});
-    setTimeout(stm,interval);
     currentStep++;
     currentStep%=16*15*14*13*12*11*10*9*8*7*6*5*4*3*2;
   }
@@ -41,9 +58,17 @@ function MetronomePrototype(clockParent,props) {
   }
   this.receiveEvent=function(){
   }
-  stm();
+  function start(){
+    timeAnchor=new Date();
+    stm();
+  }
+  start();
   this.interval=function(val){
-    if(val) interval=val;
+    if(val){
+      interval=val;
+      timeAnchor=new Date();
+      iterations=0;
+    }
     return interval;
   }
   this.bpm=function(val){
