@@ -169,7 +169,7 @@ module.exports=function(environment){return new (function(){
         sendx8(tHeaders.comTester,[byte]);
       }
       tHardware.draw=updateLeds;
-      //pendant: make a function that takes shorter to communicate
+      // TODO: : make a function that takes shorter to communicate
       tHardware.updateLayer=function(n,to){
         if(n<3){
           lastSentBitmap[n]=to&0xffff;

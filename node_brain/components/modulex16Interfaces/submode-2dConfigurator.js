@@ -1,4 +1,4 @@
-//pendant: these configurators are still quite patchy, and it would
+// TODO: : these configurators are still quite patchy, and it would
 //be hard for someone new to implement them in a custom module.
 //make a clearer, easier way of making these submodes.
 'use strict';

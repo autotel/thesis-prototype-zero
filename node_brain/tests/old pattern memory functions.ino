@@ -261,7 +261,7 @@ byte countOnes(int i) {
 }
 //recalculate all the modulus of currentStep128x12
 void recalculateSeqSteps() {
-  //pendant: there should be a clearer naming system for all these steps cycles
+  // TODO: : there should be a clearer naming system for all these steps cycles
   seq_currentStep128 = seq_currentStep128x12 / 12;
   seq_currentStep128x2 = seq_currentStep128x12 / 6;
   seq_currentStep16 = seq_currentStep128 % 16;

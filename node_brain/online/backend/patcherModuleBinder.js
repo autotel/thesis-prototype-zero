@@ -60,7 +60,7 @@ var bindArray=function(trackedData,node,array,subprop,trackedDataDelta){
   }
 }
 //functions that gather data from the monitored module specifically by type
-//pendant: perhaps we only need multinodal and monoNodal functions
+// TODO: : perhaps we only need multinodal and monoNodal functions
 var dataTracker=function(type){
   switch (type) {
     case 'presetKit': return function(uniqueElement){

@@ -1,5 +1,5 @@
 'use strict';
-//pendant: make this to extend the 2dConfigurator instead of being exactly like it
+// TODO: : make this to extend the 2dConfigurator instead of being exactly like it
 var base=require('./interactionModeBase');
 var fingerMap=0x0000;
 var RARROW=String.fromCharCode(126);

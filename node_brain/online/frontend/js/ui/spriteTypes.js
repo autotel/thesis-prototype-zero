@@ -89,7 +89,7 @@ var getMultiNodeSpriteBase=function(forceDirectedGrapher,spriteBase){
         forceDirectedGrapher.rebuild();
       }
     }
-    //pendant: I put this timeout because if some node didnt exist yet, creating a link
+    // TODO: : I put this timeout because if some node didnt exist yet, creating a link
     //would take the forceDirectedGrapher down. Timeouts are not the way but I have no time now
     setTimeout(function(){
       thisSprite.applyProperties(props);
@@ -128,7 +128,7 @@ var singleNodeMultiDestinationSprite=function(forceDirectedGrapher,spriteBase){
         forceDirectedGrapher.rebuild();
       }
     }
-    //pendant: I put this timeout because if some node didnt exist yet, creating a link
+    // TODO: : I put this timeout because if some node didnt exist yet, creating a link
     //would take the forceDirectedGrapher down. Timeouts are not the way but I have no time now
     setTimeout(function(){
       thisSprite.applyProperties(props);

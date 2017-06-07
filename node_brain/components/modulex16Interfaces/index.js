@@ -22,7 +22,7 @@ basicUserInterfaces.system=require('./monomode-system');
 basicUserInterfaces.add=require('./monomode-add');
 
 
-module.exports=function(environment){
+module.exports=function(environment){return new(function(){
   //initialize the user interfaces now that environment is provided;
   for(var a in basicUserInterfaces){
     basicUserInterfaces[a]=basicUserInterfaces[a](environment);
@@ -40,6 +40,8 @@ module.exports=function(environment){
   // var moduleSelector=basicUserInterfaces.moduleSelector=new basicUserInterfaces.moduleSelector(environment);
 
   allUserInterfaces.moduleSelector.setModeList(allUserInterfaces);
+
+  this.all=allUserInterfaces;
 
   environment.patcher.on('modulecreated',function(event){
     //if there is an User Interface for this new module...
@@ -95,4 +97,4 @@ module.exports=function(environment){
   });
   // environment.hardware.sendScreenA("ready");
   // environment.hardware.sendScreenB("");
-}
+})()};

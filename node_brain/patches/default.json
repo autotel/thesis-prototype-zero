@@ -18,6 +18,9 @@
     },{
       "type":"bus",
       "options":{"name":"second bus"}
+    },{
+      "type":"presetKit",
+      "options":{"name":"test kit"}
     }
   ]
 }

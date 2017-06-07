@@ -107,6 +107,7 @@ module.exports=function(environment){
       }
       clockSourceSelection.getValueName=function(value){
         if(value==-1) return "no";
+        // TODO: measureing receivesources length versus all patches length is not the intended
         if(receiveSourcesNames.length!==environment.patcher.modules.length){
           receiveSourcesNames=environment.patcher.getSourcesList();
           clockSourceSelection.maximumValue=receiveSourcesNames.length-1;
@@ -155,24 +156,48 @@ module.exports=function(environment){
           loopLength.value=Math.pow(loopFold.base,loopFold.value);
         }
       }
+
+
+      // TODO: differenciating events in process of add was enough for the sequencer
+      //interface, but no longer enough for recording (two recorded events may have started
+      //at the same time
       var noteLengthner=new(function(){
         var notesInCreation=[];
         var stepCounter=0;
-        this.startAdding=function(button,newStepEv){
+        this.startAdding=function(differenciator,newStepEv){
+          console.log("startadding("+differenciator+"...");
           if(!newStepEv.stepLength){
             newStepEv.stepLength=1;
           }
-          eachFold(button,function(step){
+          eachFold(differenciator,function(step){
             var added=controlledModule.storeNoDup(step,newStepEv);
-            if(added) notesInCreation[button]={sequencerEvent:added,started:stepCounter};
+            if(added) notesInCreation[differenciator]={sequencerEvent:added,started:stepCounter};
           });
         }
-        this.finishAdding=function(button){
-          if(notesInCreation[button])
-            notesInCreation[button].sequencerEvent.stepLength=stepCounter-notesInCreation[button].started;
+        this.finishAdding=function(differenciator){
+          if(notesInCreation[differenciator])
+            notesInCreation[differenciator].sequencerEvent.stepLength=stepCounter-notesInCreation[differenciator].started;
         }
       })();
 
+      //recording into the sequencer
+      var recorderDifferenciatorList={};
+      this.recordNoteStart=function(differenciator,stepOn){
+        // console.log("rec rec");
+        var newStepEvent={
+          on:stepOn,
+          off:new eventMessage(stepOn),
+          stepLength:1
+        };
+        newStepEvent.off.value[2]=0;
+        recorderDifferenciatorList[differenciator]=currentStep.value;
+        noteLengthner.startAdding(recorderDifferenciatorList[differenciator],newStepEvent);
+      }
+      this.recordNoteEnd=function(differenciator){
+        noteLengthner.finishAdding(recorderDifferenciatorList[differenciator]);
+      }
+
+      //ui feedback
       var lastsubSelectorEngaged=0;
       var subSelectorEngaged=false;
 

@@ -18,7 +18,7 @@ module.exports=function(environment){
         if(engaged) updateHardware();
       }
       var selectors={};
-      //pendant: the requires should be in the heads, but this requires
+      // TODO: : the requires should be in the heads, but this requires
       //some general reestructuring
       //controlledDestination=controlledDestination(environment);
       var clocks=controlledDestination.getClocks();

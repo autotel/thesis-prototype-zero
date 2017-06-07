@@ -13,7 +13,7 @@ module.exports=function(environment){
       this.kit=kit;
       this.receiveEvent=function(event){
         if(kit[event.value[1]])
-        //pendant: I feel that this solution to route note offs is a bit too patchy and too much like midi.
+        // TODO: : I feel that this solution to route note offs is a bit too patchy and too much like midi.
         if(event.value[2]==0){
           var outMsg=kit[event.value[1]].off;
           environment.patcher.receiveEvent(outMsg);
@@ -39,6 +39,7 @@ module.exports=function(environment){
         if(kit[num])
         environment.patcher.receiveEvent(kit[num].on);
         thisDest.handle('messagesend',{origin:thisDest,sub:num,eventMessage:kit[num]});
+        
       }
       this.padOff=function(num){
           if(kit[num])

@@ -39,11 +39,11 @@ function MetronomePrototype(clockParent,props) {
     absoluteInterval=(elapsed/iterations);
     absoluteDrift=interval-absoluteInterval;
     setTimeout(stm,interval+2*absoluteDrift);
-    console.log("tick");
-    console.log("  Tartget:"+interval);
-    console.log("  Interval:"+absoluteInterval);
-    console.log("  drift:"+absoluteDrift);
-    console.log("  nextinterval:"+(interval+2*absoluteDrift));
+    // console.log("tick");
+    // console.log("  Tartget:"+interval);
+    // console.log("  Interval:"+absoluteInterval);
+    // console.log("  drift:"+absoluteDrift);
+    // console.log("  nextinterval:"+(interval+2*absoluteDrift));
     //operation functions
     tMetro.onTick({step:currentStep,indexNumber:myIndex});
     currentStep++;
@@ -77,7 +77,7 @@ function MetronomePrototype(clockParent,props) {
       //bp/k=1/interval
       //bp=1/interval*k
       interval=60000/val
-      console.log("cal",interval);
+      // console.log("cal",interval);
       return val;
     }else{
       return Math.floor((1/interval)*60000);
