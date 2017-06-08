@@ -20,7 +20,7 @@ module.exports=function(environment){
           thisDest.handle('messagesend',{origin:thisDest,sub:event.value[1],eventMessage:outMsg});
 
         }else{
-          if(!kit[event.value[1].muteStatus]){
+          if(!kit[event.value[1]].mute){
             var outMsg=kit[event.value[1]].on;
             environment.patcher.receiveEvent(outMsg);
             thisDest.handle('messagesend',{origin:thisDest,eventMessage:outMsg});

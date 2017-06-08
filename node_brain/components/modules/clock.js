@@ -44,7 +44,7 @@ function MetronomePrototype(clockParent,props) {
     currentStep++;
     currentStep%=16*15*14*13*12*11*10*9*8*7*6*5*4*3*2;
     tickEventMessage.value[1]=currentStep;
-    // tMetro.handle('tick');
+    tMetro.handle('tick');
   }
   this.onMicroTick=function(){
     // console.log("microtic");
@@ -53,7 +53,9 @@ function MetronomePrototype(clockParent,props) {
       currentMicroStep%=microStepDivide;
       tMetro.onTick();
     }
-    environment.patcher.receiveEvent(microTickEventMessage);
+    if(tickEventMessage.destination){
+      environment.patcher.receiveEvent(microTickEventMessage);
+    }
     // clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:microTickEventMessage});
     currentMicroStep++;
   };

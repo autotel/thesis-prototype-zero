@@ -99,8 +99,8 @@ module.exports=function(environment){
 
       //ui feedback
 
+      var programmedMap=0x0000;
       function updateHardware(){
-        var programmedMap=0x0000;
         for(var a in controlledModule.kit){
           programmedMap|=1<<a;
         }

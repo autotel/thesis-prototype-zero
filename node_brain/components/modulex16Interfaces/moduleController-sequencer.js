@@ -195,6 +195,8 @@ module.exports=function(environment){
         };
         newStepEvent.off.value[2]=0;
         recorderDifferenciatorList[differenciator]=currentStep.value;
+        //recording is destructively quantized. here we apply a filter that forgives early notes
+        if(controlledModule.microStep.value>6)recorderDifferenciatorList[differenciator]++;
         noteLengthner.startAdding(recorderDifferenciatorList[differenciator],newStepEvent);
       }
       this.recordNoteEnd=function(differenciator){

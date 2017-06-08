@@ -5,8 +5,10 @@ module.exports=function(sequencerModule){ return new(function(){
   var thisModule=this;
 
   //the "invisible" sub-unit of a step, good for recording quantization and midi clock input
-  var microStep=0;
-  var microStepDivide=12;
+  var microStep={value:0};
+  this.microStep=microStep;
+  var microStepDivide={value:12};
+  this.microStepDivide=microStepDivide;
 
   //the visible step that can be divided if the user wants a slower sequence
   var substep={value:0};
@@ -147,11 +149,11 @@ module.exports=function(sequencerModule){ return new(function(){
       if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
       if(currentStep.value<0) currentStep.value%=loopLength.value;
     }
-    microStep=microStep%microStepDivide;
+    microStep.value=microStep.value%microStepDivide.value;
   }
   this.stepMicro=function(){
-    microStep++;
-    if(microStep>=microStepDivide){
+    microStep.value++;
+    if(microStep.value>=microStepDivide.value){
       thisModule.stepIncremental();
     }
   }
