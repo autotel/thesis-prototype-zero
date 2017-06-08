@@ -173,14 +173,21 @@ module.exports=function(environment){
           if(!newStepEv.stepLength){
             newStepEv.stepLength=1;
           }
-          eachFold(differenciator,function(step){
-            var added=controlledModule.storeNoDup(step,newStepEv);
-            if(added) notesInCreation[differenciator]={sequencerEvent:added,started:stepCounter};
-          });
+          notesInCreation[differenciator]={sequencerEvent:newStepEv,started:stepCounter};
+          console.log(notesInCreation[differenciator]);
         }
         this.finishAdding=function(differenciator){
-          if(notesInCreation[differenciator])
+          if(notesInCreation[differenciator]){
             notesInCreation[differenciator].sequencerEvent.stepLength=stepCounter-notesInCreation[differenciator].started;
+            eachFold(differenciator,function(step){
+              /*var added=*/controlledModule.storeNoDup(step,notesInCreation[differenciator].sequencerEvent);
+            });
+            console.log(notesInCreation[differenciator]);
+            delete notesInCreation[differenciator]
+          }
+        }
+        this.stepCount=function(){
+          stepCounter++;
         }
       })();
 
@@ -350,6 +357,7 @@ module.exports=function(environment){
             selectors.timeConfig.updateLcd();
           }
         }
+        noteLengthner.stepCount();
       });
 
       //modular pattern editing functions
