@@ -20,9 +20,11 @@ module.exports=function(environment){
           thisDest.handle('messagesend',{origin:thisDest,sub:event.value[1],eventMessage:outMsg});
 
         }else{
-          var outMsg=kit[event.value[1]].on;
-          environment.patcher.receiveEvent(outMsg);
-          thisDest.handle('messagesend',{origin:thisDest,eventMessage:outMsg});
+          if(!kit[event.value[1].muteStatus]){
+            var outMsg=kit[event.value[1]].on;
+            environment.patcher.receiveEvent(outMsg);
+            thisDest.handle('messagesend',{origin:thisDest,eventMessage:outMsg});
+          }
         }
         this.handle('receive',moduleEvent(this,event));
       }
@@ -39,18 +41,25 @@ module.exports=function(environment){
         if(kit[num])
         environment.patcher.receiveEvent(kit[num].on);
         thisDest.handle('messagesend',{origin:thisDest,sub:num,eventMessage:kit[num]});
-        
+
       }
       this.padOff=function(num){
           if(kit[num])
           environment.patcher.receiveEvent(kit[num].off)
       }
       this.set=function(number,data){
+        if(data==false){
+          kit[number]=false;
+          return;
+        }
         if(!kit[number]){
           kit[number]=new eventMessage(data);
         }else{
           kit[number].set(data);
         }
+      }
+      this.mute=function(number,muteStatus){
+        if(kit[number]) kit[number].mute=muteStatus;
       }
     }
   })();

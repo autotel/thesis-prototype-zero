@@ -19,12 +19,15 @@ module.exports=function(environment){
       var engaged=false;
       var recording=false;
       var mutedPadsMap=0x0000;
+      var pasting=false;
 
       //submodes or selectors
       // this.testname="presetKit control";
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
+      //TODO: recConfig needs not to be a 2d configurator, only 1d
       selectors.recConfig=require('./submode-2dConfigurator');
+      selectors.utilMode=require('./submode-1dConfigurator');
       // console.log("new controlledModule",controlledModule);
       base.call(this);
       for(var a in selectors){
@@ -32,15 +35,25 @@ module.exports=function(environment){
       }
       var destNames=[];
       selectors.recConfig.initOptions({
-        'rec dest':{
+        'rec':{
           value:-1,
           subValue:120,
           multiplier:4,
-          getValueName:function(a){ return (Math.round(bpm.subValue*100)/100)+"*"+bpm.multiplier+"bpm" },
+          getValueName:function(a){ return "off" },
           maximumValue:0,
           minimumValue:-1,
         }
       });
+      selectors.utilMode.valueNames=["mute","copy","clear"];
+      selectors.utilMode.initOption({
+        name:'util',
+        value:0,
+        getValueName:function(a){ return selectors.utilMode.valueNames[a] },
+        maximumValue:2,
+        minimumValue:0,
+      });
+      var utilMode=selectors.utilMode.option;
+      console.log("utilmode",utilMode);
       var recTarget=false;
       var recTargetSelector=selectors.recConfig.options[0];
       var patcherModulesList=[];
@@ -48,8 +61,10 @@ module.exports=function(environment){
       recTargetSelector.getValueName=function(value){
         if(value==-1)
         return "disabled";
-        else
-        return recTargetSelector.candidates[value].name;
+        else{
+          var str=recTargetSelector.candidates[value].name;
+          return (str.substr(-12));
+        }
       }
 
       recTargetSelector.valueChangeFunction=function(selection,delta){
@@ -120,9 +135,27 @@ module.exports=function(environment){
         if(!subSelectorEngaged){
           fingerMap=evt.data[2]|(evt.data[3]<<8);
           currentlySelectedPreset=evt.data[0];
-          selectors.dimension.setFromSeqEvent(controlledModule.kit[currentlySelectedPreset]);
+          if(pasting!==false){
+            //TODO: you can copy an empty pad, and when pasting, it suddenly makes a new pad with defaults
+            controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
+            pasting=false;
+          }else{
+            selectors.dimension.setFromSeqEvent(controlledModule.kit[currentlySelectedPreset]);
+          }
           if(shiftPressed){
-            mutedPadsMap^=1<<evt.data[0];
+            if(utilMode.value==0){//mute
+              mutedPadsMap^=1<<evt.data[0];
+              mutedPadsMap&=programmedMap;
+              controlledModule.mute(evt.data[0],((mutedPadsMap>>evt.data[0])&0x1)==0x01);
+            }else if(utilMode.value==1){//copy
+              if(!pasting){
+                pasting=evt.data[0];
+                environment.hardware.sendScreenB("Paste from "+evt.data[0]);
+              }
+            }else if(utilMode.value==2){//clear
+              controlledModule.set(currentlySelectedPreset,false);
+              environment.hardware.sendScreenB("Clear");
+            }
           }else{
             if(!(mutedPadsMap>>evt.data[0])&0x1)
             controlledModule.padOn(evt.data[0]);
@@ -171,30 +204,45 @@ module.exports=function(environment){
 
       }
       this.eventResponses.selectorButtonPressed=function(evt){
-        if(evt.data[0]==1){
-          subSelectorEngaged='dimension';
-          lastsubSelectorEngaged='dimension';
-          selectors.dimension.engage();
-        }else if(evt.data[0]==2){
-          recording=!recording;
-          subSelectorEngaged='recConfig';
-          lastsubSelectorEngaged='recConfig';
-          selectors.recConfig.engage();
-        }else if(evt.data[0]==3){
-          shiftPressed=true;
+        // TODO: this is a good example of shift mode tweaking in a configurator
+        //should apply this to all modes and as standard part of the configurators
+        if(subSelectorEngaged){
+          selectors[lastsubSelectorEngaged].eventResponses.selectorButtonPressed(evt);
+        }else{
+          if(evt.data[0]==1){
+            subSelectorEngaged='dimension';
+            lastsubSelectorEngaged='dimension';
+            selectors.dimension.engage();
+          }else if(evt.data[0]==2){
+            recording=!recording;
+            subSelectorEngaged='recConfig';
+            lastsubSelectorEngaged='recConfig';
+            selectors.recConfig.engage();
+          }else if(evt.data[0]==3){
+            // subSelectorEngaged='utilMode';
+            lastsubSelectorEngaged='utilMode';
+            // selectors.utilMode.engage();
+            selectors.utilMode.updateLcd();
+            shiftPressed=true;
+          }
         }
       }
       this.eventResponses.selectorButtonReleased=function(evt){
-        if(evt.data[0]==1){
-          subSelectorEngaged=false;
-          selectors.dimension.disengage();
-        }else if(evt.data[0]==2){
-          subSelectorEngaged=false;
-          selectors.recConfig.disengage();
-        }else if(evt.data[0]==3){
-          shiftPressed=false;
-        }
-        updateHardware();
+          if(evt.data[0]==1){
+            subSelectorEngaged=false;
+            selectors.dimension.disengage();
+          }else if(evt.data[0]==2){
+            subSelectorEngaged=false;
+            selectors.recConfig.disengage();
+          }else if(evt.data[0]==3){
+            subSelectorEngaged=false;
+            selectors.utilMode.disengage();
+            shiftPressed=false;
+          }
+
+          selectors[lastsubSelectorEngaged].eventResponses.selectorButtonReleased(evt);
+
+          updateHardware();
       }
     }
   })();

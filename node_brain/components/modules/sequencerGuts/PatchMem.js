@@ -2,7 +2,20 @@
 'use strict';
 var eventMessage=require('../../../datatype-eventMessage');
 module.exports=function(sequencerModule){ return new(function(){
+  var thisModule=this;
+
+  //the "invisible" sub-unit of a step, good for recording quantization and midi clock input
+  var microStep=0;
+  var microStepDivide=12;
+
+  //the visible step that can be divided if the user wants a slower sequence
+  var substep={value:0};
+  var stepDivide={value:1}
+  this.stepDivide=stepDivide;
+
+  //the step that is used to read the pattern memory
   var currentStep=sequencerModule.currentStep;
+
   var loopLength=sequencerModule.loopLength;
   var patData=sequencerModule.patData;
   var loopDisplace={value:0};
@@ -114,7 +127,7 @@ module.exports=function(sequencerModule){ return new(function(){
     }
   }
   this.stepAbsolute=function(s){
-    currentStep.value=s;
+    currentStep.value=Math.floor(s/stepDivide.value);
     currentStep.value+=loopDisplace.value;
     loopDisplace.value=0;
     if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
@@ -123,27 +136,33 @@ module.exports=function(sequencerModule){ return new(function(){
     // console.log("aa",currentStep.value,loopLength.value);
   }
   this.stepIncremental=function(s){
-    currentStep.value++;
-    currentStep.value+=loopDisplace.value;
-    loopDisplace.value=0;
-    if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
-    if(currentStep.value<0) currentStep.value%=loopLength.value;
-    step(s);
+    // console.log(substep);
+    substep.value++;
+    if(substep.value>=stepDivide.value){
+      currentStep.value++;
+      currentStep.value+=loopDisplace.value;
+      step(currentStep.value);
+      substep.value=substep.value%stepDivide.value;
+      loopDisplace.value=0;
+      if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
+      if(currentStep.value<0) currentStep.value%=loopLength.value;
+    }
+    microStep=microStep%microStepDivide;
   }
+  this.stepMicro=function(){
+    microStep++;
+    if(microStep>=microStepDivide){
+      thisModule.stepIncremental();
+    }
+  }
+
   function step(evt){
-
-
     sequencerModule.noteLenManager.step();
-
     if(getBoolean(currentStep.value)){
       for(var stepData of patData[currentStep.value]){
-        // if(stepData.destination=="midi"){
-        // }else if(stepData.destination=="midi"){
-          // var val=stepData.value;
-          sequencerModule.sendEvent(stepData.on);
-          sequencerModule.noteLenManager.noteStarted(stepData);
-          sequencerModule.handle('messagesend',{origin:sequencerModule,step:currentStep.value,eventMessage:stepData.on});
-        // }else
+        sequencerModule.sendEvent(stepData.on);
+        sequencerModule.noteLenManager.noteStarted(stepData);
+        sequencerModule.handle('messagesend',{origin:sequencerModule,step:currentStep.value,eventMessage:stepData.on});
       }
     }
 

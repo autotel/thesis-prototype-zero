@@ -4,50 +4,76 @@ var eventMessage=require('../../datatype-eventMessage');
 const moduleEvent=require("./moduleEvent");
 const onhandlers=require('onhandlers');
 var environment=false;
+var microStepDivide=12;
 
 function MetronomePrototype(clockParent,props) {
   var props=props||{};
   var interval=125;
   if(props.interval) interval=props.interval;
+  var microInterval=interval/microStepDivide;
+
   var currentStep=0;
+  var currentMicroStep=0;
+
   var tMetro=this;
   var myIndex=0;
   //vars for anti drifting
-  var absoluteInterval=0;
-  var absoluteDrift=0;
+  var absoluteMicroInterval=0;
+  var absoluteMicroDrift=0;
   var timeAnchor=0;
-  var iterations=0;
+  var microIterations=0;
   // var myDestination=false;
   var tickEventMessage=new eventMessage({destination:false,value:[0,0,0]});
+  var microTickEventMessage=new eventMessage({destination:false,value:[0xf8,0,0]});
+
   this.event=tickEventMessage;
   if(props.destination) tickEventMessage.destination=props.destination;
   onhandlers.call(this);
-  this.onTick=function(evt){
-    tickEventMessage.value[1]=currentStep;
+  this.onTick=function(){
+    // console.log("tick");
     if(tickEventMessage.destination){
       //console.log(tickEventMessage);
-      environment.patcher.receiveEvent(tickEventMessage);
-      clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:evt});
+
+
+      if(tickEventMessage.value[0]===0){//if the tick is absolute mode
+        tickEventMessage.value[1]=currentStep;
+        environment.patcher.receiveEvent(tickEventMessage);
+        clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:tickEventMessage});
+      }
     }
-    tMetro.handle('tick',evt);
+    currentStep++;
+    currentStep%=16*15*14*13*12*11*10*9*8*7*6*5*4*3*2;
+    tickEventMessage.value[1]=currentStep;
+    // tMetro.handle('tick');
+  }
+  this.onMicroTick=function(){
+    // console.log("microtic");
+    if(microTickEventMessage.destination!==tickEventMessage.destination) microTickEventMessage.destination=tickEventMessage.destination;
+    if(currentMicroStep>=microStepDivide){
+      currentMicroStep%=microStepDivide;
+      tMetro.onTick();
+    }
+    environment.patcher.receiveEvent(microTickEventMessage);
+    // clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:microTickEventMessage});
+    currentMicroStep++;
   };
   function stm(){
     //anti drifting funcs
-    iterations++;
+    microIterations++;
     var now=new Date();
     var elapsed=now-timeAnchor;
-    absoluteInterval=(elapsed/iterations);
-    absoluteDrift=interval-absoluteInterval;
-    setTimeout(stm,interval+2*absoluteDrift);
+    absoluteMicroInterval=(elapsed/microIterations);
+    absoluteMicroDrift=microInterval-absoluteMicroInterval;
+    setTimeout(stm,microInterval+2*absoluteMicroDrift);
     // console.log("tick");
     // console.log("  Tartget:"+interval);
-    // console.log("  Interval:"+absoluteInterval);
-    // console.log("  drift:"+absoluteDrift);
-    // console.log("  nextinterval:"+(interval+2*absoluteDrift));
+    // console.log("  Interval:"+absoluteMicroInterval);
+    // console.log("  drift:"+absoluteMicroDrift);
+    // console.log("  nextinterval:"+(interval+2*absoluteMicroDrift));
     //operation functions
-    tMetro.onTick({step:currentStep,indexNumber:myIndex});
-    currentStep++;
-    currentStep%=16*15*14*13*12*11*10*9*8*7*6*5*4*3*2;
+    tMetro.onMicroTick();
+    // currentMicroStep++;
+    // currentMicroStep%=microStepDivide;
   }
   this.setIndex=function(index){
     myIndex=index;
@@ -66,8 +92,9 @@ function MetronomePrototype(clockParent,props) {
   this.interval=function(val){
     if(val){
       interval=val;
+      microInterval=interval/microStepDivide;
       timeAnchor=new Date();
-      iterations=0;
+      microIterations=0;
     }
     return interval;
   }
@@ -76,7 +103,8 @@ function MetronomePrototype(clockParent,props) {
       //60,000 / BPM = interval
       //bp/k=1/interval
       //bp=1/interval*k
-      interval=60000/val
+      interval=60000/(val);
+      microInterval=interval/microStepDivide;
       // console.log("cal",interval);
       return val;
     }else{

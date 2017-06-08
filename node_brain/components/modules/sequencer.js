@@ -64,6 +64,7 @@ module.exports=function(environment){
       this.clearStep=patchMem.clearStep;
       this.clearStepByFilter=patchMem.clearStepByFilter;
       this.getBoolean=patchMem.getBoolean;
+      this.stepDivide=patchMem.stepDivide;
       // this.eachFold=patchMem.eachFold;
       // this.getThroughfoldBoolean=patchMem.getThroughfoldBoolean;
       this.clearStepRange=patchMem.clearStepRange;
@@ -72,6 +73,7 @@ module.exports=function(environment){
       this.step=patchMem.step;
       this.stepAbsolute=patchMem.stepAbsolute;
       this.stepIncremental=patchMem.stepIncremental;
+      this.stepMicro=patchMem.stepMicro;
       var tPattern=this;
 
       this.onPatchStep=function(evt){
@@ -85,6 +87,8 @@ module.exports=function(environment){
           this.stepAbsolute(evt.value[1]);
         }else if(evt.value[0]==1){
           this.stepIncremental(evt.value[1]);
+        }else if(evt.value[0]==0xf8){
+          this.stepMicro(evt.value[1]);
         }
       }
     }

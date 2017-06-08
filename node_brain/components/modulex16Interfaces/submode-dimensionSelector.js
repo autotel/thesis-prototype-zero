@@ -10,7 +10,7 @@ module.exports=function(environment){return new(function(){
   var currentValue=0;
   var currentDimension=0;
   var destNames=environment.patcher.getDestList();
-
+  var shiftMode=false;
 
   destNames.push("none");
 
@@ -122,6 +122,7 @@ module.exports=function(environment){return new(function(){
     updateHardware();
   }
   this.disengage=function(){
+    shiftMode=false;
     return options[currentDimension];
   }
   this.eventResponses.buttonMatrixPressed=function(evt){
@@ -144,6 +145,14 @@ module.exports=function(environment){return new(function(){
     }
 
     updateLcd();
+  }
+  this.eventResponses.selectorButtonPressed=function(evt){
+    shiftMode=true;
+    console.log("selector shift",evt);
+  }
+  this.eventResponses.selectorButtonReleased=function(evt){
+    shiftMode=false;
+    console.log("selector unshift",evt);
   }
   this.eventResponses.encoderPressed=function(evt){
   }

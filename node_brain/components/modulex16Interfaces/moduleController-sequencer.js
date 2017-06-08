@@ -73,8 +73,8 @@ module.exports=function(environment){
           maximumValue:32,
           minimumValue:-32,
         },
-        'step length':{
-          value:controlledModule.stepLength.value,
+        'step div':{
+          value:controlledModule.stepDivide.value,
           getValueName:function(a){ return a },
           maximumValue:16*12,
           minimumValue:1,
@@ -94,7 +94,7 @@ module.exports=function(environment){
       var loopFold=selectors.timeConfig.options[3];
       var loopUndestructiveFold=selectors.timeConfig.options[4];
       var loopDisplace=selectors.timeConfig.options[5];
-      var stepLength=selectors.timeConfig.options[6];
+      var stepDivide=selectors.timeConfig.options[6];
       var clockSourceSelection=selectors.timeConfig.options[7];
       //get initial value of the clock source from my controlled sequencer, it could have been loaded from json
 
@@ -128,6 +128,7 @@ module.exports=function(environment){
       }
       loopLength.bindValueWith(controlledModule.loopLength,"value");
       loopDisplace.bindValueWith(controlledModule.loopDisplace,"value");
+      stepDivide.bindValueWith(controlledModule.stepDivide,"value");
       loopFold.base=2;
       loopFold.getValueName=loopUndestructiveFold.getValueName=function(a){
         return loopFold.base+"^"+loopFold.value+"="+loopLength.value;
