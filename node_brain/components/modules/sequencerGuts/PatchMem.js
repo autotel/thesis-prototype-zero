@@ -128,42 +128,57 @@ module.exports=function(sequencerModule){ return new(function(){
       clearStepRange(originalEndingStep*multiplyFactor,originalEndingStep);
     }
   }
+
+  var clockIncremental=false;
   this.stepAbsolute=function(s){
+    clockIncremental=false;
+    // console.log("absolute"+microStep.value);
     currentStep.value=Math.floor(s/stepDivide.value);
     currentStep.value+=loopDisplace.value;
     loopDisplace.value=0;
     if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
     if(currentStep.value<0) currentStep.value%=loopLength.value;
     step(s);
+    // console.log("memema");
     // console.log("aa",currentStep.value,loopLength.value);
+    microStep.value=0;
   }
   this.stepIncremental=function(s){
-    // console.log(substep);
-    substep.value++;
-    if(substep.value>=stepDivide.value){
-      currentStep.value++;
-      currentStep.value+=loopDisplace.value;
-      step(currentStep.value);
-      substep.value=substep.value%stepDivide.value;
-      loopDisplace.value=0;
-      if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
-      if(currentStep.value<0) currentStep.value%=loopLength.value;
-    }
-    microStep.value=microStep.value%microStepDivide.value;
+    clockIncremental=true;
+
+    microStep.value=0;
   }
   this.stepMicro=function(){
+    // console.log(" micro"+microStep.value);
     microStep.value++;
     if(microStep.value>=microStepDivide.value){
-      thisModule.stepIncremental();
+      if(clockIncremental){
+        thisModule.stepIncremental();
+        // console.log("incremental"+microStep.value);
+        // console.log(substep);
+        substep.value++;
+        if(substep.value>=stepDivide.value){
+          currentStep.value++;
+          currentStep.value+=loopDisplace.value;
+          // console.log("mememe");
+          step(currentStep.value);
+          substep.value=substep.value%stepDivide.value;
+          loopDisplace.value=0;
+          if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
+          if(currentStep.value<0) currentStep.value%=loopLength.value;
+        }
+      }
     }
   }
 
   function step(evt){
     sequencerModule.noteLenManager.step();
     if(getBoolean(currentStep.value)){
+      console.log("memem");
       // console.log(patData[currentStep.value].length);
       for(var stepData of patData[currentStep.value]){
         sequencerModule.sendEvent(stepData.on);
+
         sequencerModule.noteLenManager.noteStarted(stepData);
         sequencerModule.handle('messagesend',{origin:sequencerModule,step:currentStep.value,eventMessage:stepData.on});
       }
