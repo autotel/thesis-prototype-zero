@@ -18,6 +18,7 @@ module.exports=function(environment){
       var lastsubSelectorEngaged="dimension";
       var engaged=false;
       var recording=false;
+      var mutedPadsMap=0x0000;
 
       //submodes or selectors
       // this.testname="presetKit control";
@@ -88,11 +89,11 @@ module.exports=function(environment){
         for(var a in controlledModule.kit){
           programmedMap|=1<<a;
         }
-        var presetBitMap=0x1<<currentlySelectedPreset;
+        var selectedPresetBitmap=0x1<<currentlySelectedPreset;
         if(recording){
-          environment.hardware.draw([presetBitMap,programmedMap|presetBitMap|noteHighlightMap,0xffff]);
+          environment.hardware.draw([(selectedPresetBitmap|programmedMap)&(~mutedPadsMap),programmedMap|selectedPresetBitmap|noteHighlightMap^mutedPadsMap,0xffff]);
         }else{
-          environment.hardware.draw([presetBitMap,programmedMap|presetBitMap|noteHighlightMap,presetBitMap|noteHighlightMap]);
+          environment.hardware.draw([(selectedPresetBitmap|programmedMap)&(~mutedPadsMap),programmedMap|selectedPresetBitmap|noteHighlightMap^mutedPadsMap,selectedPresetBitmap|noteHighlightMap]);
         }
       }
       //when a note is routed to the presetKit that this mode controls
@@ -120,7 +121,12 @@ module.exports=function(environment){
           fingerMap=evt.data[2]|(evt.data[3]<<8);
           currentlySelectedPreset=evt.data[0];
           selectors.dimension.setFromSeqEvent(controlledModule.kit[currentlySelectedPreset]);
-          controlledModule.padOn(evt.data[0]);
+          if(shiftPressed){
+            mutedPadsMap^=1<<evt.data[0];
+          }else{
+            if(!(mutedPadsMap>>evt.data[0])&0x1)
+            controlledModule.padOn(evt.data[0]);
+          }
           if(recording)
           if(recTarget){
             recTarget
