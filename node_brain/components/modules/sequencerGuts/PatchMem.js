@@ -174,7 +174,7 @@ module.exports=function(sequencerModule){ return new(function(){
   function step(evt){
     sequencerModule.noteLenManager.step();
     if(getBoolean(currentStep.value)){
-      console.log("memem");
+      // console.log("memem");
       // console.log(patData[currentStep.value].length);
       for(var stepData of patData[currentStep.value]){
         sequencerModule.sendEvent(stepData.on);

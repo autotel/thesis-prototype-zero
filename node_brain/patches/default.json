@@ -1,26 +1,18 @@
 {
   "modules":[
     {
-      "type":"clock",
-      "options":{
-        "clocks":[
-          {"interval":125, "destination":"master bus"}
-        ]
-      }
-    },{
-      "type":"bus",
-      "options":{"name":"master bus"}
-    },{
-      "type":"sequencer",
-      "options":{
-        "clockSource":"master bus"
-      }
-    },{
       "type":"bus",
       "options":{"name":"second bus"}
     },{
-      "type":"presetKit",
-      "options":{"name":"test kit"}
+      "type":"bus",
+      "options":{"name":"deft. clock bus"}
+    },{
+      "type":"clock",
+      "options":{
+        "clocks":[
+          {"interval":125, "destination":"deft. clock bus"}
+        ]
+      }
     }
   ]
 }

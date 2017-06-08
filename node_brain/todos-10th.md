@@ -1,14 +1,17 @@
+
 ## moduleselector
 * be selectable
 * mute modules
 * remove modules
 ## sequencer
-* step division for slower patterns, default at 12 whilst clock default multiplier to 4*12
+- step division for slower patterns, default at 12 whilst clock default multiplier to 4*12
 * mute channels, destinations or notes
 ## presetKit
 - mute notes
 - copy and paste
 * octave
+* auto fill functions: grade in one channel, one channel per button,
+* change channel of all presets, change destination of all presets
 ## grade
 * input obsolete
 ## general

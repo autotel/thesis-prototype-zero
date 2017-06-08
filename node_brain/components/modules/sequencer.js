@@ -39,6 +39,9 @@ module.exports=function(environment){
       }
       if(props.clockSource){
         this.updateClockSource(props.clockSource);
+      }else{
+        if(environment.patcher.modules["deft. clock bus"])
+        this.updateClockSource("deft. clock bus");
       }
       this.getStepEventDestinations=function(){
         var ret={};
