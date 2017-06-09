@@ -8,6 +8,7 @@ module.exports=function(sequencerModule){ return new(function(){
     notesInPlay.push({sequencerEvent:stepEvent,offInStep:stepCounter+stepEvent.stepLength});
   }
   this.step=function(evt){
+    if(!sequencerModule.mute)
     for(var a in notesInPlay){
       if(notesInPlay[a].offInStep==stepCounter){
         // console.log("a:"+a);

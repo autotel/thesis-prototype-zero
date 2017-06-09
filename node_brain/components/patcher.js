@@ -61,7 +61,6 @@ module.exports=function(environment){return new(function(){
   }
 
 
-
   //creates a module
   this.createModule=function(type,props){
     if(Modules[type]){
@@ -104,6 +103,13 @@ module.exports=function(environment){return new(function(){
       what.name=name;
     }
     sourcesList[what.name]=what;
+  }
+
+  this.muteModule=function(name){
+    thisPatcher.modules[name].mute=true;
+  };
+  this.unmuteModule=function(name){
+    thisPatcher.modules[name].mute=false;
   }
 
   this.receiveEvent=function(evt){

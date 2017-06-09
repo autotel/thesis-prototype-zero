@@ -1,3 +1,8 @@
+#all
+
+remember either to connect pi direct to computer or bring a router to the stage,
+I may need to access it via ssh
+
 
 ## moduleselector
 * be selectable
@@ -10,8 +15,16 @@
 - mute notes
 - copy and paste
 * octave
-* auto fill functions: grade in one channel, one channel per button,
+* auto fill functions: all grades in one channel,
+* auto fill function: one channel per button,
 * change channel of all presets, change destination of all presets
+
+maybe the grade modifier is transparent for all except the grade,
+so it becomes a "global harmonizator" kind of thing
+
+
+
+
 ## grade
 * input obsolete
 ## general

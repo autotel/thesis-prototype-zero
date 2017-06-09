@@ -37,7 +37,7 @@ module.exports=function(environment){
         'BPM':{
           value:0,
           subValue:120,
-          multiplier:4,
+          multiplier:8,
           getValueName:function(a){ return (Math.round(bpm.subValue*100)/100)+"*"+bpm.multiplier+"bpm" },
           maximumValue:10000,
           minimumValue:10,

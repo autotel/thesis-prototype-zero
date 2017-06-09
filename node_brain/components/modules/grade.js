@@ -15,6 +15,7 @@ module.exports=function(environment){
       this.scaleArray=[];
       // this.lastUsed=0;
       this.receiveEvent=function(event){
+        if(!thisDest.mute)
         if(baseEventMessage.destination){
           this.handle('receive',event);
           newEvent=new eventMessage(event);

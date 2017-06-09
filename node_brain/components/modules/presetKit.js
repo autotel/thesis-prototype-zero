@@ -12,21 +12,23 @@ module.exports=function(environment){
       var kit=[];
       this.kit=kit;
       this.receiveEvent=function(event){
-        if(kit[event.value[1]])
-        // TODO: : I feel that this solution to route note offs is a bit too patchy and too much like midi.
-        if(event.value[2]==0){
-          var outMsg=kit[event.value[1]].off;
-          environment.patcher.receiveEvent(outMsg);
-          thisDest.handle('messagesend',{origin:thisDest,sub:event.value[1],eventMessage:outMsg});
-
-        }else{
-          if(!kit[event.value[1]].mute){
-            var outMsg=kit[event.value[1]].on;
+        if(!thisDest.mute){
+          if(kit[event.value[1]])
+          // TODO: : I feel that this solution to route note offs is a bit too patchy and too much like midi.
+          if(event.value[2]==0){
+            var outMsg=kit[event.value[1]].off;
             environment.patcher.receiveEvent(outMsg);
-            thisDest.handle('messagesend',{origin:thisDest,eventMessage:outMsg});
+            thisDest.handle('messagesend',{origin:thisDest,sub:event.value[1],eventMessage:outMsg});
+
+          }else{
+            if(!kit[event.value[1]].mute){
+              var outMsg=kit[event.value[1]].on;
+              environment.patcher.receiveEvent(outMsg);
+              thisDest.handle('messagesend',{origin:thisDest,eventMessage:outMsg});
+            }
           }
+          this.handle('receive',moduleEvent(this,event));
         }
-        this.handle('receive',moduleEvent(this,event));
       }
       this.getEventDestinations=function(){
         var ret={};
@@ -58,7 +60,7 @@ module.exports=function(environment){
           kit[number].set(data);
         }
       }
-      this.mute=function(number,muteStatus){
+      this.mutePreset=function(number,muteStatus){
         if(kit[number]) kit[number].mute=muteStatus;
       }
     }

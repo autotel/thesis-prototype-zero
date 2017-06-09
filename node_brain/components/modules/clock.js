@@ -8,7 +8,7 @@ var microStepDivide=12;
 
 function MetronomePrototype(clockParent,props) {
   var props=props||{};
-  var interval=125;
+  var interval=62.5;
   if(props.interval) interval=props.interval;
   var microInterval=interval/microStepDivide;
 
@@ -37,9 +37,10 @@ function MetronomePrototype(clockParent,props) {
 
 
       tickEventMessage.value[1]=currentStep;
-      environment.patcher.receiveEvent(tickEventMessage);
-      clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:tickEventMessage});
-
+      if(!clockParent.mute){
+        environment.patcher.receiveEvent(tickEventMessage);
+        clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:tickEventMessage});
+      }
     }
     currentStep++;
     currentStep%=16*15*14*13*12*11*10*9*8*7*6*5*4*3*2;

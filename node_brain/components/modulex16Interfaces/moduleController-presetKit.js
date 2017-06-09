@@ -152,7 +152,7 @@ module.exports=function(environment){
               if(utilMode.value==0){//mute
                 mutedPadsMap^=1<<evt.data[0];
                 mutedPadsMap&=programmedMap;
-                controlledModule.mute(evt.data[0],((mutedPadsMap>>evt.data[0])&0x1)==0x01);
+                controlledModule.mutePreset(evt.data[0],((mutedPadsMap>>evt.data[0])&0x1)==0x01);
               }else if(utilMode.value==1){//copy
                 if(!pasting){
                   pasting=evt.data[0];

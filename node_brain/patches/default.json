@@ -10,7 +10,7 @@
       "type":"clock",
       "options":{
         "clocks":[
-          {"interval":125, "destination":"deft. clock bus"}
+          {"interval":62.5, "destination":"deft. clock bus"}
         ]
       }
     }
