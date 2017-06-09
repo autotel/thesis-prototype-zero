@@ -12,6 +12,8 @@ module.exports=function(environment){return new(function(){
   var destNames=environment.patcher.getDestList();
   var shiftMode=false;
 
+  var dangerName=false;
+
   destNames.push("none");
 
   var options=[{
@@ -24,7 +26,9 @@ module.exports=function(environment){return new(function(){
         destNames=environment.patcher.getDestList();
         options[0].maximumValue=destNames.length-1;
       }
-      return destNames[value];
+      if(destNames[value]==dangerName)
+      return (destNames[value]+" !!").substr(-11);
+      return (destNames[value]).substr(-11);
     }
   },{
     name:'header',
@@ -61,6 +65,9 @@ module.exports=function(environment){return new(function(){
   function updateLcd(){
     var displayValue=options[currentDimension].valueNames(options[currentDimension].currentValue);
     environment.hardware.sendScreenB(""+options[currentDimension].name+RARROW+displayValue);
+  }
+  this.dangerName=function(name){
+    dangerName=name;
   }
   this.Filter=function(criteria){
     this.criteria=criteria;

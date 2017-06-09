@@ -33,6 +33,7 @@ module.exports=function(environment){
       for(var a in selectors){
         selectors[a]=selectors[a](environment);
       }
+      selectors.dimension.dangerName(controlledModule.name);
       var destNames=[];
       selectors.recConfig.initOptions({
         'rec':{

@@ -33,7 +33,7 @@ module.exports=function(environment){
     //console.log("init subs "+a);
         selectors[a]=selectors[a](environment);
       }
-
+      selectors.dimension.dangerName(controlledModule.name);
       var receiveSourcesNames=environment.patcher.getSourcesList();
 
 
