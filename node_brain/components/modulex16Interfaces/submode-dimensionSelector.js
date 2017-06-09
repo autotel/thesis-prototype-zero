@@ -52,15 +52,6 @@ module.exports=function(environment){return new(function(){
       if(value==256) return "transp."
       return value;
     }
-  },{
-    name:'rec from',
-    currentValue:-1,
-    maximumValue:destNames.length-1,
-    minimumValue:-1,
-    valueNames:function(value){
-      if(value==-1) return "off"
-      return destNames[value];
-    }
   }];
 
   function updateHardware(){
@@ -69,9 +60,7 @@ module.exports=function(environment){return new(function(){
   }
   function updateLcd(){
     var displayValue=options[currentDimension].valueNames(options[currentDimension].currentValue);
-
     environment.hardware.sendScreenB(""+options[currentDimension].name+RARROW+displayValue);
-
   }
   this.Filter=function(criteria){
     this.criteria=criteria;
@@ -94,14 +83,22 @@ module.exports=function(environment){return new(function(){
     }
   }
   this.setFromSeqEvent=function(evm){
-    if(!evm) evm=new eventMessage(this.getSeqEvent());
-    if(!evm.isEventMessage) evm=new eventMessage(this.getSeqEvent());
-    evm=evm.on;
-    options[0].currentValue=destNames.indexOf(evm.destination);
-    options[1].currentValue=evm.value[0];
-    options[2].currentValue=evm.value[1];
-    options[3].currentValue=evm.value[2];
-    updateLcd();
+    if(evm) if(evm.on){
+      console.log(evm);
+      evm=evm.on;
+      // if(!evm) evm=new eventMessage(this.getSeqEvent());
+      // if(!evm.isEventMessage) evm=new eventMessage(this.getSeqEvent());
+      console.log(evm);
+      options[0].currentValue=destNames.indexOf(evm.destination);
+      console.log(" selector:",options[0].currentValue);
+      options[1].currentValue=evm.value[0];
+      console.log(" selector:",options[1].currentValue);
+      options[2].currentValue=evm.value[1];
+      console.log(" selector:",options[2].currentValue);
+      options[3].currentValue=evm.value[2];
+      console.log(" selector:",options[3].currentValue);
+      updateLcd();
+    }
   }
   this.getSeqEvent=function(){
     var newDest=options[0].valueNames(options[0].currentValue);
@@ -148,11 +145,11 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.selectorButtonPressed=function(evt){
     shiftMode=true;
-    console.log("selector shift",evt);
+    // console.log("selector shift",evt);
   }
   this.eventResponses.selectorButtonReleased=function(evt){
     shiftMode=false;
-    console.log("selector unshift",evt);
+    // console.log("selector unshift",evt);
   }
   this.eventResponses.encoderPressed=function(evt){
   }

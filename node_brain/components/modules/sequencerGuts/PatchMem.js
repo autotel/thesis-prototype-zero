@@ -41,8 +41,8 @@ module.exports=function(sequencerModule){ return new(function(){
             break;
           }
         }catch(e){
-          console.log(patData[step]);
-          console.log(e);
+          // console.log(patData[step]);
+          // console.log(e);
         }
       }
       if(!cancel){

@@ -174,7 +174,7 @@ module.exports=function(environment){
             newStepEv.stepLength=1;
           }
           notesInCreation[differenciator]={sequencerEvent:newStepEv,started:stepCounter};
-          console.log(notesInCreation[differenciator]);
+          // console.log(notesInCreation[differenciator]);
         }
         this.finishAdding=function(differenciator){
           if(notesInCreation[differenciator]){
@@ -182,7 +182,7 @@ module.exports=function(environment){
             eachFold(differenciator,function(step){
               /*var added=*/controlledModule.storeNoDup(step,notesInCreation[differenciator].sequencerEvent);
             });
-            console.log(notesInCreation[differenciator]);
+            // console.log(notesInCreation[differenciator]);
             delete notesInCreation[differenciator]
           }
         }
@@ -191,20 +191,24 @@ module.exports=function(environment){
         }
       })();
 
+      var lastRecordedNote=false;
       //recording into the sequencer
       var recorderDifferenciatorList={};
       this.recordNoteStart=function(differenciator,stepOn){
-        // console.log("rec rec");
-        var newStepEvent={
-          on:stepOn,
-          off:new eventMessage(stepOn),
-          stepLength:1
-        };
-        newStepEvent.off.value[2]=0;
-        recorderDifferenciatorList[differenciator]=currentStep.value;
-        //recording is destructively quantized. here we apply a filter that forgives early notes
-        if(controlledModule.microStep.value>6)recorderDifferenciatorList[differenciator]++;
-        noteLengthner.startAdding(recorderDifferenciatorList[differenciator],newStepEvent);
+        if(stepOn){
+          // console.log("rec rec");
+          var newStepEvent={
+            on:stepOn,
+            off:new eventMessage(stepOn),
+            stepLength:1
+          };
+          lastRecordedNote=newStepEvent;
+          newStepEvent.off.value[2]=0;
+          recorderDifferenciatorList[differenciator]=currentStep.value;
+          //recording is destructively quantized. here we apply a filter that forgives early notes
+          if(controlledModule.microStep.value>6)recorderDifferenciatorList[differenciator]++;
+          noteLengthner.startAdding(recorderDifferenciatorList[differenciator],newStepEvent);
+        }
       }
       this.recordNoteEnd=function(differenciator){
         noteLengthner.finishAdding(recorderDifferenciatorList[differenciator]);
@@ -260,6 +264,14 @@ module.exports=function(environment){
 
       this.engage=function(){
         environment.hardware.sendScreenA("Sequencer mode");
+        //when you record from a preset kit, and then search the Sequencer
+        //it can get really hard to find the sequencer if they don't show the
+        //recording by defaut
+        if(lastRecordedNote!==false){
+          console.log("lastRecordedNote",lastRecordedNote);
+          selectors.dimension.setFromSeqEvent(lastRecordedNote);
+          lastRecordedNote=false;
+        }
         engaged=true;
         updateLeds();
       }
