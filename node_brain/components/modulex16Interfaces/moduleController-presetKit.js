@@ -44,12 +44,12 @@ module.exports=function(environment){
           minimumValue:-1,
         }
       });
-      selectors.utilMode.valueNames=["mute","copy","clear"];
+      selectors.utilMode.valueNames=["mute","copy","clear","set","set+increment a"];
       selectors.utilMode.initOption({
         name:'util',
         value:0,
         getValueName:function(a){ return selectors.utilMode.valueNames[a] },
-        maximumValue:2,
+        maximumValue:selectors.utilMode.valueNames.length-1,
         minimumValue:0,
       });
       var utilMode=selectors.utilMode.option;
@@ -106,9 +106,15 @@ module.exports=function(environment){
         }
         var selectedPresetBitmap=0x1<<currentlySelectedPreset;
         if(recording){
-          environment.hardware.draw([(selectedPresetBitmap|programmedMap)&(~mutedPadsMap),programmedMap|selectedPresetBitmap|noteHighlightMap^mutedPadsMap,0xffff]);
+          environment.hardware.draw([
+            (programmedMap^mutedPadsMap)|noteHighlightMap,
+            programmedMap|noteHighlightMap^mutedPadsMap,
+            0xffff]);
         }else{
-          environment.hardware.draw([(selectedPresetBitmap|programmedMap)&(~mutedPadsMap),programmedMap|selectedPresetBitmap|noteHighlightMap^mutedPadsMap,selectedPresetBitmap|noteHighlightMap]);
+          environment.hardware.draw([
+            (selectedPresetBitmap^programmedMap)&(~mutedPadsMap),
+            programmedMap|selectedPresetBitmap|noteHighlightMap^mutedPadsMap,
+            noteHighlightMap^selectedPresetBitmap]);
         }
       }
       //when a note is routed to the presetKit that this mode controls
@@ -140,25 +146,33 @@ module.exports=function(environment){
             controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
             pasting=false;
           }else{
-            selectors.dimension.setFromSeqEvent(controlledModule.kit[currentlySelectedPreset]);
-          }
-          if(shiftPressed){
-            if(utilMode.value==0){//mute
-              mutedPadsMap^=1<<evt.data[0];
-              mutedPadsMap&=programmedMap;
-              controlledModule.mute(evt.data[0],((mutedPadsMap>>evt.data[0])&0x1)==0x01);
-            }else if(utilMode.value==1){//copy
-              if(!pasting){
-                pasting=evt.data[0];
-                environment.hardware.sendScreenB("Paste from "+evt.data[0]);
+
+            if(shiftPressed){
+              if(utilMode.value==0){//mute
+                mutedPadsMap^=1<<evt.data[0];
+                mutedPadsMap&=programmedMap;
+                controlledModule.mute(evt.data[0],((mutedPadsMap>>evt.data[0])&0x1)==0x01);
+              }else if(utilMode.value==1){//copy
+                if(!pasting){
+                  pasting=evt.data[0];
+                  environment.hardware.sendScreenB("Paste from "+evt.data[0]);
+                }
+              }else if(utilMode.value==2){//clear
+                controlledModule.set(currentlySelectedPreset,false);
+                environment.hardware.sendScreenB("Cleared");
+                programmedMap&=~(0x1<<evt.data[0]);
+              }else if(utilMode.value==3){//set
+                controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
+              }else if(utilMode.value==4){//set+increment a
+                controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
+                selectors.dimension.options[2].currentValue++;
+                environment.hardware.sendScreenB("set inc a:"+selectors.dimension.options[2].currentValue);
               }
-            }else if(utilMode.value==2){//clear
-              controlledModule.set(currentlySelectedPreset,false);
-              environment.hardware.sendScreenB("Clear");
+            }else{
+              // if(!(mutedPadsMap>>evt.data[0])&0x1)
+              controlledModule.padOn(evt.data[0]);
+              selectors.dimension.setFromSeqEvent(controlledModule.kit[currentlySelectedPreset]);
             }
-          }else{
-            if(!(mutedPadsMap>>evt.data[0])&0x1)
-            controlledModule.padOn(evt.data[0]);
           }
           if(recording)
           if(recTarget){

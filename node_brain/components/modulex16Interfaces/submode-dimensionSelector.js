@@ -53,7 +53,7 @@ module.exports=function(environment){return new(function(){
       return value;
     }
   }];
-
+  this.options=options;
   function updateHardware(){
     environment.hardware.draw([0x1<<currentDimension,~(0xffff<<options.length),~(0xffff<<options.length)]);
     updateLcd();
@@ -84,22 +84,23 @@ module.exports=function(environment){return new(function(){
   }
   this.setFromSeqEvent=function(evm){
     if(evm) if(evm.on){
-      console.log(evm);
+      // console.log(evm);
       evm=evm.on;
       // if(!evm) evm=new eventMessage(this.getSeqEvent());
       // if(!evm.isEventMessage) evm=new eventMessage(this.getSeqEvent());
-      console.log(evm);
+      // console.log(evm);
       options[0].currentValue=destNames.indexOf(evm.destination);
-      console.log(" selector:",options[0].currentValue);
+      // console.log(" selector:",options[0].currentValue);
       options[1].currentValue=evm.value[0];
-      console.log(" selector:",options[1].currentValue);
+      // console.log(" selector:",options[1].currentValue);
       options[2].currentValue=evm.value[1];
-      console.log(" selector:",options[2].currentValue);
+      // console.log(" selector:",options[2].currentValue);
       options[3].currentValue=evm.value[2];
-      console.log(" selector:",options[3].currentValue);
+      // console.log(" selector:",options[3].currentValue);
       updateLcd();
     }
   }
+
   this.getSeqEvent=function(){
     var newDest=options[0].valueNames(options[0].currentValue);
     return {
