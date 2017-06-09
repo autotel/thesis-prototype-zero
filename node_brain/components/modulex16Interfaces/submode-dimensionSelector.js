@@ -27,8 +27,8 @@ module.exports=function(environment){return new(function(){
         options[0].maximumValue=destNames.length-1;
       }
       if(destNames[value]==dangerName)
-      return (destNames[value]+" !!").substr(-11);
-      return (destNames[value]).substr(-11);
+      return (destNames[value]+" X!");
+      return (destNames[value]);
     }
   },{
     name:'header',
@@ -64,7 +64,7 @@ module.exports=function(environment){return new(function(){
   }
   function updateLcd(){
     var displayValue=options[currentDimension].valueNames(options[currentDimension].currentValue);
-    environment.hardware.sendScreenB(""+options[currentDimension].name+RARROW+displayValue);
+    environment.hardware.sendScreenB(""+options[currentDimension].name+(RARROW+displayValue).substr(-12));
   }
   this.dangerName=function(name){
     dangerName=name;

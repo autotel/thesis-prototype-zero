@@ -47,7 +47,7 @@ module.exports=function(environment){
         if(selectors[lastsubSelectorEngaged]){
           selectors[lastsubSelectorEngaged].eventResponses.encoderScroll(evt);
           if(lastsubSelectorEngaged=="dimension")
-            controlledModule.set(selectors.dimension.getSeqEvent());
+            controlledModule.set(selectors.dimension.getSeqEvent().on);
         }
       }
       this.eventResponses.encoderPressed=function(evt){
