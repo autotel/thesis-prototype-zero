@@ -60,19 +60,21 @@ function MetronomePrototype(clockParent,props) {
     currentMicroStep++;
   };
   function stm(){
+    var hrtime=process.hrtime();
+    var now=(hrtime[1]/1000000)+(hrtime[0]*1000);
     //anti drifting funcs
     microIterations++;
-    var now=new Date();
     var elapsed=now-timeAnchor;
+    var nextInterval=(microIterations*microInterval)-elapsed;
+    setTimeout(stm,nextInterval-absoluteMicroDrift);
     absoluteMicroInterval=(elapsed/microIterations);
     absoluteMicroDrift=microInterval-absoluteMicroInterval;
-    setTimeout(stm,microInterval+2*absoluteMicroDrift);
-    // console.log("tick");
-    // console.log("  Tartget:"+interval);
-    // console.log("  Interval:"+absoluteMicroInterval);
-    // console.log("  drift:"+absoluteMicroDrift);
-    // console.log("  nextinterval:"+(interval+2*absoluteMicroDrift));
-    //operation functions
+    // console.log("tick n "+currentMicroStep
+    // +"\n  Tartget:"+microInterval
+    // +"\n  Interval:"+absoluteMicroInterval
+    // +"\n  drift:"+absoluteMicroDrift
+    // +"\n  nextinterval:"+nextInterval);
+    // operation functions
     tMetro.onMicroTick();
     // currentMicroStep++;
     // currentMicroStep%=microStepDivide;
@@ -87,7 +89,11 @@ function MetronomePrototype(clockParent,props) {
   this.receiveEvent=function(){
   }
   function start(){
-    timeAnchor=new Date();
+    // timeAnchor=new Date();
+
+    var hrtime=process.hrtime();
+    timeAnchor=(hrtime[1]/1000000)+(hrtime[0]*1000);
+
     stm();
   }
   start();
@@ -95,7 +101,8 @@ function MetronomePrototype(clockParent,props) {
     if(val){
       interval=val;
       microInterval=interval/microStepDivide;
-      timeAnchor=new Date();
+      var hrtime=process.hrtime();
+      timeAnchor=(hrtime[1]/1000000)+(hrtime[0]*1000);
       microIterations=0;
     }
     return interval;
