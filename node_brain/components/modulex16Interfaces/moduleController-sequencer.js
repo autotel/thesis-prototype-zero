@@ -233,11 +233,6 @@ module.exports=function(environment){
         var mostImportant=getBitmapx16(shiftPressed?moreBluredFilter:focusedFilter,lastsubSelectorEngaged=="timeConfig");
         var mediumImportant=getBitmapx16(moreBluredFilter,lastsubSelectorEngaged=="timeConfig");
         var leastImportant=getBitmapx16(bluredFilter);//red, apparently
-
-
-
-
-
         var drawStep=0;
         var playHeadBmp=0;
         //"render" play header:
@@ -267,8 +262,10 @@ module.exports=function(environment){
         //when you record from a preset kit, and then search the Sequencer
         //it can get really hard to find the sequencer if they don't show the
         //recording by defaut
-        if(lastRecordedNote!==false){
+        if(lastRecordedNote){
           console.log("lastRecordedNote",lastRecordedNote);
+          //this will update the output list in the sequencer, otherwise it may have a value out of array
+          selectors.dimension.options[0].valueNames(0);
           selectors.dimension.setFromSeqEvent(lastRecordedNote);
           lastRecordedNote=false;
         }
@@ -370,6 +367,7 @@ module.exports=function(environment){
           }
         }
         noteLengthner.stepCount();
+        loopDisplace.value=controlledModule.loopDisplace.value;
       });
 
       //modular pattern editing functions

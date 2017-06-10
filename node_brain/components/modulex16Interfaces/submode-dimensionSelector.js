@@ -26,8 +26,9 @@ module.exports=function(environment){return new(function(){
         destNames=environment.patcher.getDestList();
         options[0].maximumValue=destNames.length-1;
       }
-      if(destNames[value]==dangerName)
-      return (destNames[value]+" X!");
+      if(destNames[value]==dangerName) return (destNames[value]+" X!");
+      //just in case
+      if(!destNames[value]) return destNames[0];
       return (destNames[value]);
     }
   },{
@@ -110,6 +111,7 @@ module.exports=function(environment){return new(function(){
 
   this.getSeqEvent=function(){
     var newDest=options[0].valueNames(options[0].currentValue);
+    // if(!newDest) newDest=options[0].valueNames(0);
     return {
       on:new eventMessage({
         destination:newDest,

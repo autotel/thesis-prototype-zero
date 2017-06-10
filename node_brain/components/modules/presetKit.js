@@ -8,23 +8,23 @@ module.exports=function(environment){
     this.instance=function(props){
       destinationBase.call(this,environment);
 
-      var thisDest=this;
+      var thisModule=this;
       var kit=[];
       this.kit=kit;
       this.receiveEvent=function(event){
-        if(!thisDest.mute){
+        if(!thisModule.mute){
           if(kit[event.value[1]])
           // TODO: : I feel that this solution to route note offs is a bit too patchy and too much like midi.
           if(event.value[2]==0){
             var outMsg=kit[event.value[1]].off;
             environment.patcher.receiveEvent(outMsg);
-            thisDest.handle('messagesend',{origin:thisDest,sub:event.value[1],eventMessage:outMsg});
+            thisModule.handle('messagesend',{origin:thisModule,sub:event.value[1],eventMessage:outMsg});
 
           }else{
             if(!kit[event.value[1]].mute){
               var outMsg=kit[event.value[1]].on;
               environment.patcher.receiveEvent(outMsg);
-              thisDest.handle('messagesend',{origin:thisDest,eventMessage:outMsg});
+              thisModule.handle('messagesend',{origin:thisModule,eventMessage:outMsg});
             }
           }
           this.handle('receive',moduleEvent(this,event));
@@ -40,14 +40,17 @@ module.exports=function(environment){
         return ret;
       }
       this.padOn=function(num){
-        if(kit[num])
-        environment.patcher.receiveEvent(kit[num].on);
-        thisDest.handle('messagesend',{origin:thisDest,sub:num,eventMessage:kit[num]});
-
+        if(kit[num]){
+          kit[num].isPlaying=true;
+          environment.patcher.receiveEvent(kit[num].on);
+          thisModule.handle('messagesend',{origin:thisModule,sub:num,eventMessage:kit[num]});
+        }
       }
       this.padOff=function(num){
-          if(kit[num])
-          environment.patcher.receiveEvent(kit[num].off)
+          if(kit[num]){
+            environment.patcher.receiveEvent(kit[num].off);
+            kit[num].isPlaying=false;
+          }
       }
       this.set=function(number,data){
         if(data==false){
@@ -55,9 +58,19 @@ module.exports=function(environment){
           return;
         }
         if(!kit[number]){
-          kit[number]=new eventMessage(data);
+          kit[number]={
+            on:new eventMessage(data.on),
+            off:new eventMessage(data.off),
+          }
         }else{
-          kit[number].set(data);
+          if(kit[number].isPlaying){
+            // thisModule.padOff(number);
+            environment.patcher.receiveEvent(new eventMessage(kit[number].off));
+            kit[number].isPlaying=false;
+            console.log("isPlaying");
+          }
+          kit[number].on.set(data.on);
+          kit[number].off.set(data.off);
         }
       }
       this.mutePreset=function(number,muteStatus){

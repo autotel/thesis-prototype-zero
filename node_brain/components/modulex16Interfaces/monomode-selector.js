@@ -38,13 +38,14 @@ module.exports=function(environment){
     }
     this.eventResponses.buttonMatrixPressed=function(evt){
       if(shiftPressed&&modes[currentlySelectedMode]){
-        if(environment.patcher.modules[modes[currentlySelectedMode]])
-        if(environment.patcher.modules[modes[currentlySelectedMode]].mute){
-          environment.patcher.unmuteModule(modes[currentlySelectedMode]);
-          mutedMap|=1<<evt.data[0];
-        }else{
-          environment.patcher.muteModule(modes[currentlySelectedMode]);
+        if(environment.patcher.modules[modes[evt.data[0]]])
+        if(environment.patcher.modules[modes[evt.data[0]]].mute){
+          environment.patcher.unmuteModule(modes[evt.data[0]]);
           mutedMap&=~(1<<evt.data[0]);
+        }else{
+          console.log("mute "+modes[evt.data[0]]);
+          environment.patcher.muteModule(modes[evt.data[0]]);
+          mutedMap|=1<<evt.data[0];
         }
       }
       currentlySelectedMode=evt.data[0];

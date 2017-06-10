@@ -1,5 +1,9 @@
 #all
 
+
+default clock mode to incremental
+
+
 remember either to connect pi direct to computer or bring a router to the stage,
 I may need to access it via ssh
 

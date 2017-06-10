@@ -45,7 +45,7 @@ module.exports=function(environment){
           minimumValue:-1,
         }
       });
-      selectors.utilMode.valueNames=["mute","copy","clear","set","set+increment a"];
+      selectors.utilMode.valueNames=["mute","copy","clear","set","set+increment a","set+increment head"];
       selectors.utilMode.initOption({
         name:'util',
         value:0,
@@ -168,6 +168,12 @@ module.exports=function(environment){
                 controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
                 selectors.dimension.options[2].currentValue++;
                 environment.hardware.sendScreenB("set inc a:"+selectors.dimension.options[2].currentValue);
+              }else if(utilMode.value==5){//set+increment h
+                controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
+                selectors.dimension.options[1].currentValue++;
+                selectors.dimension.options[1].currentValue%=16;
+
+                environment.hardware.sendScreenB("set inc C:"+selectors.dimension.options[1].currentValue);
               }
             }else{
               // if(!(mutedPadsMap>>evt.data[0])&0x1)
