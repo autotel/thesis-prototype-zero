@@ -190,7 +190,7 @@ module.exports=function(environment){
                 value:[
                   0,
                   evt.data[0],
-                  controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].value[3]:100
+                  controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[3]:100
                 ],
               }));
           }
