@@ -147,7 +147,6 @@ module.exports=function(environment){
             controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
             pasting=false;
           }else{
-
             if(shiftPressed){
               if(utilMode.value==0){//mute
                 mutedPadsMap^=1<<evt.data[0];
@@ -166,14 +165,14 @@ module.exports=function(environment){
                 controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
               }else if(utilMode.value==4){//set+increment a
                 controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
-                selectors.dimension.options[2].currentValue++;
-                environment.hardware.sendScreenB("set inc a:"+selectors.dimension.options[2].currentValue);
+                selectors.dimension.options[2].value++;
+                environment.hardware.sendScreenB("set inc a:"+selectors.dimension.options[2].value);
               }else if(utilMode.value==5){//set+increment h
                 controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
-                selectors.dimension.options[1].currentValue++;
-                selectors.dimension.options[1].currentValue%=16;
+                selectors.dimension.options[1].value++;
+                selectors.dimension.options[1].value%=16;
 
-                environment.hardware.sendScreenB("set inc C:"+selectors.dimension.options[1].currentValue);
+                environment.hardware.sendScreenB("set inc C:"+selectors.dimension.options[1].value);
               }
             }else{
               // if(!(mutedPadsMap>>evt.data[0])&0x1)

@@ -19,9 +19,10 @@ module.exports=function(environment){
           // TODO: : I feel that this solution to route note offs is a bit too patchy and too much like midi.
           if(event.value[2]==0){
             var outMsg=kit[event.value[1]].off;
-            environment.patcher.receiveEvent(outMsg);
-            thisModule.handle('messagesend',{origin:thisModule,sub:event.value[1],eventMessage:outMsg});
-
+            if(outMsg){
+              environment.patcher.receiveEvent(outMsg);
+              thisModule.handle('messagesend',{origin:thisModule,sub:event.value[1],eventMessage:outMsg});
+            }
           }else{
             if(!kit[event.value[1]].mute){
               var outMsg=kit[event.value[1]].on;

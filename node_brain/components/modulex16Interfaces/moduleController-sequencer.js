@@ -199,14 +199,13 @@ module.exports=function(environment){
           // console.log("rec rec");
           var newStepEvent=new patternEvent({
             on:stepOn,
-            off:new eventMessage(stepOn),
-            stepLength:1
+            off:new eventMessage(stepOn)
           });
           lastRecordedNote=newStepEvent;
           newStepEvent.off.value[2]=0;
           recorderDifferenciatorList[differenciator]=currentStep.value;
           //recording is destructively quantized. here we apply a filter that forgives early notes
-          if(controlledModule.microStep.value>6)recorderDifferenciatorList[differenciator]++;
+          if(controlledModule.microStep.value<6)recorderDifferenciatorList[differenciator]--;
           noteLengthner.startAdding(recorderDifferenciatorList[differenciator],newStepEvent);
         }
       }
@@ -263,7 +262,7 @@ module.exports=function(environment){
         //it can get really hard to find the sequencer if they don't show the
         //recording by defaut
         if(lastRecordedNote){
-          console.log("lastRecordedNote",lastRecordedNote);
+          // console.log("lastRecordedNote",lastRecordedNote);
           //this will update the output list in the sequencer, otherwise it may have a value out of array
           selectors.dimension.options[0].valueNames(0);
           selectors.dimension.setFromSeqEvent(lastRecordedNote);
