@@ -31,17 +31,25 @@ module.exports=function(environment){
         updateHardware();
       }
       this.eventResponses.buttonMatrixPressed=function(evt){
-        fingerMap=evt.data[2]|(evt.data[3]<<8);
-        //wrap around chromatic 12, as we are using our occidental logic
-        fingerMap|=fingerMap>>12;
-        scaleMap^=1<<evt.data[0];
-        // scaleMap|=fingerMap;
-        controlledModule.newScaleMap(scaleMap);
-        updateHardware();
+        if(!subSelectorEngaged){
+          fingerMap=evt.data[2]|(evt.data[3]<<8);
+          //wrap around chromatic 12, as we are using our occidental logic
+          fingerMap|=fingerMap>>12;
+          scaleMap^=1<<evt.data[0];
+          // scaleMap|=fingerMap;
+          controlledModule.newScaleMap(scaleMap);
+          updateHardware();
+        }else{
+          selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
+        }
       }
       this.eventResponses.buttonMatrixReleased=function(evt){
-        fingerMap=evt.data[2]|(evt.data[3]<<8);
-        updateHardware();
+        if(!subSelectorEngaged){
+          fingerMap=evt.data[2]|(evt.data[3]<<8);
+          updateHardware();
+        }else{
+          selectors[subSelectorEngaged].eventResponses.buttonMatrixReleased(evt);
+        }
       }
       this.eventResponses.encoderScroll=function(evt){
         if(selectors[lastsubSelectorEngaged]){
@@ -62,12 +70,11 @@ module.exports=function(environment){
           selectors[lastsubSelectorEngaged].eventResponses.selectorButtonPressed(evt);
         }else{
           if(evt.data[0]==1){
-            // subSelectorEngaged='dimension';
+            subSelectorEngaged='dimension';
             lastsubSelectorEngaged='dimension';
             // TODO: this is hacky. only good enough for my own use
             selectors.dimension.engage();
-            selectors.dimension.disengage();
-            updateHardware();
+
           }/*else if(evt.data[0]==2){
             recording=!recording;
             subSelectorEngaged='recConfig';
@@ -84,7 +91,9 @@ module.exports=function(environment){
       }
       this.eventResponses.selectorButtonReleased=function(evt){
           if(evt.data[0]==1){
-            // subSelectorEngaged=false;
+            selectors.dimension.disengage();
+            updateHardware();
+            subSelectorEngaged=false;
             // selectors.dimension.disengage();
           }/*else if(evt.data[0]==2){
             subSelectorEngaged=false;
