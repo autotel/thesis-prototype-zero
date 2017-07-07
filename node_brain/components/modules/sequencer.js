@@ -89,9 +89,20 @@ module.exports=function(environment){
       this.receiveEvent=function(evt){
         this.handle('receive',evt)
         if(evt.value[0]==0){
-          this.stepAbsolute(evt.value[1]);
+          if(evt.value[2]!=0x00){
+            this.stepAbsolute(evt.value[1]);
+          }
         }else if(evt.value[0]==1){
           this.stepIncremental(evt.value[1]);
+        }else if(evt.value[0]==0X90){
+          if(evt.value[2]==0x00){
+            thisModule.mute=true;
+          }else{
+            thisModule.mute=false;
+            this.stepAbsolute(evt.value[1]);
+          }
+        }else if(evt.value[0]==0X80){
+          thisModule.mute=true;
         }else if(evt.value[0]==0xf8){
           this.stepMicro(evt.value[1]);
         }

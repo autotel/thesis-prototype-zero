@@ -2,15 +2,32 @@
   "modules":[
     {
       "type":"bus",
-      "options":{"name":"second bus"}
-    },{
-      "type":"bus",
       "options":{"name":"deft. clock bus"}
     },{
       "type":"clock",
       "options":{
         "clocks":[
-          {"interval":62.5, "destination":"deft. clock bus"}
+          {"interval":62.5, "mode":"increment", "destination":"deft. clock bus"}
+        ]
+      }
+    },{
+      "type":"sequencer",
+      "options":{
+        "name":"mickey seq"
+      }
+    },{
+      "type":"sequencer",
+      "options":{
+        "name":"salad seq"
+      }
+    },{
+      "type":"presetKit",
+      "options":{
+        "kit":[
+          {"destination":"UM-1 20:0","value":["0x91",60,97]},
+          {"destination":"UM-1 20:0","value":["0x91",62,97]},
+          {"destination":"UM-1 20:0","value":["0x91",64,97]},
+          {"destination":"UM-1 20:0","value":["0x91",65,97]}
         ]
       }
     }

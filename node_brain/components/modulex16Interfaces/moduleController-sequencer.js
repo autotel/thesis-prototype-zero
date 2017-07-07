@@ -1,7 +1,7 @@
 'use strict';
 var base=require('./interactionModeBase');
 var eventMessage=require('../../datatype-eventMessage');
-
+var patternEvent=require('../../datatype-patternEvent');
 /*
 pendant: There should be a way to select many events and change a param to all
 at once. perhaps by pressing shift one starts selecting, and if dimension parameter
@@ -197,11 +197,11 @@ module.exports=function(environment){
       this.recordNoteStart=function(differenciator,stepOn){
         if(stepOn){
           // console.log("rec rec");
-          var newStepEvent={
+          var newStepEvent=new patternEvent({
             on:stepOn,
             off:new eventMessage(stepOn),
             stepLength:1
-          };
+          });
           lastRecordedNote=newStepEvent;
           newStepEvent.off.value[2]=0;
           recorderDifferenciatorList[differenciator]=currentStep.value;

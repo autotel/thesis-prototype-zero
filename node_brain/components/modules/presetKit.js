@@ -1,5 +1,6 @@
 var destinationBase=require('./destinationBase');
 var eventMessage=require('../../datatype-eventMessage');
+var patternEvent=require('../../datatype-patternEvent');
 const moduleEvent=require("./moduleEvent");
 module.exports=function(environment){
   //singleton return
@@ -11,6 +12,7 @@ module.exports=function(environment){
       var thisModule=this;
       var kit=[];
       this.kit=kit;
+
       this.receiveEvent=function(event){
         if(!thisModule.mute){
           if(kit[event.value[1]])
@@ -53,15 +55,16 @@ module.exports=function(environment){
           }
       }
       this.set=function(number,data){
+        // console.log("kit set",data);
         if(data==false){
           kit[number]=false;
           return;
         }
         if(!kit[number]){
-          kit[number]={
+          kit[number]=new patternEvent({
             on:new eventMessage(data.on),
             off:new eventMessage(data.off),
-          }
+          });
         }else{
           if(kit[number].isPlaying){
             // thisModule.padOff(number);
@@ -76,6 +79,21 @@ module.exports=function(environment){
       this.mutePreset=function(number,muteStatus){
         if(kit[number]) kit[number].mute=muteStatus;
       }
+      function applyProps(props){
+        if(props.kit)
+        for(var a in props.kit){
+          var ton=new eventMessage(props.kit[a]);
+          var toff=new eventMessage(props.kit[a]);
+          toff.value[2]=0;
+          thisModule.set(a,new patternEvent({on:ton,off:toff}) );
+        }
+        props.kit=undefined;
+        for(var a in props){
+          this[a]=props[a];
+        }
+      }
+      applyProps(props);
     }
+
   })();
 }

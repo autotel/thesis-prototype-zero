@@ -15,6 +15,9 @@ function MetronomePrototype(clockParent,props) {
   var currentStep=0;
   var currentMicroStep=0;
 
+  this.clockMode="absolute";
+  if(props.mode)this.clockMode=props.mode;
+
   var tMetro=this;
   var myIndex=0;
   //vars for anti drifting
@@ -24,6 +27,7 @@ function MetronomePrototype(clockParent,props) {
   var microIterations=0;
   // var myDestination=false;
   var tickEventMessage=new eventMessage({destination:false,value:[0,0,0]});
+  if(props.mode=="increment") tickEventMessage.value[0]=1;
   var microTickEventMessage=new eventMessage({destination:false,value:[0xf8,0,0]});
 
   this.event=tickEventMessage;

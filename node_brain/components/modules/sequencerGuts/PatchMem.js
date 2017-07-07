@@ -1,6 +1,7 @@
 
 'use strict';
 var eventMessage=require('../../../datatype-eventMessage');
+var patternEvent=require('../../../datatype-patternEvent');
 module.exports=function(sequencerModule){ return new(function(){
   var thisModule=this;
 
@@ -116,11 +117,11 @@ module.exports=function(sequencerModule){ return new(function(){
             // TODO: in many places I create these sequencer memory events, they should be
             //instances of the same class, to avoid easter egg bugs
             if(!patData[targetStep]) patData[targetStep]=[];
-            patData[targetStep].push({
+            patData[targetStep].push(new patternEvent({
               on:new eventMessage(patData[step][a].on),
               off:new eventMessage(patData[step][a].off),
               stepLength:patData[step][a].stepLength,
-            });
+            }));
           }
         }
       }

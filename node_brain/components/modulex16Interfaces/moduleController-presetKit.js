@@ -45,7 +45,7 @@ module.exports=function(environment){
           minimumValue:-1,
         }
       });
-      selectors.utilMode.valueNames=["mute","copy","clear","set","set+increment a","set+increment head"];
+      selectors.utilMode.valueNames=["mute","copy","clear","set","set+inc a","set+inc head"];
       selectors.utilMode.initOption({
         name:'util',
         value:0,

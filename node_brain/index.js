@@ -15,7 +15,9 @@ var environment=new(function(){
 })();
 const patcher=require('./components/patcher')(environment);
 environment.patcher=patcher;
-const online=require('./online')(environment);
+
+// const online=require('./online')(environment);
+
 const midi=require('./components/modules/midi')(environment);
 environment.midi=midi;
 const hardware=require('./components/uiHardware')(environment);
@@ -36,7 +38,7 @@ function loadPatch(file){
     }
   });
 }
-loadPatch('./patches/default.json');
+loadPatch(__dirname+ '/patches/default.json');
 
 // const readline = require('readline');
 // environment.on('serialopened',function(){
