@@ -6,6 +6,7 @@ var Modules={
   clock:require('./modules/clock'),
   grade:require('./modules/grade'),
   presetKit:require('./modules/presetKit'),
+  chordKit:require('./modules/chordKit'),
   sequencer:require('./modules/sequencer'),
   bus:require('./modules/bus'),
 }

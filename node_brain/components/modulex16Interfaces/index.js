@@ -13,6 +13,7 @@ var changeToMode=modeBeingTweaked;
 
 Modulex16Interfaces.grade=require('./moduleController-grade');
 Modulex16Interfaces.presetKit=require('./moduleController-presetKit');
+Modulex16Interfaces.chordKit=require('./moduleController-chordKit');
 Modulex16Interfaces.sequencer=require('./moduleController-sequencer');
 Modulex16Interfaces.clock=require('./moduleController-clock');
 

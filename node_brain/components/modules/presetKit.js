@@ -81,16 +81,18 @@ module.exports=function(environment){
         if(kit[number]) kit[number].mute=muteStatus;
       }
       function applyProps(props){
-        if(props.kit)
-        for(var a in props.kit){
-          var ton=new eventMessage(props.kit[a]);
-          var toff=new eventMessage(props.kit[a]);
-          toff.value[2]=0;
-          thisModule.set(a,new patternEvent({on:ton,off:toff}) );
-        }
-        props.kit=undefined;
-        for(var a in props){
-          this[a]=props[a];
+        if(props){
+          if(props.kit)
+          for(var a in props.kit){
+            var ton=new eventMessage(props.kit[a]);
+            var toff=new eventMessage(props.kit[a]);
+            toff.value[2]=0;
+            thisModule.set(a,new patternEvent({on:ton,off:toff}) );
+          }
+          props.kit=undefined;
+          for(var a in props){
+            this[a]=props[a];
+          }
         }
       }
       applyProps(props);
