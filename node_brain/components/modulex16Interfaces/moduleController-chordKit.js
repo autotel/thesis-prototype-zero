@@ -12,27 +12,13 @@ module.exports=function(environment){
       //selectors
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
-      selectors.recConfig=require('./submode-2dConfigurator');
+      selectors.recorder=require('./submode-recorder');
       var subSelectorEngaged=false;
       var lastsubSelectorEngaged="dimension";
 
       for(var a in selectors){
         selectors[a]=selectors[a](environment);
       }
-      selectors.dimension.dangerName(controlledModule.name);
-      var destNames=[];
-      selectors.recConfig.initOptions({
-        'rec':{
-          value:-1,
-          subValue:120,
-          multiplier:4,
-          getValueName:function(a){ return "off" },
-          maximumValue:0,
-          minimumValue:-1,
-        }
-      });
-      var recTarget=false;
-      var recTargetSelector=selectors.recConfig.options[0];
 
       function selectScaleMap(num){
         if((currentChord==1&&num==1)||(currentChord==4&&num==4)||(currentChord==2&&num==2)||(currentChord==8&&num==8)){
@@ -50,9 +36,28 @@ module.exports=function(environment){
       updateScaleMap(scaleMap);
 
       function updateHardware(){
-        var currentcurrentChordMap=currentChord&0xf;
-        if(performMode){
 
+        var currentChordMap=currentChord&0xf;
+        var displayScaleMap=scaleMap<<4;
+        var displayFingerMap=fingerMap;
+        var displayChordSelectorMap=0xF;
+
+        if(performMode){
+          if(selectors.recorder.recording){
+            environment.hardware.draw([
+              displayChordSelectorMap|displayFingerMap|displayScaleMap,
+              displayChordSelectorMap|displayFingerMap^displayScaleMap,
+              0xAB5F|currentChordMap|displayScaleMap
+            ]);
+            environment.hardware.sendScreenB("REC!");
+          }else{
+            environment.hardware.draw([
+              displayChordSelectorMap|displayFingerMap|displayScaleMap,
+              displayChordSelectorMap|displayFingerMap^displayScaleMap,
+              0xAB50|currentChordMap|displayScaleMap
+            ]);
+            environment.hardware.sendScreenB("Perform");
+          }
         }else{
           var displayScaleMap=scaleMap<<4;
           var displayFingerMap=fingerMap;
@@ -61,7 +66,7 @@ module.exports=function(environment){
           environment.hardware.draw([
             displayChordSelectorMap|displayFingerMap|displayScaleMap,
             displayChordSelectorMap|displayFingerMap^displayScaleMap,
-            0xAB50|currentcurrentChordMap|displayScaleMap
+            0xAB50|currentChordMap|displayScaleMap
           ]);
           if(controlledModule.scaleArray[currentChord]){
             environment.hardware.sendScreenA("chord "+currentChord+": "+controlledModule.scaleArray[currentChord].length);
@@ -76,27 +81,59 @@ module.exports=function(environment){
       }
 
       this.eventResponses.buttonMatrixPressed=function(evt){
-        if(performMode){
-          controlledModule.currentChord=0;
-        }else{
-
-          fingerMap=(evt.data[2]|(evt.data[3]<<8));
-          if(!subSelectorEngaged){
+        if(!subSelectorEngaged){
+          if(performMode){
             if(evt.data[0]>3){
               //scale section pressed
-                updateScaleMap(scaleMap^(1<<evt.data[0]-4));
-                updateScaleMap(scaleMap);
-                updateHardware();
+              if(selectors.recorder.recording)
+              selectors.recorder.recordOn(evt.data[0],
+                new eventMessage({
+                  destination:controlledModule.name,
+                  value:[
+                    0,
+                    evt.data[0],
+                    controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[3]:100
+                  ],
+                })
+              );
+              environment.hardware.sendScreenA("pling!");
             }else{
+              //chordSelector section pressed
+              fingerMap=(evt.data[2]|(evt.data[3]<<8));
+              selectScaleMap(fingerMap);
+              controlledModule.currentChord=currentChord;
+              updateHardware();
+              if(selectors.recorder.recording)
+              selectors.recorder.recordOn(evt.data[0],
+                new eventMessage({
+                  destination:controlledModule.name,
+                  value:[
+                    1,
+                    evt.data[0],
+                    controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[3]:100
+                  ],
+                })
+              );
+              environment.hardware.sendScreenA("plong!");
+            }
+
+          }else{
+            if(evt.data[0]>3){
+              //scale section pressed
+              updateScaleMap(scaleMap^(1<<evt.data[0]-4));
+              updateScaleMap(scaleMap);
+              updateHardware();
+            }else{
+              fingerMap=(evt.data[2]|(evt.data[3]<<8));
               //chordSelector section pressed
               selectScaleMap(fingerMap);
               //TODO: tis doesnt go here, only for testing
-              controlledModule.currentChord=currentChord;
+              // controlledModule.currentChord=currentChord;
               updateHardware();
             }
-          }else{
-            selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
           }
+        }else{
+          selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
         }
       }
       this.eventResponses.buttonMatrixReleased=function(evt){
@@ -130,19 +167,14 @@ module.exports=function(environment){
             lastsubSelectorEngaged='dimension';
             // TODO: this is hacky. only good enough for my own use
             selectors.dimension.engage();
-
-          }/*else if(evt.data[0]==2){
-            recording=!recording;
-            subSelectorEngaged='recConfig';
-            lastsubSelectorEngaged='recConfig';
-            selectors.recConfig.engage();
+          }else if(evt.data[0]==2){
+            subSelectorEngaged='recorder';
+            lastsubSelectorEngaged='recorder';
+            selectors.recorder.toggleRec();
+            selectors.recorder.engage();
           }else if(evt.data[0]==3){
-            // subSelectorEngaged='utilMode';
-            lastsubSelectorEngaged='utilMode';
-            // selectors.utilMode.engage();
-            selectors.utilMode.updateLcd();
-            shiftPressed=true;
-          }*/
+            performMode=!performMode;
+          }
         }
       }
       this.eventResponses.selectorButtonReleased=function(evt){
@@ -151,14 +183,11 @@ module.exports=function(environment){
             updateHardware();
             subSelectorEngaged=false;
             // selectors.dimension.disengage();
-          }/*else if(evt.data[0]==2){
+          }else if(evt.data[0]==2){
             subSelectorEngaged=false;
-            selectors.recConfig.disengage();
+            selectors.recorder.disengage();
           }else if(evt.data[0]==3){
-            subSelectorEngaged=false;
-            selectors.utilMode.disengage();
-            shiftPressed=false;
-          }*/
+          }
 
           selectors[lastsubSelectorEngaged].eventResponses.selectorButtonReleased(evt);
 

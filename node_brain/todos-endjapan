@@ -1,3 +1,3 @@
 - mono output modules
 - fix bpm change rate
-- 
+-             if((event.value[0]|0xf)==1){ this is a filter that allows compatibility with midi and my own message headers but the hardware version will have separate plugs, so i shoild use one operator for incoming midi while other operator for internal headers, allowing broader spectrum of functions

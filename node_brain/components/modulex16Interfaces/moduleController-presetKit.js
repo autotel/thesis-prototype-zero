@@ -17,7 +17,7 @@ module.exports=function(environment){
       var subSelectorEngaged=false;
       var lastsubSelectorEngaged="dimension";
       var engaged=false;
-      var recording=false;
+      // var recording=false;
       var mutedPadsMap=0x0000;
       var pasting=false;
 
@@ -25,7 +25,6 @@ module.exports=function(environment){
       // this.testname="presetKit control";
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
-
       selectors.recorder=require('./submode-recorder');
       selectors.utilMode=require('./submode-1dConfigurator');
       // console.log("new controlledModule",controlledModule);
@@ -35,16 +34,6 @@ module.exports=function(environment){
       }
       selectors.dimension.dangerName(controlledModule.name);
       var destNames=[];
-      selectors.recConfig.initOptions({
-        'rec':{
-          value:-1,
-          subValue:120,
-          multiplier:4,
-          getValueName:function(a){ return "off" },
-          maximumValue:0,
-          minimumValue:-1,
-        }
-      });
       selectors.utilMode.valueNames=["mute","copy","clear","set","set+inc a","set+inc head"];
       selectors.utilMode.initOption({
         name:'util',
@@ -54,48 +43,8 @@ module.exports=function(environment){
         minimumValue:0,
       });
       var utilMode=selectors.utilMode.option;
-      // console.log("utilmode",utilMode);
-      var recTarget=false;
-      var recTargetSelector=selectors.recConfig.options[0];
-      var patcherModulesList=[];
-      recTargetSelector.candidates=[];
-      recTargetSelector.getValueName=function(value){
-        if(value==-1)
-        return "disabled";
-        else{
-          var str=recTargetSelector.candidates[value].name;
-          return (str.substr(-12));
-        }
-      }
 
-      recTargetSelector.valueChangeFunction=function(selection,delta){
 
-        //check if our list of modules is updated
-        if(patcherModulesList.length!==environment.patcher.modules.length){
-          recTargetSelector.candidates=[];
-          patcherModulesList=environment.patcher.getDestList();
-          //we actually get a list of interfaces. recording is interface sided, not modular sided
-          for(var a in environment.moduleX16Interface.all){
-            if(typeof environment.moduleX16Interface.all[a].recordNoteStart==="function"){
-              recTargetSelector.candidates.push({name:a,interface:environment.moduleX16Interface.all[a]});
-              console.log("add rec "+a);
-            }
-          }
-          console.log("reclen "+(recTargetSelector.candidates.length-1));
-          recTargetSelector.maximumValue=recTargetSelector.candidates.length-1;
-        }
-
-        if(!selection) selection=recTargetSelector.value+delta;
-        if(selection>=recTargetSelector.minimumValue||delta>0)
-        if(selection<=recTargetSelector.maximumValue||delta<0){
-          recTargetSelector.value=selection;
-          if(selection>-1){
-            recTarget=recTargetSelector.candidates[selection].interface;
-          }else{
-            recTarget=false;
-          }
-        }
-      }
 
 
       //ui feedback
@@ -106,7 +55,7 @@ module.exports=function(environment){
           programmedMap|=1<<a;
         }
         var selectedPresetBitmap=0x1<<currentlySelectedPreset;
-        if(recording){
+        if(selectors.recorder.recording){
           environment.hardware.draw([
             (programmedMap^mutedPadsMap)|noteHighlightMap,
             programmedMap|noteHighlightMap^mutedPadsMap,
@@ -181,16 +130,15 @@ module.exports=function(environment){
             }
           }
           if(selectors.recorder.recording)
-          selectors.recorder.recordOn(
-              evt.data[0],new eventMessage({
-                destination:controlledModule.name,
-                value:[
-                  0,
-                  evt.data[0],
-                  controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[3]:100
-                ],
-              }
-            )
+          selectors.recorder.recordOn(evt.data[0],
+            new eventMessage({
+              destination:controlledModule.name,
+              value:[
+                0,
+                evt.data[0],
+                controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[3]:100
+              ],
+            })
           );
           updateHardware();
         }else{
@@ -232,10 +180,10 @@ module.exports=function(environment){
             lastsubSelectorEngaged='dimension';
             selectors.dimension.engage();
           }else if(evt.data[0]==2){
-            selectors.recorder.ecording=!selectors.recorder.recording;
-            subSelectorEngaged='recConfig';
-            lastsubSelectorEngaged='recConfig';
-            selectors.recConfig.engage();
+            subSelectorEngaged='recorder';
+            lastsubSelectorEngaged='recorder';
+            selectors.recorder.toggleRec();
+            selectors.recorder.engage();
           }else if(evt.data[0]==3){
             // subSelectorEngaged='utilMode';
             lastsubSelectorEngaged='utilMode';
@@ -251,7 +199,7 @@ module.exports=function(environment){
             selectors.dimension.disengage();
           }else if(evt.data[0]==2){
             subSelectorEngaged=false;
-            selectors.recConfig.disengage();
+            selectors.recorder.disengage();
           }else if(evt.data[0]==3){
             subSelectorEngaged=false;
             selectors.utilMode.disengage();

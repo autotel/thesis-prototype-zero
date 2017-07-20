@@ -43,20 +43,26 @@ module.exports=function(environment){
           }else{
             // console.log("B");
             this.handle('receive',event);
-            var newEvent=new eventMessage(event);
-            newEvent.destination=baseEventMessage.destination;
-            // console.log(thisDest.scaleArray);
-            var scaleLength=thisDest.scaleArray[thisDest.currentChord].length;
-            // console.log("(thisDest.scaleArray["+thisDest.currentChord+"]["+event.value[1]+"%"+scaleLength+"];");
-            var noteWraped=thisDest.scaleArray[thisDest.currentChord][event.value[1]%scaleLength];
-            // console.log("NW:"+noteWraped);
-            newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/12));
-            environment.patcher.receiveEvent(newEvent);
-            if(!notesOn[event.value[1]]) notesOn[event.value[1]]=[];
-            notesOn[event.value[1]].push(newEvent);
-            thisDest.handle('messagesend',{origin:thisDest,eventMessage:newEvent});
-            // thisDest.lastUsed=noteWraped;
-            // environment.patcher.modules[myDestination];
+            if((event.value[0]|0xf)==1){
+              //header 1 is change chord
+              thisDest.currentChord=event.value[1];
+            }else if((event.value[0]|0xf)==0){
+              //header 0 is play note in scale
+              var newEvent=new eventMessage(event);
+              newEvent.destination=baseEventMessage.destination;
+              // console.log(thisDest.scaleArray);
+              var scaleLength=thisDest.scaleArray[thisDest.currentChord].length;
+              // console.log("(thisDest.scaleArray["+thisDest.currentChord+"]["+event.value[1]+"%"+scaleLength+"];");
+              var noteWraped=thisDest.scaleArray[thisDest.currentChord][event.value[1]%scaleLength];
+              // console.log("NW:"+noteWraped);
+              newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/12));
+              environment.patcher.receiveEvent(newEvent);
+              if(!notesOn[event.value[1]]) notesOn[event.value[1]]=[];
+              notesOn[event.value[1]].push(newEvent);
+              thisDest.handle('messagesend',{origin:thisDest,eventMessage:newEvent});
+              // thisDest.lastUsed=noteWraped;
+              // environment.patcher.modules[myDestination];
+            }
           }
         }
       }
