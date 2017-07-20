@@ -1,7 +1,6 @@
 "use strict";
 const onhandlers=require('onhandlers');
 
-//midi modules are auto-instanced
 var Modules={
   clock:require('./modules/clock'),
   grade:require('./modules/grade'),
@@ -82,7 +81,7 @@ module.exports=function(environment){return new(function(){
         if(props.name) nameBase=props.name
       }
       name=uniqueName.get(nameBase);
-      /**/console.log(name+": a new "+type+" input was created");
+      /**/console.log(name+": a new "+type+" was created");
       this.modules[name]=what;
       what.name=name;
       this.handle("modulecreated",{name:name,type:type,module:what});
@@ -119,7 +118,8 @@ module.exports=function(environment){return new(function(){
         if(thisPatcher.inputs[evt.destination]){
           thisPatcher.inputs[evt.destination].receiveEvent(evt);
         }else{
-          /**/console.log("invalid "+evt.destination+" destination");
+          /**/console.log("invalid destination \""+evt.destination+"\"");
+          console.log(evt);
         }
       }else{
         console.warn("event didn't have destination", evt);

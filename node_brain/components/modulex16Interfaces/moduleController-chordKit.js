@@ -1,23 +1,38 @@
 'use strict';
 var base=require('./interactionModeBase');
 // var controlledModule=require('../modules/grade.js');
-var fingerMap=0x0000;
-var scaleMap=0xAB5;//major
 module.exports=function(environment){
   return new(function(){
-    var performMode=false;
-    var currentChord=0;
     this.instance=function(controlledModule){
+      var fingerMap=0x0000;
+      var scaleMap=0xAB5;//major
+      var performMode=false;
+      var currentChord=0;
+      base.call(this);
       //selectors
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
+      selectors.recConfig=require('./submode-2dConfigurator');
       var subSelectorEngaged=false;
       var lastsubSelectorEngaged="dimension";
 
       for(var a in selectors){
         selectors[a]=selectors[a](environment);
       }
-
+      selectors.dimension.dangerName(controlledModule.name);
+      var destNames=[];
+      selectors.recConfig.initOptions({
+        'rec':{
+          value:-1,
+          subValue:120,
+          multiplier:4,
+          getValueName:function(a){ return "off" },
+          maximumValue:0,
+          minimumValue:-1,
+        }
+      });
+      var recTarget=false;
+      var recTargetSelector=selectors.recConfig.options[0];
 
       function selectScaleMap(num){
         if((currentChord==1&&num==1)||(currentChord==4&&num==4)||(currentChord==2&&num==2)||(currentChord==8&&num==8)){
@@ -25,7 +40,7 @@ module.exports=function(environment){
         }else{
           currentChord=num;
         };
-        scaleMap=controlledModule.getScaleMap(num);
+        scaleMap=controlledModule.getScaleMap(currentChord);
       }
       function updateScaleMap(newScaleMap){
         scaleMap=newScaleMap;
@@ -34,9 +49,8 @@ module.exports=function(environment){
 
       updateScaleMap(scaleMap);
 
-      base.call(this);
       function updateHardware(){
-        var currentSelectedChordMap=currentChord&0xf;
+        var currentcurrentChordMap=currentChord&0xf;
         if(performMode){
 
         }else{
@@ -47,12 +61,10 @@ module.exports=function(environment){
           environment.hardware.draw([
             displayChordSelectorMap|displayFingerMap|displayScaleMap,
             displayChordSelectorMap|displayFingerMap^displayScaleMap,
-            0xAB50|currentSelectedChordMap|displayScaleMap
+            0xAB50|currentcurrentChordMap|displayScaleMap
           ]);
           if(controlledModule.scaleArray[currentChord]){
             environment.hardware.sendScreenA("chord "+currentChord+": "+controlledModule.scaleArray[currentChord].length);
-          }else{
-            environment.hardware.sendScreenA("empty chord");
           }
         }
       }
@@ -64,20 +76,27 @@ module.exports=function(environment){
       }
 
       this.eventResponses.buttonMatrixPressed=function(evt){
-        fingerMap=(evt.data[2]|(evt.data[3]<<8));
-        if(evt.data[0]>3){
-          //scale section pressed
+        if(performMode){
+          controlledModule.currentChord=0;
+        }else{
+
+          fingerMap=(evt.data[2]|(evt.data[3]<<8));
           if(!subSelectorEngaged){
-            updateScaleMap(scaleMap^(1<<evt.data[0]-4));
-            controlledModule.newScaleMap(scaleMap);
-            updateHardware();
+            if(evt.data[0]>3){
+              //scale section pressed
+                updateScaleMap(scaleMap^(1<<evt.data[0]-4));
+                updateScaleMap(scaleMap);
+                updateHardware();
+            }else{
+              //chordSelector section pressed
+              selectScaleMap(fingerMap);
+              //TODO: tis doesnt go here, only for testing
+              controlledModule.currentChord=currentChord;
+              updateHardware();
+            }
           }else{
             selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
           }
-        }else{
-          //chordSelector section pressed
-          selectScaleMap(fingerMap);
-          updateHardware();
         }
       }
       this.eventResponses.buttonMatrixReleased=function(evt){

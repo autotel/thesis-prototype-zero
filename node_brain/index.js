@@ -34,6 +34,7 @@ function loadPatch(file){
     /**/console.log("--loading a patch--");
     // console.log(obj);
     for(var moduleDefiner of obj.modules){
+      console.log("load modile"+moduleDefiner);
       var newModule=environment.patcher.createModule(moduleDefiner.type,moduleDefiner.options);
     }
   });

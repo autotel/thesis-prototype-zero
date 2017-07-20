@@ -30,6 +30,8 @@
           {"destination":"UM-1 20:0","value":["0x91",65,97]}
         ]
       }
+    },{
+      "type":"chordKit"
     }
   ]
 }

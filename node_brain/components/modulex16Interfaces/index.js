@@ -45,6 +45,8 @@ module.exports=function(environment){return new(function(){
   this.all=allUserInterfaces;
 
   environment.patcher.on('modulecreated',function(event){
+    //TODO: I shouldn't be listening fro module created to assign interface.
+    //instead, monomode-add should create an interface, and the interface should create the module
     //if there is an User Interface for this new module...
     if(Modulex16Interfaces[event.type]){
       //create it
