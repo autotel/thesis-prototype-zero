@@ -25,8 +25,8 @@ module.exports=function(environment){
       // this.testname="presetKit control";
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
-      //TODO: recConfig needs not to be a 2d configurator, only 1d
-      selectors.recConfig=require('./submode-2dConfigurator');
+
+      selectors.recorder=require('./submode-recorder');
       selectors.utilMode=require('./submode-1dConfigurator');
       // console.log("new controlledModule",controlledModule);
       base.call(this);
@@ -54,7 +54,7 @@ module.exports=function(environment){
         minimumValue:0,
       });
       var utilMode=selectors.utilMode.option;
-      console.log("utilmode",utilMode);
+      // console.log("utilmode",utilMode);
       var recTarget=false;
       var recTargetSelector=selectors.recConfig.options[0];
       var patcherModulesList=[];
@@ -180,19 +180,18 @@ module.exports=function(environment){
               selectors.dimension.setFromSeqEvent(controlledModule.kit[currentlySelectedPreset]);
             }
           }
-          if(recording)
-          if(recTarget){
-            recTarget
-            .recordNoteStart(evt.data[0],
-              new eventMessage({
+          if(selectors.recorder.recording)
+          selectors.recorder.recordOn(
+              evt.data[0],new eventMessage({
                 destination:controlledModule.name,
                 value:[
                   0,
                   evt.data[0],
                   controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[3]:100
                 ],
-              }));
-          }
+              }
+            )
+          );
           updateHardware();
         }else{
           selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
@@ -202,9 +201,8 @@ module.exports=function(environment){
         if(!subSelectorEngaged){
           fingerMap=evt.data[2]|(evt.data[3]<<8);
           controlledModule.padOff(evt.data[0]);
-          if(recording)
-          if(recTarget)
-          recTarget.recordNoteEnd(evt.data[0]);
+          if(selectors.recorder.recording)
+          selectors.recorder.recordOff(evt.data[0]);
           updateHardware();
         }else{
           selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
@@ -234,7 +232,7 @@ module.exports=function(environment){
             lastsubSelectorEngaged='dimension';
             selectors.dimension.engage();
           }else if(evt.data[0]==2){
-            recording=!recording;
+            selectors.recorder.ecording=!selectors.recorder.recording;
             subSelectorEngaged='recConfig';
             lastsubSelectorEngaged='recConfig';
             selectors.recConfig.engage();
