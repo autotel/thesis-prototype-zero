@@ -1,3 +1,16 @@
 - mono output modules
 - fix bpm change rate
 -             if((event.value[0]|0xf)==1){ this is a filter that allows compatibility with midi and my own message headers but the hardware version will have separate plugs, so i shoild use one operator for incoming midi while other operator for internal headers, allowing broader spectrum of functions
+-ote { destination: 'chordKit',
+  isEventMessage: true,
+  value: [ 0, 52, 97 ],
+  set: [Function],
+  compareTo: [Function] }
+/home/pi/repositories/thesis-prototype-zero/node_brain/components/moduleX16Interfaces/moduleController-clock.js:141
+            clocks[currentlySelectedClock].setDestination(destNames[destination.value]);
+                                          ^
+
+TypeError: Cannot read property 'setDestination' of undefined
+    at Option.destination.valueChangeFunction (/home/pi/repositories/thesis-prototype-zero/node_brain/components/moduleX16Interfaces/moduleController-clock.js:141:43)
+    at Object.eventResponses.encoderScroll (/home/pi/repositories/thesis-prototype-zero/node_brain/components/moduleX16Interfaces/submode-2dConfigurator.js
+    when selecting a clock destination

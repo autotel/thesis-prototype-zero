@@ -1,6 +1,6 @@
 'use strict'
 module.exports=function(properties){
-  this.destination="midi";
+  this.destination=false;
   this.isEventMessage=true;
   this.value=[];
   this.set=function(data){
