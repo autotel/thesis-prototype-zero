@@ -343,8 +343,12 @@ module.exports=function(environment){
         }else if(evt.data[0]==3){
           shiftPressed=true;
         }
+        if(subSelectorEngaged)
+        selectors[subSelectorEngaged].eventResponses.selectorButtonPressed(evt);
       }
       this.eventResponses.selectorButtonReleased=function(evt){
+        if(subSelectorEngaged)
+        selectors[subSelectorEngaged].eventResponses.selectorButtonReleased(evt);
         if(evt.data[0]==1){
           subSelectorEngaged=false;
           selectors.dimension.disengage();
@@ -354,7 +358,6 @@ module.exports=function(environment){
         }else if(evt.data[0]==3){
           shiftPressed=false;
         }
-
       }
       //sequencer events handler
       controlledModule.on('step',function(evt){

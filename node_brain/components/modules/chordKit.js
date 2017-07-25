@@ -11,7 +11,7 @@ module.exports=function(environment){
 
       this.currentChord=0;
       var thisDest=this;
-      var baseEventMessage=new eventMessage();
+      this.baseEventMessage=new eventMessage();
       var scaleMap={};
       //keep track of triggered notes
       var notesOn={};
@@ -19,9 +19,9 @@ module.exports=function(environment){
       this.receiveEvent=function(event){
         //TODO: if I don't have that chord or it is empty, I just don't play anything.
         if(!thisDest.mute)
-        if(baseEventMessage.destination){
-          //TODO: don't check by value[2] if note off, rather check by header.I have to change this everywhere
-          if(event.value[2]==0||(event.value[0]|0xf0)==0x80){
+        if(thisDest.baseEventMessage.destination){
+          //header 0x80 indicates send note off
+          if((event.value[0]|0xf0)==0x80||event.value[2]==0){
             if(notesOn[event.value[1]]){
               for(var a of notesOn[event.value[1]]){
                 // console.log("A");
@@ -53,8 +53,9 @@ module.exports=function(environment){
               if(thisDest.scaleArray[thisDest.currentChord]){
                 //header 0 is play note in scale
                 console.log("note",event);
-                var newEvent=new eventMessage(event);
-                newEvent.destination=baseEventMessage.destination;
+                var newEvent=new eventMessage(thisDest.baseEventMessage);
+                newEvent.underImpose(event);
+                console.log("unimp",newEvent,event);
                 // console.log(thisDest.scaleArray);
                 var scaleLength=thisDest.scaleArray[thisDest.currentChord].length;
                 // console.log("(thisDest.scaleArray["+thisDest.currentChord+"]["+event.value[1]+"%"+scaleLength+"];");
@@ -62,6 +63,7 @@ module.exports=function(environment){
                 // console.log("NW:"+noteWraped);
                 newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/12));
                 environment.patcher.receiveEvent(newEvent);
+                console.log("OPT",newEvent);
                 if(!notesOn[event.value[1]]) notesOn[event.value[1]]=[];
                 notesOn[event.value[1]].push(newEvent);
                 thisDest.handle('messagesend',{origin:thisDest,eventMessage:newEvent});
@@ -88,9 +90,9 @@ module.exports=function(environment){
       this.getScaleMap=function(identifier){
         return scaleMap[identifier]||0x00;
       }
-      this.set=function(to){
-        baseEventMessage=to;
-      }
+      // this.set=function(to){
+      //   baseEventMessage=to;
+      // }
     }
   })()
 }

@@ -116,6 +116,9 @@ module.exports=function(environment){
         var evtFingerMap=(evt.data[2]|(evt.data[3]<<8));
         if(!subSelectorEngaged){
           if(performMode){
+            // if(!currentSeqEvent){
+            //   currentSeqEvent=selectors.dimension.getSeqEvent();
+            // }
             if(evt.data[0]>3){
               //scale section pressed
               var onEventMessage=new eventMessage({
@@ -172,8 +175,11 @@ module.exports=function(environment){
       this.eventResponses.encoderScroll=function(evt){
         if(selectors[lastsubSelectorEngaged]){
           selectors[lastsubSelectorEngaged].eventResponses.encoderScroll(evt);
-          if(lastsubSelectorEngaged=="dimension")
-            controlledModule.set(selectors.dimension.getSeqEvent().on);
+          if(lastsubSelectorEngaged=="dimension"){
+          var currentSeqEvent=selectors.dimension.getSeqEvent();
+            controlledModule.baseEventMessage=currentSeqEvent.on;
+            console.log(controlledModule.baseEventMessage);
+          }
         }
       }
       this.eventResponses.encoderPressed=function(evt){

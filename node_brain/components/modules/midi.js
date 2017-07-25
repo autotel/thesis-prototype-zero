@@ -30,14 +30,22 @@ module.exports=function(environment){return new (function(){
           this.note(evt.value[0],evt.value[1],evt.value[2]);
         }
         this.note=function(chan,num,velo){
-          var b=0x00;
-          if(velo==0){
-            b=0x80|(chan&0xf);
-          }else{
-            b=0x90|(chan&0xf);
+          // console.log(velo);
+          if(num>0){
+            var b=0x00;
+            if(velo==0){
+              b=0x80|(chan&0xf);
+            }else{
+              b=0x90|(chan&0xf);
+            }
+
+            if(velo==-1){
+               //if midi output receives a "transparent" velocity, it defaults to 97
+               velo=97;
+             }
+            // console.log("midi"+[b,num&0xff,velo&0xff]);
+            output.sendMessage([b,num&0xff,velo&0xff]);
           }
-          // console.log("midi"+[b,num&0xff,velo&0xff]);
-          output.sendMessage([b,num&0xff,velo&0xff]);
         }
         this.closeMidi=function(){
           // Close the port when done.

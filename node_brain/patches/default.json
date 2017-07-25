@@ -24,10 +24,10 @@
       "type":"presetKit",
       "options":{
         "kit":[
-          {"destination":"UM-1 20:0","value":["0x91",60,97]},
-          {"destination":"UM-1 20:0","value":["0x91",62,97]},
-          {"destination":"UM-1 20:0","value":["0x91",64,97]},
-          {"destination":"UM-1 20:0","value":["0x91",65,97]}
+          {"destination":"UM-1 20:0","value":[1,60,97]},
+          {"destination":"UM-1 20:0","value":[1,62,97]},
+          {"destination":"UM-1 20:0","value":[1,64,97]},
+          {"destination":"UM-1 20:0","value":[1,65,97]}
         ]
       }
     },{

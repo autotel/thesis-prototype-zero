@@ -34,30 +34,30 @@ module.exports=function(environment){return new(function(){
       return (destNames[value]);
     }
   },{
-    name:'header',
+    name:'H0',
     value:0,
     maximumValue:255,
-    minimumValue:0,
+    minimumValue:-1,
     valueNames:function(value){
-      return "C"+(value&0x0F);
+      return "x"+(value.toString(16))+" d"+(value.toString(10));
     }
   },{
-    name:'value a',
+    name:'V1',
     value:0,
-    maximumValue:256,
-    minimumValue:0,
+    maximumValue:255,
+    minimumValue:-1,
     valueNames:function(value){
-      if(value==256) return "transp."
-      return value;
+      if(value==-1) return "transp."
+      return "x"+(value.toString(16))+" d"+(value.toString(10));
     }
   },{
-    name:'value b',
-    value:97,
-    maximumValue:256,
-    minimumValue:0,
+    name:'V2',
+    value:-1,
+    maximumValue:255,
+    minimumValue:-1,
     valueNames:function(value){
-      if(value==256) return "transp."
-      return value;
+      if(value==-1) return "transp."
+      return "x"+(value.toString(16))+" d"+(value.toString(10));
     }
   },{
     name:'note off',
@@ -162,19 +162,26 @@ module.exports=function(environment){return new(function(){
   }
   this.eventResponses.encoderScroll=function(evt){
     var currentOption=options[currentDimension];
-    if(evt.data[1]==0xff)
-      currentOption.value--;
-    else  currentOption.value++;
+    if(shiftMode){
+      if(evt.data[1]==0xff)
+        currentOption.value-=16;
+      else  currentOption.value+=16;
+    }else{
+      if(evt.data[1]==0xff)
+        currentOption.value--;
+      else  currentOption.value++;
+    }
 
     if(currentOption.value<currentOption.minimumValue){
-      currentOption.value=currentOption.minimumValue;
+      currentOption.value=currentOption.maximumValue;
     }
     if(currentOption.value>currentOption.maximumValue){
-      currentOption.value=currentOption.maximumValue;
+      currentOption.value=currentOption.minimumValue;
     }
     updateLcd();
   }
   this.eventResponses.selectorButtonPressed=function(evt){
+    if(evt.data[0]==3)
     shiftMode=true;
     // console.log("selector shift",evt);
   }

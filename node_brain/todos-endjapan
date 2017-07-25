@@ -1,5 +1,10 @@
 - mono output modules
 - fix bpm change rate
+- mute should be select module and then mute, not sel+mute+module
+- chordkit channel is ignored falling to 0
+- could there be a way to duplicate in a correlative way patched elementS?
+    it would be great to develop an indea into a new insturment, making pivots
+    maybe a squencer could capture the midi output stream and bypass ina KO way.
 -             if((event.value[0]|0xf)==1){ this is a filter that allows compatibility with midi and my own message headers but the hardware version will have separate plugs, so i shoild use one operator for incoming midi while other operator for internal headers, allowing broader spectrum of functions
 -ote { destination: 'chordKit',
   isEventMessage: true,
