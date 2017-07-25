@@ -13,7 +13,11 @@ module.exports=function(environment){
       //selectors
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
+
       selectors.recorder=require('./submode-recorder');
+
+
+
       var subSelectorEngaged=false;
       var lastsubSelectorEngaged="dimension";
 
@@ -21,6 +25,11 @@ module.exports=function(environment){
         selectors[a]=selectors[a](environment);
       }
 
+      selectors.dimension.options[2].name="base note";
+      selectors.dimension.options[2].valueNames=function(value){
+        if(value==-1) return "transp?"
+        return "d"+(value.toString(10));
+      }
 
       controlledModule.on('chordchange',function(){
         if(performMode){
@@ -123,7 +132,7 @@ module.exports=function(environment){
               //scale section pressed
               var onEventMessage=new eventMessage({
                 destination:controlledModule.name,
-                value:[0,(evt.data[0]-3)+30,97]
+                value:[0,(evt.data[0]-3),97]
               });
               noteOnTracker.press(evt.data[0],onEventMessage);
               controlledModule.receiveEvent(onEventMessage);

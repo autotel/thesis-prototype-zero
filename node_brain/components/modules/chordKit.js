@@ -63,6 +63,7 @@ module.exports=function(environment){
                 var noteWraped=thisDest.scaleArray[thisDest.currentChord][event.value[1]%scaleLength];
                 // console.log("NW:"+noteWraped);
                 newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/scaleLength));
+                newEvent.value[1]+=thisDest.baseEventMessage.value[1];
 
                 environment.patcher.receiveEvent(newEvent);
                 // console.log("OPT",newEvent);
