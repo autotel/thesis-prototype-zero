@@ -19,3 +19,9 @@ TypeError: Cannot read property 'setDestination' of undefined
     at Option.destination.valueChangeFunction (/home/pi/repositories/thesis-prototype-zero/node_brain/components/moduleX16Interfaces/moduleController-clock.js:141:43)
     at Object.eventResponses.encoderScroll (/home/pi/repositories/thesis-prototype-zero/node_brain/components/moduleX16Interfaces/submode-2dConfigurator.js
     when selecting a clock destination
+
+
+
+- chordKit value a selector should select the pivoting center
+the current pivot center is zero, and for instance a value a = 30 produces a low note
+on scales with 7 notes, whiole a extremely high note when the scale has onle one grade

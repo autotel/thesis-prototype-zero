@@ -123,7 +123,7 @@ module.exports=function(environment){
               //scale section pressed
               var onEventMessage=new eventMessage({
                 destination:controlledModule.name,
-                value:[0,(evt.data[0]-3)+48,97]
+                value:[0,(evt.data[0]-3)+30,97]
               });
               noteOnTracker.press(evt.data[0],onEventMessage);
               controlledModule.receiveEvent(onEventMessage);
@@ -178,7 +178,7 @@ module.exports=function(environment){
           if(lastsubSelectorEngaged=="dimension"){
           var currentSeqEvent=selectors.dimension.getSeqEvent();
             controlledModule.baseEventMessage=currentSeqEvent.on;
-            console.log(controlledModule.baseEventMessage);
+            // console.log(controlledModule.baseEventMessage);
           }
         }
       }

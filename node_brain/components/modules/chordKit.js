@@ -55,15 +55,17 @@ module.exports=function(environment){
                 console.log("note",event);
                 var newEvent=new eventMessage(thisDest.baseEventMessage);
                 newEvent.underImpose(event);
-                console.log("unimp",newEvent,event);
+                // console.log("unimp",newEvent,event);
                 // console.log(thisDest.scaleArray);
                 var scaleLength=thisDest.scaleArray[thisDest.currentChord].length;
+                console.log(scaleLength);
                 // console.log("(thisDest.scaleArray["+thisDest.currentChord+"]["+event.value[1]+"%"+scaleLength+"];");
                 var noteWraped=thisDest.scaleArray[thisDest.currentChord][event.value[1]%scaleLength];
                 // console.log("NW:"+noteWraped);
-                newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/12));
+                newEvent.value[1]=noteWraped+(12*Math.floor(event.value[1]/scaleLength));
+
                 environment.patcher.receiveEvent(newEvent);
-                console.log("OPT",newEvent);
+                // console.log("OPT",newEvent);
                 if(!notesOn[event.value[1]]) notesOn[event.value[1]]=[];
                 notesOn[event.value[1]].push(newEvent);
                 thisDest.handle('messagesend',{origin:thisDest,eventMessage:newEvent});
