@@ -62,9 +62,9 @@ module.exports=function(environment){
             0xffff]);
         }else{
           environment.hardware.draw([
-            (selectedPresetBitmap^programmedMap)&(~mutedPadsMap),
-            programmedMap|selectedPresetBitmap|noteHighlightMap^mutedPadsMap,
-            noteHighlightMap^selectedPresetBitmap]);
+            (programmedMap^mutedPadsMap)|selectedPresetBitmap,
+            (programmedMap|selectedPresetBitmap|noteHighlightMap)&(~mutedPadsMap),
+            (noteHighlightMap^selectedPresetBitmap)|mutedPadsMap]);
         }
       }
       //when a note is routed to the presetKit that this mode controls
@@ -136,7 +136,7 @@ module.exports=function(environment){
               value:[
                 0,
                 evt.data[0],
-                controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[3]:100
+                controlledModule.kit[evt.data[0]]?controlledModule.kit[evt.data[0]].on.value[2]:-1
               ],
             })
           );
