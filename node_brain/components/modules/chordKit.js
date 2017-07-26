@@ -48,17 +48,17 @@ module.exports=function(environment){
               // if(!thisDest.currentChord)thisDest.cu
               thisDest.currentChord=event.value[1];
               thisDest.handle('chordchange');
-              console.log("chordchange",event);
+              // console.log("chordchange",event);
             }else if((event.value[0]&0xf)==0){
               if(thisDest.scaleArray[thisDest.currentChord]){
                 //header 0 is play note in scale
-                console.log("note",event);
+                // console.log("note",event);
                 var newEvent=new eventMessage(thisDest.baseEventMessage);
                 newEvent.underImpose(event);
                 // console.log("unimp",newEvent,event);
                 // console.log(thisDest.scaleArray);
                 var scaleLength=thisDest.scaleArray[thisDest.currentChord].length;
-                console.log(scaleLength);
+                // console.log(scaleLength);
                 // console.log("(thisDest.scaleArray["+thisDest.currentChord+"]["+event.value[1]+"%"+scaleLength+"];");
                 var noteWraped=thisDest.scaleArray[thisDest.currentChord][event.value[1]%scaleLength];
                 // console.log("NW:"+noteWraped);

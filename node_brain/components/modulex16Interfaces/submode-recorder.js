@@ -37,10 +37,10 @@ module.exports=function(environment){
         for(var a in environment.moduleX16Interface.all){
           if(typeof environment.moduleX16Interface.all[a].recordNoteStart==="function"){
             recTargetSelector.candidates.push({name:a,interface:environment.moduleX16Interface.all[a]});
-            console.log("add rec "+a);
+            // console.log("add rec "+a);
           }
         }
-        console.log("reclen "+(recTargetSelector.candidates.length-1));
+        // console.log("reclen "+(recTargetSelector.candidates.length-1));
         recTargetSelector.maximumValue=recTargetSelector.candidates.length-1;
       }
 
@@ -56,15 +56,17 @@ module.exports=function(environment){
       }
     }
     this.recordOn=function(identifier,newEventMessage){
-      // console.log("record");
+      // console.log("record",newEventMessage);
       if(recTarget){
         // console.log(recTarget);
-        recTarget
-        .recordNoteStart(identifier, newEventMessage );
+        recTarget.recordNoteStart(identifier, newEventMessage );
       }
     }
     this.recordOff=function(identifier){
-      recTarget.recordNoteEnd(identifier);
+      if(recTarget){
+        // console.log("recorder recordOff",identifier);
+        recTarget.recordNoteEnd(identifier);
+      }
     }
     this.toggleRec=function(){
       thisSubmod.recording=!thisSubmod.recording;

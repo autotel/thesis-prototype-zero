@@ -22,6 +22,11 @@ TypeError: Cannot read property 'setDestination' of undefined
 
 
 
-- chordKit value a selector should select the pivoting center
+    rdy - chordKit value a selector should select the pivoting center
 the current pivot center is zero, and for instance a value a = 30 produces a low note
 on scales with 7 notes, whiole a extremely high note when the scale has onle one grade
+each different scale should apply a different dimensionSelector like in chordkit,
+in this way each chord in the kit gets it's own base note (and output?)
+rdy -chordkit is not recording. ¿?
+
+redy-chord zero can't be selected on performance mode of chordkit

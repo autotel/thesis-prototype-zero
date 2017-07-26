@@ -39,6 +39,7 @@ module.exports=function(environment){return new(function(){
     maximumValue:255,
     minimumValue:-1,
     valueNames:function(value){
+      if(value==-1) return "transparent"
       return "x"+(value.toString(16))+" d"+(value.toString(10));
     }
   },{
@@ -47,7 +48,7 @@ module.exports=function(environment){return new(function(){
     maximumValue:255,
     minimumValue:-1,
     valueNames:function(value){
-      if(value==-1) return "transp."
+      if(value==-1) return "transparent"
       return "x"+(value.toString(16))+" d"+(value.toString(10));
     }
   },{
@@ -56,7 +57,7 @@ module.exports=function(environment){return new(function(){
     maximumValue:255,
     minimumValue:-1,
     valueNames:function(value){
-      if(value==-1) return "transp."
+      if(value==-1) return "transparent"
       return "x"+(value.toString(16))+" d"+(value.toString(10));
     }
   },{

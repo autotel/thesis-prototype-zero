@@ -9,6 +9,7 @@ module.exports=function(environment){
       var scaleMap=0xAB5;//major
       var performMode=false;
       var currentChord=0;
+      var engaged=false;
       base.call(this);
       //selectors
       var selectors={};
@@ -32,10 +33,15 @@ module.exports=function(environment){
       }
 
       controlledModule.on('chordchange',function(){
+        console.log("chc");
         if(performMode){
           currentChord=controlledModule.currentChord;
+          scaleMap=controlledModule.getScaleMap(currentChord);
+          if(engaged)
+            updateHardware(true,false);
         }else{
-          environment.hardware.sendScreenB("chord "+controlledModule.currentChord);
+          if(engaged)
+            environment.hardware.sendScreenB("chord "+controlledModule.currentChord);
         }
       });
 
@@ -55,51 +61,65 @@ module.exports=function(environment){
       updateScaleMap(scaleMap);
 
 
-
-      function updateHardware(){
-
-        var currentChordMap=currentChord&0xf;
+      function updateHardware(upleds,upscreen){
+        var currentChordMap=0;
         var displayScaleMap=scaleMap<<4;
         var displayFingerMap=fingerMap;
         var displayChordSelectorMap=0xF;
-
+        var screenAString="";
+        var screenBString="";
         if(performMode){
+          currentChordMap=controlledModule.currentChord&0xf;
           if(selectors.recorder.recording){
+            if(upleds)
             environment.hardware.draw([
               displayChordSelectorMap|displayFingerMap|displayScaleMap,
               displayChordSelectorMap|displayFingerMap^displayScaleMap,
               0xAB5F|currentChordMap|displayScaleMap
             ]);
-            if(!subSelectorEngaged) environment.hardware.sendScreenB("REC!");
+            if(!subSelectorEngaged) screenAString+="REC ";
           }else{
+            if(upleds)
             environment.hardware.draw([
               displayChordSelectorMap|displayFingerMap|displayScaleMap,
               displayChordSelectorMap|displayFingerMap^displayScaleMap,
               0xAB50|currentChordMap|displayScaleMap
             ]);
-            if(!subSelectorEngaged) environment.hardware.sendScreenB("Perform");
+            if(!subSelectorEngaged) screenAString+="Perf "
           }
         }else{
+          currentChordMap=currentChord&0xf;
           var displayScaleMap=scaleMap<<4;
           var displayFingerMap=fingerMap;
           var displayChordSelectorMap=0xF;
           //green,blue,red
+          if(upleds)
           environment.hardware.draw([
             displayChordSelectorMap|displayFingerMap|displayScaleMap,
             displayChordSelectorMap|displayFingerMap^displayScaleMap,
             0xAB50|currentChordMap|displayScaleMap
           ]);
-          if(controlledModule.scaleArray[currentChord]){
-            environment.hardware.sendScreenA("chord "+currentChord+": "+controlledModule.scaleArray[currentChord].length);
-          }
-          if(!subSelectorEngaged) environment.hardware.sendScreenB("Edit");
+
+          if(!subSelectorEngaged) screenAString+=("Edit ");
         }
+        if(controlledModule.scaleArray[currentChord]){
+          screenAString+="chord "+currentChord+": "+controlledModule.scaleArray[currentChord].length;
+        }else{
+          screenAString+="chord "+currentChord+": empty";
+        }
+        if(upscreen)
+        environment.hardware.sendScreenA(screenAString);
+        // environment.hardware.sendScreenB(screenBString);
       }
 
       this.engage=function(){
-        environment.hardware.sendScreenA("set scale");
+        engaged=true;
+        // environment.hardware.sendScreenA("set scale");
         // console.log("engage mode selector");
-        updateHardware();
+        updateHardware(true,true);
+      }
+      this.disengage=function(){
+        engaged=false;
       }
 
       var noteOnTracker=new (function(destination){
@@ -108,13 +128,16 @@ module.exports=function(environment){
           if(!notesOn[identifier])notesOn[identifier]=[];
           notesOn[identifier].push(eMes);
         }
-        this.release=function(identifier){
+        this.release=function(identifier,releaseCallback){
           if(notesOn[identifier]){
             for(var a of notesOn[identifier]){
               var newEvent=new eventMessage(a);
               newEvent.value[2]=0;
               newEvent.value[0]=(newEvent.value[0]|0xf0)&0x8F;
               destination.receiveEvent(newEvent);
+              if(typeof releaseCallback=="function"){
+                releaseCallback(a);
+              }
             }
             delete notesOn[identifier];
           }
@@ -130,41 +153,48 @@ module.exports=function(environment){
             // }
             if(evt.data[0]>3){
               //scale section pressed
+
               var onEventMessage=new eventMessage({
                 destination:controlledModule.name,
-                value:[0,(evt.data[0]-3),97]
+                value:[0,evt.data[0]-3,97]
               });
               noteOnTracker.press(evt.data[0],onEventMessage);
               controlledModule.receiveEvent(onEventMessage);
-              if(selectors.recorder.recording)
-              selectors.recorder.recordOn(evt.data[0],onEventMessage);
+              if(selectors.recorder.recording){
+                selectors.recorder.recordOn(evt.data[0],onEventMessage);
+                //a recorded flag is attached to the eventMessage to trigger a record note off when released, regardless of the state of recording. The flag will be pulled from the noteOnTracker
+                onEventMessage.recorded=true;
+              }
             }else{
               //chordSelector section pressed
               fingerMap=evtFingerMap;
               selectScaleMap(evtFingerMap);
               // controlledModule.currentChord=currentChord;
-              updateHardware();
+              updateHardware(true,true);
               var onEventMessage=new eventMessage({
                 destination:controlledModule.name,
-                value:[1,evtFingerMap,125]
+                value:[1,currentChord,125]
               });
               controlledModule.receiveEvent(onEventMessage);
-              if(selectors.recorder.recording)
-              selectors.recorder.recordOn(evt.data[0],onEventMessage);
+              if(selectors.recorder.recording){
+                selectors.recorder.recordOn(evt.data[0],onEventMessage);
+                //otherwise the note never gets to the seq memory...
+                selectors.recorder.recordOff(evt.data[0]);
+              }
             }
           }else{
             if(evt.data[0]>3){
               //scale section pressed
               updateScaleMap(scaleMap^(1<<evt.data[0]-4));
               updateScaleMap(scaleMap);
-              updateHardware();
+              updateHardware(true,true);
             }else{
               fingerMap=evtFingerMap;
               //chordSelector section pressed
               selectScaleMap(evtFingerMap);
               //TODO: tis doesnt go here, only for testing
               // controlledModule.currentChord=currentChord;
-              updateHardware();
+              updateHardware(true,true);
             }
           }
         }else{
@@ -172,11 +202,17 @@ module.exports=function(environment){
         }
       }
       this.eventResponses.buttonMatrixReleased=function(evt){
-
-        noteOnTracker.release(evt.data[0]);
+        //if the event being released was involved in a recording, then record the note off for it
+        var released=noteOnTracker.release(evt.data[0],function(onEvt){
+          if(onEvt.recorded){
+            selectors.recorder.recordOff(evt.data[0]);
+          }else{
+            // console.log("not recorded",onEvt);
+          }
+        });
         if(!subSelectorEngaged){
           // fingerMap=evt.data[2]|(evt.data[3]<<8);
-          updateHardware();
+          updateHardware(true,true);
         }else{
           selectors[subSelectorEngaged].eventResponses.buttonMatrixReleased(evt);
         }
@@ -214,14 +250,14 @@ module.exports=function(environment){
             selectors.recorder.engage();
           }else if(evt.data[0]==3){
             performMode=!performMode;
-            updateHardware();
+            updateHardware(true,true);
           }
         }
       }
       this.eventResponses.selectorButtonReleased=function(evt){
           if(evt.data[0]==1){
             selectors.dimension.disengage();
-            updateHardware();
+            updateHardware(true,true);
             subSelectorEngaged=false;
             // selectors.dimension.disengage();
           }else if(evt.data[0]==2){
@@ -232,7 +268,7 @@ module.exports=function(environment){
 
           selectors[lastsubSelectorEngaged].eventResponses.selectorButtonReleased(evt);
 
-          updateHardware();
+          updateHardware(true,true);
       }
     }
   })();

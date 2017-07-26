@@ -195,6 +195,7 @@ module.exports=function(environment){
       //recording into the sequencer
       var recorderDifferenciatorList={};
       this.recordNoteStart=function(differenciator,stepOn){
+        // console.log("recordNoteStart",differenciator,stepOn);
         if(stepOn){
           // console.log("rec rec");
           var newStepEvent=new patternEvent({
@@ -210,6 +211,7 @@ module.exports=function(environment){
         }
       }
       this.recordNoteEnd=function(differenciator){
+        console.log("noteEnd",differenciator);
         noteLengthner.finishAdding(recorderDifferenciatorList[differenciator]);
       }
 
