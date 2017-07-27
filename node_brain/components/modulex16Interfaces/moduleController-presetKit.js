@@ -99,6 +99,7 @@ module.exports=function(environment){
         if(!subSelectorEngaged){
           fingerMap=evt.data[2]|(evt.data[3]<<8);
           currentlySelectedPreset=evt.data[0];
+          environment.hardware.sendScreenA("preset "+currentlySelectedPreset+" set");
           if(pasting!==false){
             //TODO: you can copy an empty pad, and when pasting, it suddenly makes a new pad with defaults
             controlledModule.set(currentlySelectedPreset,selectors.dimension.getSeqEvent());
