@@ -26,6 +26,7 @@ module.exports=function(environment){return new(function(){
   base.call(this);
   var currentSelection=0;
   var options=Array();
+  var thisSelector=this;
   this.options=options;
   function updateHardware(){
     environment.hardware.draw([0x1<<currentSelection,~(0xffff<<options.length),~(0xffff<<options.length)]);
@@ -55,6 +56,9 @@ module.exports=function(environment){return new(function(){
     if(options.length>evt.data[0]){
       currentSelection=evt.data[0];
       updateHardware();
+      if(typeof thisSelector.valueChangeFunction==="function"){
+        thisSelector.valueChangeFunction(evt.data[0]);
+      }
     }
   }
   this.eventResponses.encoderScroll=function(evt){

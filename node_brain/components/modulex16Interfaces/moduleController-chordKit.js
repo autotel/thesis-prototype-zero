@@ -14,10 +14,7 @@ module.exports=function(environment){
       //selectors
       var selectors={};
       selectors.dimension=require('./submode-dimensionSelector');
-
       selectors.recorder=require('./submode-recorder');
-
-
 
       var subSelectorEngaged=false;
       var lastsubSelectorEngaged="dimension";
@@ -44,6 +41,13 @@ module.exports=function(environment){
             environment.hardware.sendScreenB("chord "+controlledModule.currentChord);
         }
       });
+
+      controlledModule.on('messagesend',function(ev){
+        //hmm... that check sould be inside, right?
+        if(selectors.recorder.recording)
+        selectors.recorder.recordOptEvent(ev.eventMessage);
+      });
+
 
       function selectScaleMap(num){
         if((currentChord==1&&num==1)||(currentChord==4&&num==4)||(currentChord==2&&num==2)||(currentChord==8&&num==8)){

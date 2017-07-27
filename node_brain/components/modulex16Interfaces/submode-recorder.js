@@ -21,11 +21,29 @@ module.exports=function(environment){
         },
         maximumValue:1,
         minimumValue:0,
+      },
+      'recording':{
+        value:0,
+        getValueName:function(a){
+          return thisSubmod.recording?"REC":"no";
+        },
+        maximumValue:1,
+        minimumValue:0,
       }
     });
     this.recording=false;
     // var uiRecTarget=false;
     var recTargetSelector=selector.options[0];
+    var recSrcSelector=selector.options[1];
+    var recStateToggler=selector.options[2];
+    selector.valueChangeFunction=function(newValue){
+      // console.log("vcf",newValue);
+      if(newValue==2){
+        thisSubmod.recording=true;
+      }else{
+        thisSubmod.recording=false;
+      }
+    }
     recTargetSelector.candidates=[];
     recTargetSelector.destination=false;
     recTargetSelector.getValueName=function(value){
@@ -36,7 +54,6 @@ module.exports=function(environment){
         return (str.substr(-12));
       }
     }
-    var recSrcSelector=selector.options[1];
 
     //when value changes, it needs to update the recording destinations list
     recTargetSelector.valueChangeFunction=function(selection,delta){
@@ -118,14 +135,14 @@ module.exports=function(environment){
       thisSubmod.recording=!thisSubmod.recording;
     }
     this.engage=function(){
-      toggleRecordOnRelease=true;
+      // toggleRecordOnRelease=true;
       selector.engage();
     }
     this.disengage=function(){
       selector.disengage();
-      if(toggleRecordOnRelease){
-        thisSubmod.toggleRec();
-      }
+      // if(toggleRecordOnRelease){
+      //   thisSubmod.toggleRec();
+      // }
     }
     this.eventResponses=selector.eventResponses;
   })();

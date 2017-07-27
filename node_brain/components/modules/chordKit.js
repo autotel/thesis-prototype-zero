@@ -36,6 +36,7 @@ module.exports=function(environment){
                 newEvent.value[2]=0;
                 newEvent.value[0]=(newEvent.value[0]|0xf0)&0x8F;
                 environment.patcher.receiveEvent(newEvent);
+                thisDest.handle('messagesend',{eventMessage:newEvent});
               }
               delete notesOn[event.value[1]];
             }
@@ -66,6 +67,7 @@ module.exports=function(environment){
                 newEvent.value[1]+=thisDest.baseEventMessage.value[1];
 
                 environment.patcher.receiveEvent(newEvent);
+                thisDest.handle('messagesend',{eventMessage:newEvent});
                 // console.log("OPT",newEvent);
                 if(!notesOn[event.value[1]]) notesOn[event.value[1]]=[];
                 notesOn[event.value[1]].push(newEvent);
