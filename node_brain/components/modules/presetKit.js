@@ -19,6 +19,7 @@ module.exports=function(environment){
           // TODO: : I feel that this solution to route note offs is a bit too patchy and too much like midi.
           if(event.value[2]==0){
             var outMsg=kit[event.value[1]].off;
+            // console.log("outMsg",outMsg);
             if(outMsg){
               environment.patcher.receiveEvent(outMsg);
               thisModule.handle('messagesend',{origin:thisModule,sub:event.value[1],eventMessage:outMsg});
@@ -46,12 +47,13 @@ module.exports=function(environment){
         if(kit[num]){
           kit[num].isPlaying=true;
           environment.patcher.receiveEvent(kit[num].on);
-          thisModule.handle('messagesend',{origin:thisModule,sub:num,eventMessage:kit[num]});
+          thisModule.handle('messagesend',{origin:thisModule,sub:num,eventMessage:kit[num].on});
         }
       }
       this.padOff=function(num){
           if(kit[num]){
             environment.patcher.receiveEvent(kit[num].off);
+            thisModule.handle('messagesend',{origin:thisModule,sub:num,eventMessage:kit[num].off});
             kit[num].isPlaying=false;
           }
       }

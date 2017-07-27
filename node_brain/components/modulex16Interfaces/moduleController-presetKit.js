@@ -77,6 +77,14 @@ module.exports=function(environment){
           setTimeout(function(){noteHighlightMap^=1<<evm.value[1]; if(engaged&&(!subSelectorEngaged)) updateHardware()},200);
         }
       });
+
+      controlledModule.on('messagesend',function(ev){
+        //hmm... that check sould be inside, right?
+        if(selectors.recorder.recording)
+        selectors.recorder.recordOptEvent(ev.eventMessage);
+      });
+
+
       this.engage=function(){
         environment.hardware.sendScreenA("preset set");
         engaged=true;
@@ -130,7 +138,7 @@ module.exports=function(environment){
             }
           }
           if(selectors.recorder.recording)
-          selectors.recorder.recordOn(evt.data[0],
+          selectors.recorder.recordUiOn(evt.data[0],
             new eventMessage({
               destination:controlledModule.name,
               value:[
@@ -150,7 +158,7 @@ module.exports=function(environment){
           fingerMap=evt.data[2]|(evt.data[3]<<8);
           controlledModule.padOff(evt.data[0]);
           if(selectors.recorder.recording)
-          selectors.recorder.recordOff(evt.data[0]);
+          selectors.recorder.recordUiOff(evt.data[0]);
           updateHardware();
         }else{
           selectors[subSelectorEngaged].eventResponses.buttonMatrixPressed(evt);
@@ -182,7 +190,7 @@ module.exports=function(environment){
           }else if(evt.data[0]==2){
             subSelectorEngaged='recorder';
             lastsubSelectorEngaged='recorder';
-            selectors.recorder.toggleRec();
+            // selectors.recorder.toggleRec();
             selectors.recorder.engage();
           }else if(evt.data[0]==3){
             // subSelectorEngaged='utilMode';

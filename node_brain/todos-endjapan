@@ -1,7 +1,6 @@
 - mono output modules
 - fix bpm change rate
 - mute should be select module and then mute, not sel+mute+module
-- chordkit channel is ignored falling to 0
 - could there be a way to duplicate in a correlative way patched elementS?
     it would be great to develop an indea into a new insturment, making pivots
     maybe a squencer could capture the midi output stream and bypass ina KO way.

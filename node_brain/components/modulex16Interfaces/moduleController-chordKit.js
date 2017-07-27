@@ -161,7 +161,7 @@ module.exports=function(environment){
               noteOnTracker.press(evt.data[0],onEventMessage);
               controlledModule.receiveEvent(onEventMessage);
               if(selectors.recorder.recording){
-                selectors.recorder.recordOn(evt.data[0],onEventMessage);
+                selectors.recorder.recordUiOn(evt.data[0],onEventMessage);
                 //a recorded flag is attached to the eventMessage to trigger a record note off when released, regardless of the state of recording. The flag will be pulled from the noteOnTracker
                 onEventMessage.recorded=true;
               }
@@ -177,9 +177,9 @@ module.exports=function(environment){
               });
               controlledModule.receiveEvent(onEventMessage);
               if(selectors.recorder.recording){
-                selectors.recorder.recordOn(evt.data[0],onEventMessage);
+                selectors.recorder.recordUiOn(evt.data[0],onEventMessage);
                 //otherwise the note never gets to the seq memory...
-                selectors.recorder.recordOff(evt.data[0]);
+                selectors.recorder.recordUiOff(evt.data[0]);
               }
             }
           }else{
@@ -205,7 +205,7 @@ module.exports=function(environment){
         //if the event being released was involved in a recording, then record the note off for it
         var released=noteOnTracker.release(evt.data[0],function(onEvt){
           if(onEvt.recorded){
-            selectors.recorder.recordOff(evt.data[0]);
+            selectors.recorder.recordUiOff(evt.data[0]);
           }else{
             // console.log("not recorded",onEvt);
           }
