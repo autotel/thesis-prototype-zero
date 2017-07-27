@@ -26,7 +26,8 @@ module.exports=function(environment){
       var engaged=false;
       var shiftPressed=false;
 
-
+//TODO: sequencer should have a recorder
+//TODO: warp seuquencer events+compensate with displacement
 
     //console.log(selectors);
       for(var a in selectors){
@@ -166,7 +167,11 @@ module.exports=function(environment){
       //interface, but no longer enough for recording (two recorded events may have started
       //at the same time
       var noteLengthner=new(function(){
+        var thisNoteLengthner=this;
+        this.startPointsBitmap=0x0;
+        this.lengthsBitmap=0x0;
         var notesInCreation=[];
+        var nicCount=0;
         var stepCounter=0;
         this.startAdding=function(differenciator,newStepEv){
           // console.log("startadding("+differenciator+"...");
@@ -174,6 +179,9 @@ module.exports=function(environment){
             newStepEv.stepLength=1;
           }
           notesInCreation[differenciator]={sequencerEvent:newStepEv,started:stepCounter};
+          thisNoteLengthner.startPointsBitmap|=0x1<<differenciator;
+          thisNoteLengthner.lengthsBitmap=thisNoteLengthner.startPointsBitmap;
+          nicCount++;
           // console.log(notesInCreation[differenciator]);
         }
         this.finishAdding=function(differenciator){
@@ -183,11 +191,20 @@ module.exports=function(environment){
               /*var added=*/controlledModule.storeNoDup(step,notesInCreation[differenciator].sequencerEvent);
             });
             // console.log(notesInCreation[differenciator]);
-            delete notesInCreation[differenciator]
+            delete notesInCreation[differenciator];
+            nicCount--;
+            if(nicCount==0){
+              thisNoteLengthner.startPointsBitmap=0;
+              thisNoteLengthner.lengthsBitmap=0;
+            }
           }
         }
         this.stepCount=function(){
           stepCounter++;
+          if(nicCount>0){
+            thisNoteLengthner.lengthsBitmap|=thisNoteLengthner.lengthsBitmap<<1;
+            // thisNoteLengthner.lengthsBitmap|=thisNoteLengthner.lengthsBitmap>>16;
+          }
         }
       })();
 
@@ -230,10 +247,12 @@ module.exports=function(environment){
       var moreBluredFilter=new selectors.dimension.Filter({destination:true});
       function updateLeds(){
         //actually should display also according to the currently being tweaked
-
-        var mostImportant=getBitmapx16(shiftPressed?moreBluredFilter:focusedFilter,lastsubSelectorEngaged=="timeConfig");
-        var mediumImportant=getBitmapx16(moreBluredFilter,lastsubSelectorEngaged=="timeConfig");
-        var leastImportant=getBitmapx16(bluredFilter);//red, apparently
+        var showThroughfold=lastsubSelectorEngaged=="timeConfig";
+        var mostImportant=getBitmapx16(shiftPressed?moreBluredFilter:focusedFilter,showThroughfold);
+        var mediumImportant=getBitmapx16(moreBluredFilter,showThroughfold);
+        mediumImportant|=noteLengthner.startPointsBitmap;
+        var leastImportant=getBitmapx16(bluredFilter,false,!shiftPressed);//red, apparently
+        leastImportant|=noteLengthner.lengthsBitmap;
         var drawStep=0;
         var playHeadBmp=0;
         //"render" play header:
@@ -417,7 +436,7 @@ module.exports=function(environment){
         return ret;
       };
 
-      var getBitmapx16=function(filter, requireAllFold){
+      var getBitmapx16=function(filter, requireAllFold,representLength){
         var ret=0x0000;
         if(requireAllFold){
           for(var button=0; button<16;button++)
@@ -428,7 +447,12 @@ module.exports=function(environment){
               if(controlledModule.patData[button])
                 for(var stepData of controlledModule.patData[button])
                   if(filter(stepData)){
-                    ret|=0x1<<button;
+                    if(representLength){
+                      ret|=~(0xffff<<stepData.stepLength)<<button;
+                      // console.log("*-l",stepData.stepLength);
+                    }else{
+                      ret|=0x1<<button;
+                    }
                   }
           }else{
             for(var button=0; button<16;button++)
