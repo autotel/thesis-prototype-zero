@@ -250,7 +250,7 @@ module.exports=function(environment){
           }else if(evt.data[0]==2){
             subSelectorEngaged='recorder';
             lastsubSelectorEngaged='recorder';
-            selectors.recorder.toggleRec();
+            // selectors.recorder.toggleRec();
             selectors.recorder.engage();
           }else if(evt.data[0]==3){
             performMode=!performMode;
