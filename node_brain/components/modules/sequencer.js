@@ -88,14 +88,22 @@ module.exports=function(environment){
       }
       destinationBase.call(this,environment);
       this.receiveEvent=function(evt){
+        // console.log(evt);
         this.handle('receive',evt)
-        if(evt.value[0]==0){
-          if(evt.value[2]!=0x00){
-            this.stepAbsolute(evt.value[1]);
-          }
-        }else if(evt.value[0]==1){
-          this.stepIncremental(evt.value[1]);
-        }else if(evt.value[0]==0X90){
+        if(evt.value[0]==0x00){
+          this.stepMicro(evt.value[1],evt.value[2]);
+          // console.log("stepmico");
+          //this.stepIncremental(evt.value[1]);
+        }else if(evt.value[0]==0x01){
+          //if(evt.value[2]!=0x01){
+          tPattern.stepAbsolute(evt.value[1]);
+          tPattern.play();
+          //}
+        }else if(evt.value[0]==0x02){
+          tPattern.stop();
+        }else if(evt.value[0]==0x04){
+          tPattern.stepAbsolute(evt.value[1]);
+        }/*else if(evt.value[0]==0X90){
           if(evt.value[2]==0x00){
             thisModule.mute=true;
           }else{
@@ -104,9 +112,7 @@ module.exports=function(environment){
           }
         }else if(evt.value[0]==0X80){
           thisModule.mute=true;
-        }else if(evt.value[0]==0xf8){
-          this.stepMicro(evt.value[1]);
-        }
+        }*/
       }
     }
   })();

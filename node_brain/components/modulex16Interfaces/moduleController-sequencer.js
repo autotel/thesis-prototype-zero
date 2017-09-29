@@ -193,6 +193,7 @@ module.exports=function(environment){
         this.startPointsBitmap=0x0;
         this.lengthsBitmap=0x0;
         var notesInCreation=[];
+        //count of notes in creation
         var nicCount=0;
         var stepCounter=0;
         this.startAdding=function(differenciator,newStepEv){
@@ -225,7 +226,7 @@ module.exports=function(environment){
           stepCounter++;
           if(nicCount>0){
             thisNoteLengthner.lengthsBitmap|=thisNoteLengthner.lengthsBitmap<<1;
-            // thisNoteLengthner.lengthsBitmap|=thisNoteLengthner.lengthsBitmap>>16;
+            thisNoteLengthner.lengthsBitmap|=thisNoteLengthner.lengthsBitmap>>16;
           }
         }
       })();
@@ -318,7 +319,7 @@ module.exports=function(environment){
         engaged=false;
       }
       this.eventResponses.buttonMatrixPressed=function(evt){
-        console.log(evt.data);
+        // console.log(evt.data);
         if(skipMode){
           controlledModule.restart(evt.data[0]);
         }else if(subSelectorEngaged===false){

@@ -25,40 +25,28 @@ function MetronomePrototype(clockParent,props) {
   var absoluteMicroDrift=0;
   var timeAnchor=0;
   var microIterations=0;
-  // var myDestination=false;
-  var tickEventMessage=new eventMessage({destination:false,value:[0,0,0]});
-  if(props.mode=="increment") tickEventMessage.value[0]=1;
-  var microTickEventMessage=new eventMessage({destination:false,value:[0xf8,0,0]});
+  var microTickEventMessage=new eventMessage({destination:false,value:[0,0,microStepDivide]});
 
-  this.event=tickEventMessage;
-  if(props.destination) tickEventMessage.destination=props.destination;
+  this.event=microTickEventMessage;
+  if(props.destination) microTickEventMessage.destination=props.destination;
   onhandlers.call(this);
-  this.onTick=function(){
-    // console.log("tick");
-    if(tickEventMessage.destination){
-      //console.log(tickEventMessage);
 
-
-
-      tickEventMessage.value[1]=currentStep;
-      if(!clockParent.mute){
-        environment.patcher.receiveEvent(tickEventMessage);
-        clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:tickEventMessage});
-      }
-    }
-    currentStep++;
-    currentStep%=16*15*14*13*12*11*10*9*8*7*6*5*4*3*2;
-    tickEventMessage.value[1]=currentStep;
+  function tick(){
     tMetro.handle('tick');
+    // console.log("ti");
+    //todo: optionally send an absolute step message?.
   }
-  this.onMicroTick=function(){
-    // console.log("microtic");
-    if(microTickEventMessage.destination!==tickEventMessage.destination) microTickEventMessage.destination=tickEventMessage.destination;
-    if(currentMicroStep>=microStepDivide){
-      currentMicroStep%=microStepDivide;
-      tMetro.onTick();
+  function microTick(){
+    // console.log("microTick",microTickEventMessage.value);
+    //if(microTickEventMessage.destination!==tickEventMessage.destination) microTickEventMessage.destination=tickEventMessage.destination;
+    // to send absolute steps:
+    currentMicroStep%=microStepDivide;
+    // console.log(currentMicroStep);
+    if(currentMicroStep==0){
+      tick();
     }
-    if(tickEventMessage.destination){
+    microTickEventMessage.value[1]=currentMicroStep;
+    if(microTickEventMessage.destination){
       environment.patcher.receiveEvent(microTickEventMessage);
     }
     // clockParent.handle('messagesend',{origin:tMetro,sub:myIndex,eventMessage:microTickEventMessage});
@@ -80,7 +68,7 @@ function MetronomePrototype(clockParent,props) {
     // +"\n  drift:"+absoluteMicroDrift
     // +"\n  nextinterval:"+nextInterval);
     // operation functions
-    tMetro.onMicroTick();
+    microTick();
     // currentMicroStep++;
     // currentMicroStep%=microStepDivide;
   }

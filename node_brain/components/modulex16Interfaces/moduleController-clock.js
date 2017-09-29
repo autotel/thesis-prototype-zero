@@ -23,6 +23,7 @@ module.exports=function(environment){
       //controlledModule=controlledModule(environment);
       var clocks=controlledModule.getClocks();
       for(var a in clocks){
+        console.log(a);
         clocks[a].on('tick',function(){
           clockTicked(a);
         });
@@ -184,7 +185,7 @@ module.exports=function(environment){
             if(lastMatrixButtonPressed===evt.data[0]){
               // clocks.push(
                 var newClock=controlledModule.addClock()//);
-                newClock.on('tick',function(evt){
+                newClock.on('tick',function(){
                   clockTicked(evt.indexNumber);
                 });
                 currentlySelectedClock=evt.data[0];

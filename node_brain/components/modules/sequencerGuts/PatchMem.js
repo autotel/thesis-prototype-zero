@@ -8,8 +8,8 @@ module.exports=function(sequencerModule){ return new(function(){
   //the "invisible" sub-unit of a step, good for recording quantization and midi clock input
   var microStep={value:0};
   this.microStep=microStep;
-  var microStepDivide={value:12};
-  this.microStepDivide=microStepDivide;
+  // var microStepDivide={value:12};
+  // this.microStepDivide=microStepDivide;
 
   //the visible step that can be divided if the user wants a slower sequence
   var substep={value:0};
@@ -130,9 +130,9 @@ module.exports=function(sequencerModule){ return new(function(){
     }
   }
 
-  var clockIncremental=false;
+  // var clockIncremental=false;
   this.stepAbsolute=function(s){
-    clockIncremental=false;
+    // clockIncremental=false;
     // console.log("absolute"+microStep.value);
     substep.value=s%stepDivide.value;
     substep.value+=loopDisplace.value;
@@ -157,31 +157,32 @@ module.exports=function(sequencerModule){ return new(function(){
     microStep.value=0;
   }
   this.stepIncremental=function(s){
-    clockIncremental=true;
+    // clockIncremental=true;
     substep.value+=loopDisplace.value;
     loopDisplace.value=0;
     microStep.value=0;
   }
-  this.stepMicro=function(){
+  this.stepMicro=function(number,base){
+    // console.log(base,number);s
     // console.log(" micro"+microStep.value);
-    microStep.value++;
-    if(microStep.value>=microStepDivide.value){
-      if(clockIncremental){
-        thisModule.stepIncremental();
-        // console.log("incremental"+microStep.value);
-        // console.log(substep);
-        substep.value++;
-        if(substep.value>=stepDivide.value){
-          step(currentStep.value);
-          currentStep.value++;
-          currentStep.value+=loopDisplace.value;
-          // console.log("mememe");
-          substep.value=substep.value%stepDivide.value;
-          loopDisplace.value=0;
-          if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
-          if(currentStep.value<0) currentStep.value%=loopLength.value;
+    microStep.value=number;
+    if(microStep.value==0){
+      // if(clockIncremental){
+      // thisModule.step();
+      // console.log("incremental"+microStep.value);
+      // console.log(substep);
+      substep.value++;
+      if(substep.value>=stepDivide.value){
+        step(currentStep.value);
+        currentStep.value++;
+        currentStep.value+=loopDisplace.value;
+        // console.log("mememe");
+        substep.value=substep.value%stepDivide.value;
+        loopDisplace.value=0;
+        if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
+        if(currentStep.value<0) currentStep.value%=loopLength.value;
         }
-      }
+      // }
     }
   }
 
