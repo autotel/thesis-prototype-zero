@@ -11,6 +11,9 @@
 
 ## chordKit / harmonic mapper
 * apply new language specification
+  * pattern events are now four data values: function, a, b, c. Not three
+  * noteoffs in midi output: midi output should accept as input with <H> x02, and should accept notes with length when <H> x04
+  * Note length managers should send headers x01 and x02 for note on and off respectively, instead of using the midi fashioned velocity 0
 * rename it: it is a scale/grades mapper, not a kit of chords
 * do not discard the channel info as it is currently doing
 ## presetKit

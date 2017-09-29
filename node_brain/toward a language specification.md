@@ -19,10 +19,11 @@ presetKit     ├────────────────── x00: clo
               | | | | | |         x70: request of stored data, it will trigger a data response
               | | | | | |         x71: data response
               | ├──────────────── (if header 01-04) Not used. ? Maybe in the future I use it for multi-page or 2d presetKits, or multivoice in single note presetkits
+              | | | | | |         (if header 00) The tick base number
               | | | | | |         Perhaps the presetkit can be transparent in this, forwardin the channel of the original event if not defined
               | | | | | |         (if header 70-71) Contains a request number, this allows matching the message with a promise callback function
-              | | | | | |         (if header 00) The tick base number
               | | ├────────────── (if header 01-04) Preset number to trigger
+              | | | | | |         (if header 00) indicates the tick number
               | | | ├──────────── (if header 01-04) Preset velocity. Can be overriden
               | | | | ├────────── (if header 04) Lifespan of the note, in ticks. (the presetkit may have a different clock input)
               | | | | | ├──────── (if header 01-04) advanced sound parameters, if applicable
@@ -41,8 +42,9 @@ sequencer     ├────────────────── x00: clo
               | | | | | |         x70: request of stored data, it will trigger a data response
               | | | | | |         x71: data response
               | ├──────────────── (if header 70-71) Contains a request number, this allows matching the message with a promise callback function
-              | | ├────────────── (if header 01 or 04) indicates the step where to jump. If larger than sequence length, it %'s the number
               | | | | | |         (if header 00) indicates the clocks per step of the clock. If 0, it defaults to 12. Sequencer may have a step divider on top*4
+              | | ├────────────── (if header 01 or 04) indicates the step where to jump. If larger than sequence length, it %'s the number
+              | | | | | |         (if header 00) indicates the tick number
               | | | ├────────────
               | | | | ├──────────
 Harmonic map. ├────────────────── x00: clock tick
@@ -51,7 +53,9 @@ Harmonic map. ├────────────────── x00: clo
               | | | | | |         x03: change the current user-defined harmonic mapping function to the one indicated in <data1>
               | | | | | |         x04: trigger (...) <data1>, and hold (...) amount of clocks indicated in <data 3> (NI.!)
               | ├──────────────── this data is set to a fixed value, or transparent -forwarded as it came in- (allowing harmonic mapping of many different voices)
+              | | | | | |         (if header 00) indicates the tick base number
               | | ├────────────── (if <header> is 01-02 or 04) indicates the note which will be harmonically remapped
+              | | | | | |         (if header 00) indicates the tick number
               | | | ├──────────── fixed value or transparent
               | | | | ├────────── fixed value or transparent
 router        | | | | | |  (routes incoming signals to different outputs according to <data0>)
@@ -65,7 +69,7 @@ router        | | | | | |  (routes incoming signals to different outputs accordi
 \*2 if the preset of that note has been triggered once the noteoff is requested, it will send a noteoff of the event that was triggered and not necessarily of the current event. (the preset may have been modified between the noteon and the noteoff)
 NI.! Indicates that this function has not been implemented yet
 
-\*3 Note that if a clock is sending absolute step, and it happens to be connected to a presetkit, the presetkit will happen to become a rudimentary sequencer.
+\*3 Note that if a clock is sending absolute step, and it happens to be connected to a presetkit, the presetkit will become a rudimentary sequencer.
 
 \*4 the effective step per clock pulse will be the result of clock timebase * step division
 
