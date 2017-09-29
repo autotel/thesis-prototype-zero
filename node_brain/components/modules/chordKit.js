@@ -36,7 +36,7 @@ module.exports=function(environment){
                 newEvent.value[2]=0;
                 newEvent.value[0]=(newEvent.value[0]|0xf0)&0x8F;
                 environment.patcher.receiveEvent(newEvent);
-                thisDest.handle('messagesend',{eventMessage:newEvent});
+                thisDest.handle('messagesend',{eventMessage:newEvent,sub:newEvent.value[1]%scaleLength});
               }
               delete notesOn[event.value[1]];
             }
@@ -67,11 +67,11 @@ module.exports=function(environment){
                 newEvent.value[1]+=thisDest.baseEventMessage.value[1];
 
                 environment.patcher.receiveEvent(newEvent);
-                thisDest.handle('messagesend',{eventMessage:newEvent});
+                // thisDest.handle('messagesend',{eventMessage:newEvent});
                 // console.log("OPT",newEvent);
                 if(!notesOn[event.value[1]]) notesOn[event.value[1]]=[];
                 notesOn[event.value[1]].push(newEvent);
-                thisDest.handle('messagesend',{origin:thisDest,eventMessage:newEvent});
+                thisDest.handle('messagesend',{origin:thisDest,eventMessage:newEvent,sub:event.value[1]%scaleLength});
                 // thisDest.lastUsed=noteWraped;
                 // environment.patcher.modules[myDestination];
               }
@@ -98,6 +98,13 @@ module.exports=function(environment){
       // this.set=function(to){
       //   baseEventMessage=to;
       // }
+      this.getEventDestinations=function(){
+        var ret={};
+        for(var a =0; a<12; a++){
+          ret[a]=(thisDest.baseEventMessage.destination)
+        }
+        return ret;
+      }
     }
   })()
 }

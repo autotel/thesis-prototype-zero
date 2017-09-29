@@ -11,7 +11,7 @@ var allUserInterfaces=[];
 var modeBeingTweaked="moduleSelector";
 var changeToMode=modeBeingTweaked;
 
-Modulex16Interfaces.grade=require('./moduleController-grade');
+Modulex16Interfaces.narp=require('./moduleController-narp');
 Modulex16Interfaces.presetKit=require('./moduleController-presetKit');
 Modulex16Interfaces.chordKit=require('./moduleController-chordKit');
 Modulex16Interfaces.sequencer=require('./moduleController-sequencer');

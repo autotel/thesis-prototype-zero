@@ -16,21 +16,22 @@ module.exports=function(nodeServer){ return new (function(){
   var header=nodeServer.messageIndexes;
 
   this.start=function(file){
+    console.log("starting server");
     app.get('/', function(req, res){
       /*
       var directory = require('serve-index');
        app.use(directory(your_path));
       */
+
       app.use("/",express.static('./online/frontend'));
       app.use("/shared",express.static('./online/bothEnds'));
       res.sendFile(file);
-      var ip = req.headers['x-forwarded-for'] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress ||
-      req.connection.socket.remoteAddress;
-      /**/console.log("IP:",ip);
     });
     http.listen(httpPort, function(){
+      // console.log(http.address());
+      // var ip = http.address().address;
+      // serverMan.handle('ipready',ip);
+      // /**/console.log("IP:",ip);
       /**/console.log('listening on :'+httpPort);
     });
     SocketMan.on('connection', function(socket){

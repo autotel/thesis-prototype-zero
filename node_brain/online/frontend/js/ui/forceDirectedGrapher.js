@@ -105,12 +105,12 @@ var forceDirectedGrapher=new(function(){
   }
   this.nodeHighlight=function(handler){
     if(handler.grasa<20)
-    handler.grasa+=4;
+    handler.grasa+=2;
     // console.log(nodes[handler]);
   }
   this.rebuild=restart;
   function mousedownNode(d, i) {
-    d.grasa=33;
+    d.grasa=10;
     console.log(i,d);
     //how on earth are node.id kept??
     // nodes.splice(i, 1);
@@ -155,8 +155,10 @@ var forceDirectedGrapher=new(function(){
         .attr("r", 5)
         .on("mousedown", mousedownNode);
 
+
     node.exit()
         .remove();
+
 
     link = link.data(links);
 

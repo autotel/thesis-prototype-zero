@@ -10,6 +10,11 @@ module.exports=function(environment){
   nodeServer.httpSocket = httpSocket(nodeServer);
   nodeServer.binder = systemManager(environment);
 
+  nodeServer.httpSocket.on('ipready',function(ip){
+    console.log("send ip"+ip);
+    environment.hardware.sendScreenA(""+ip);
+  });
+
   // console.log("modules:",nodeServer.modules);
   nodeServer.httpSocket.start(__dirname + '/frontend/index.html');
 }

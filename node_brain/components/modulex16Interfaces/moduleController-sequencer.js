@@ -447,12 +447,12 @@ module.exports=function(environment){
               if(controlledModule.patData[button])
                 for(var stepData of controlledModule.patData[button])
                   if(filter(stepData)){
-                    if(representLength){
+                  /*  if(representLength){
                       ret|=~(0xffff<<stepData.stepLength)<<button;
                       // console.log("*-l",stepData.stepLength);
-                    }else{
+                    }else{*/
                       ret|=0x1<<button;
-                    }
+                  /*  }*/
                   }
           }else{
             for(var button=0; button<16;button++)

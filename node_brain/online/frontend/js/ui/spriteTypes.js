@@ -103,6 +103,7 @@ var singleNodeMultiDestinationSprite=function(forceDirectedGrapher,spriteBase){
     spriteBase.call(this,props);
     myNode=(forceDirectedGrapher.addNode({type:props.type,name:props.name,color:"crimson"}));
     var thisSprite=this;
+    var targetSprites=[];
 
     this.remove=function(){
       forceDirectedGrapher.removeNode(myNode);
@@ -117,7 +118,6 @@ var singleNodeMultiDestinationSprite=function(forceDirectedGrapher,spriteBase){
     this.applyProperties=function(props){
       if(props.nodeDestinations){
         var snD=props.nodeDestinations;
-        var targetSprites=[];
         // console.log(":");
         for(var a in snD){
           // console.log(snD[a]);
@@ -137,6 +137,10 @@ var singleNodeMultiDestinationSprite=function(forceDirectedGrapher,spriteBase){
 }
 
 Ui.addSpriteType("presetKit",function(forceDirectedGrapher,spriteBase){
+  return getMultiNodeSpriteBase(forceDirectedGrapher,spriteBase);
+});
+
+Ui.addSpriteType("chordKit",function(forceDirectedGrapher,spriteBase){
   return getMultiNodeSpriteBase(forceDirectedGrapher,spriteBase);
 });
 

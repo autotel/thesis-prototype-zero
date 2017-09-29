@@ -5,25 +5,23 @@ const onhandlers=require('onhandlers');
 var environment=new(function(){
   //following line: neccesary?
   onhandlers.call(this);
-
-
-
-
-
-
   return this;
 })();
 const patcher=require('./components/patcher')(environment);
 environment.patcher=patcher;
-
-// const online=require('./online')(environment);
-
+/*
+try{
+const online=require('./online')(environment);
+}catch(e){
+  console.log("Online could not be loaded",e);
+}*/
 const midi=require('./components/modules/midi')(environment);
 environment.midi=midi;
 const hardware=require('./components/uiHardware')(environment);
 environment.hardware=hardware;
 const moduleX16Interfaces=require('./components/moduleX16Interfaces')(environment);
 environment.moduleX16Interface=moduleX16Interfaces;
+// online.start();
 
 function loadPatch(file){
   var fs = require('fs');
@@ -40,14 +38,6 @@ function loadPatch(file){
   });
 }
 loadPatch(__dirname+ '/patches/default.json');
-
-// const readline = require('readline');
-// environment.on('serialopened',function(){
-//   environment.metronome.on('step',function(e){
-//     var currentStep=e.step;
-//     hardware.draw([0x1<<currentStep,0x0,0x1<<currentStep]);
-//   });
-// });
 
 var currentStep=0;
 

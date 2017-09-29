@@ -59,7 +59,7 @@ var bindArray=function(trackedData,node,array,subprop,trackedDataDelta){
     //i'm sure there is a more efficient way to this
   }
 }
-//functions that gather data from the monitored module specifically by type
+//functions that gather data from the monitored module specifically by type, ran each change
 // TODO: : perhaps we only need multinodal and monoNodal functions
 var dataTracker=function(type){
   switch (type) {
@@ -69,6 +69,23 @@ var dataTracker=function(type){
       var trackedDataDelta={};
       bindprop(trackedData,"name",who.name,trackedDataDelta);
       bindprop(trackedData,"subnodes",who.kit.length,trackedDataDelta);
+      // console.log(who.kit);
+      bindArray(trackedData,"subnodeDestinations",who.getEventDestinations(),false,trackedDataDelta);
+      bindprop(uniqueElement,"type",uniqueElement.type,trackedDataDelta);
+      for(var a in trackedDataDelta)
+      if(trackedDataDelta[a]!==undefined)
+        return trackedDataDelta;
+      return false;
+    }
+    case 'chordKit': return function(uniqueElement){
+      //TODO: acutally a chordkit is 12 nodes mapped to an amount of nodes that correspond to the scale length
+      //heere it is simplified because available work time.
+      // console.log("PK");
+      var who=uniqueElement.original;
+      var trackedData=uniqueElement.trackedData;
+      var trackedDataDelta={};
+      bindprop(trackedData,"name",who.name,trackedDataDelta);
+      bindprop(trackedData,"subnodes",12,trackedDataDelta);
       // console.log(who.kit);
       bindArray(trackedData,"subnodeDestinations",who.getEventDestinations(),false,trackedDataDelta);
       bindprop(uniqueElement,"type",uniqueElement.type,trackedDataDelta);
@@ -92,6 +109,7 @@ var dataTracker=function(type){
         return trackedDataDelta;
       return false;
     }
+
     case 'clock': return function(uniqueElement){
       var who=uniqueElement.original;
       var trackedData=uniqueElement.trackedData;
