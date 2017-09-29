@@ -57,10 +57,16 @@ Harmonic map. ├────────────────── x00: clo
 router        | | | | | |  (routes incoming signals to different outputs according to <data0>)
 
 ```
-##Reference symbols:
+
+## Reference symbols:
+
 \*1 if an operator maps to midi and over this, it needs to have different operation channels, there would be a conflict: the source channel outputs will have no voice mapping on the output. This is why a mapper to midi is not the same as a event operator... Also, if the operator's output is an analog signal, the mapping of parameters should make sense in the sense of midi. If more parameters are needed, the slots 3+ can be used for this extra information.
+
 \*2 if the preset of that note has been triggered once the noteoff is requested, it will send a noteoff of the event that was triggered and not necessarily of the current event. (the preset may have been modified between the noteon and the noteoff)
 NI.! Indicates that this function has not been implemented yet
+
 \*3 Note that if a clock is sending absolute step, and it happens to be connected to a presetkit, the presetkit will happen to become a rudimentary sequencer.
+
 \*4 the effective step per clock pulse will be the result of clock timebase * step division
+
 \*5 If it is converting to midi, it also transforms the header into a noteon/ note off accordingly

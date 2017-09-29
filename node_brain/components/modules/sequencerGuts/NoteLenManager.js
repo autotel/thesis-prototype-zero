@@ -8,7 +8,7 @@ module.exports=function(sequencerModule){ return new(function(){
     notesInPlay.push({sequencerEvent:stepEvent,offInStep:stepCounter+stepEvent.stepLength});
   }
   this.step=function(evt){
-    // if(!sequencerModule.mute)
+    // if(!sequencerModule.mute) this doesn't go, to avoid hanging notes
     for(var a in notesInPlay){
       if(notesInPlay[a].offInStep==stepCounter){
         // console.log("a:"+a);
