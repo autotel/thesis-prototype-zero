@@ -146,6 +146,16 @@ module.exports=function(sequencerModule){ return new(function(){
     // console.log("aa",currentStep.value,loopLength.value);
     microStep.value=0;
   }
+  this.restart=function(s){
+    if(!s) var s=0;
+    loopDisplace.value=0;
+    currentStep.value=s;
+    if(currentStep.value>=loopLength.value) currentStep.value%=loopLength.value;
+    if(currentStep.value<0) currentStep.value%=loopLength.value;
+    if(substep.value==0)
+    step(s);
+    microStep.value=0;
+  }
   this.stepIncremental=function(s){
     clockIncremental=true;
     substep.value+=loopDisplace.value;

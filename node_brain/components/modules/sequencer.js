@@ -76,6 +76,7 @@ module.exports=function(environment){
       this.duplicateSequence=patchMem.duplicateSequence;
       // this.getBitmapx16=patchMem.getBitmapx16;
       this.step=patchMem.step;
+      this.restart=patchMem.restart;
       this.stepAbsolute=patchMem.stepAbsolute;
       this.stepIncremental=patchMem.stepIncremental;
       this.stepMicro=patchMem.stepMicro;

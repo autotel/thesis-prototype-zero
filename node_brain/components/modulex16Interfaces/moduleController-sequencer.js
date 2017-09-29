@@ -22,6 +22,8 @@ module.exports=function(environment){
       selectors.timeConfig=require('./submode-2dConfigurator');
 
       base.call(this);
+      //when skipMode is true, the sequencer jumps into any step that is pressed int he matrix
+      var skipMode=false;
 
       var engaged=false;
       var shiftPressed=false;
@@ -74,6 +76,12 @@ module.exports=function(environment){
           maximumValue:32,
           minimumValue:-32,
         },
+        'restart':{
+          value:0,
+          getValueName:function(a){ return "press" },
+          maximumValue:1,
+          minimumValue:0,
+        },
         'step div':{
           value:controlledModule.stepDivide.value,
           getValueName:function(a){ return a },
@@ -89,14 +97,28 @@ module.exports=function(environment){
         }
       });
 
-      var lookLoop=selectors.timeConfig.options[0];
-      var selectedPage=selectors.timeConfig.options[1];
-      var loopLength=selectors.timeConfig.options[2];
-      var loopFold=selectors.timeConfig.options[3];
-      var loopUndestructiveFold=selectors.timeConfig.options[4];
-      var loopDisplace=selectors.timeConfig.options[5];
-      var stepDivide=selectors.timeConfig.options[6];
-      var clockSourceSelection=selectors.timeConfig.options[7];
+      var cc=0;
+      var lookLoop=selectors.timeConfig.options[cc];
+      cc++;
+      var selectedPage=selectors.timeConfig.options[cc];
+      cc++;
+      var loopLength=selectors.timeConfig.options[cc];
+      cc++;
+      var loopFold=selectors.timeConfig.options[cc];
+      cc++;
+      var loopUndestructiveFold=selectors.timeConfig.options[cc];
+      cc++;
+      var loopDisplace=selectors.timeConfig.options[cc];
+      cc++;
+      // var loopRestart=selectors.timeConfig.option[cc6]
+      // cc++;
+      var stepDivide=selectors.timeConfig.options[cc];
+      cc++;
+      var clockSourceSelection=selectors.timeConfig.options[cc];
+      cc++;
+
+
+
       //get initial value of the clock source from my controlled sequencer, it could have been loaded from json
 
       if(controlledModule.getClockSource()){
@@ -296,7 +318,10 @@ module.exports=function(environment){
         engaged=false;
       }
       this.eventResponses.buttonMatrixPressed=function(evt){
-        if(subSelectorEngaged===false){
+        console.log(evt.data);
+        if(skipMode){
+          controlledModule.restart(evt.data[0]);
+        }else if(subSelectorEngaged===false){
           var button=evt.data[0];
           var currentFilter=shiftPressed?moreBluredFilter:focusedFilter;
           var throughfold=getThroughfoldBoolean(button,currentFilter);
@@ -352,8 +377,19 @@ module.exports=function(environment){
 
         */
       }
+      var selectorsPressed={};
       this.eventResponses.selectorButtonPressed=function(evt){
-        if(evt.data[0]==1){
+        // console.log(evt);
+        //keep trak of pressed buttons for button combinations
+        selectorsPressed[evt.data[0]]=true;
+        if(selectorsPressed[2]&&selectorsPressed[3]){
+          if(lastsubSelectorEngaged)
+          selectors[lastsubSelectorEngaged].disengage();
+          lastsubSelectorEngaged=false;
+          skipMode=true;
+          environment.hardware.sendScreenA("skip to step");
+          updateLeds();
+        }else if(evt.data[0]==1){
           subSelectorEngaged='dimension';
           lastsubSelectorEngaged='dimension';
           selectors.dimension.engage();
@@ -368,6 +404,8 @@ module.exports=function(environment){
         selectors[subSelectorEngaged].eventResponses.selectorButtonPressed(evt);
       }
       this.eventResponses.selectorButtonReleased=function(evt){
+        selectorsPressed[evt.data[0]]=false;
+        skipMode=false;
         if(subSelectorEngaged)
         selectors[subSelectorEngaged].eventResponses.selectorButtonReleased(evt);
         if(evt.data[0]==1){
